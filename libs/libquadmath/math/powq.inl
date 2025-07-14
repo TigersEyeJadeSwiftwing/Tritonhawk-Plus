@@ -1,10 +1,10 @@
 #pragma once
 
-#include "issignalingq.hpp"
-#include "floorq.hpp"
-#include "sqrtq.hpp"
-#include "fabsq.hpp"
-#include "scalbnq.hpp"
+#include "issignalingq.inl"
+#include "floorq.inl"
+#include "sqrtq.inl"
+#include "fabsq.inl"
+#include "scalbnq.inl"
 
 /*
  * ====================================================
@@ -151,7 +151,8 @@ namespace quadmath_powq
       cp_h = 9.6179669392597555432899980587535537779331E-1Q,
       cp_l = 5.0577616648125906047157785230014751039424E-17Q;
 
-    static inline __float128 powq (__float128 x, __float128 y)
+    static inline __attribute__((always_inline, hot))
+    __float128 powq (__float128 x, __float128 y)
     {
       __float128 z, ax, z_h, z_l, p_h, p_l;
       __float128 y1, t1, t2, r, s, sgn, t, u, v, w;

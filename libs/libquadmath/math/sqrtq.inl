@@ -1,9 +1,9 @@
 #pragma once
 
-#include "isnanq.hpp"
-#include "isinfq.hpp"
-#include "frexpq.hpp"
-#include "scalbnq.hpp"
+#include "isnanq.inl"
+#include "isinfq.inl"
+#include "frexpq.inl"
+#include "scalbnq.inl"
 
 #include <math.h>
 #include <float.h>
@@ -23,7 +23,8 @@
 #include "../../libgcc/soft-fp/quad.h"
 #endif
 
-static inline __float128 sqrtq (const __float128 x)
+static inline __attribute__((always_inline, hot))
+__float128 sqrtq (const __float128 x)
 {
   __float128 y;
   int exp;

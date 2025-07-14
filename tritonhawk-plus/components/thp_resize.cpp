@@ -311,34 +311,34 @@ namespace TritonhawkPlus
                         }
                         else if ((pos_x0 != pos_x1) && (pos_y0 == pos_y1))
                         {
-                            smp_r[sample_index] = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
-                            smp_g[sample_index] = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
-                            smp_b[sample_index] = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
-                            smp_a[sample_index] = lerp128(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y0)]), lerp_x);
+                            smp_r[sample_index] = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
+                            smp_g[sample_index] = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
+                            smp_b[sample_index] = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
+                            smp_a[sample_index] = lerpq(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y0)]), lerp_x);
                         }
                         else if ((pos_x0 == pos_x1) && (pos_y0 != pos_y1))
                         {
-                            smp_r[sample_index] = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x0, pos_y1)]), lerp_y);
-                            smp_g[sample_index] = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x0, pos_y1)]), lerp_y);
-                            smp_b[sample_index] = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), lerp_y);
-                            smp_a[sample_index] = lerp128(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x0, pos_y1)]), lerp_y);
+                            smp_r[sample_index] = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x0, pos_y1)]), lerp_y);
+                            smp_g[sample_index] = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x0, pos_y1)]), lerp_y);
+                            smp_b[sample_index] = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), lerp_y);
+                            smp_a[sample_index] = lerpq(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x0, pos_y1)]), lerp_y);
                         }
                         else
                         {
-                            f128 mix_r0 = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
-                            f128 mix_g0 = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
-                            f128 mix_b0 = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
-                            f128 mix_a0 = lerp128(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_r0 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_g0 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_b0 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_a0 = lerpq(f128(old_pixelarray[o_alpha(pos_x0, pos_y0)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y0)]), lerp_x);
 
-                            f128 mix_r1 = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
-                            f128 mix_g1 = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
-                            f128 mix_b1 = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
-                            f128 mix_a1 = lerp128(f128(old_pixelarray[o_alpha(pos_x0, pos_y1)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_r1 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_g1 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_b1 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_a1 = lerpq(f128(old_pixelarray[o_alpha(pos_x0, pos_y1)]), f128(old_pixelarray[o_alpha(pos_x1, pos_y1)]), lerp_x);
 
-                            smp_r[sample_index] = lerp128( mix_r0, mix_r1, lerp_y );
-                            smp_g[sample_index] = lerp128( mix_g0, mix_g1, lerp_y );
-                            smp_b[sample_index] = lerp128( mix_b0, mix_b1, lerp_y );
-                            smp_a[sample_index] = lerp128( mix_a0, mix_a1, lerp_y );
+                            smp_r[sample_index] = lerpq( mix_r0, mix_r1, lerp_y );
+                            smp_g[sample_index] = lerpq( mix_g0, mix_g1, lerp_y );
+                            smp_b[sample_index] = lerpq( mix_b0, mix_b1, lerp_y );
+                            smp_a[sample_index] = lerpq( mix_a0, mix_a1, lerp_y );
                         }
 
                     }
@@ -626,17 +626,17 @@ namespace TritonhawkPlus
                             }
                         }
 
-                        f128 mix_r0 = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
-                        f128 mix_g0 = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
-                        f128 mix_b0 = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
+                        f128 mix_r0 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
+                        f128 mix_g0 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
+                        f128 mix_b0 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
 
-                        f128 mix_r1 = lerp128(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
-                        f128 mix_g1 = lerp128(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
-                        f128 mix_b1 = lerp128(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
+                        f128 mix_r1 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
+                        f128 mix_g1 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
+                        f128 mix_b1 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
 
-                        f128 mix_r2 = lerp128( mix_r0, mix_r1, lerp_y );
-                        f128 mix_g2 = lerp128( mix_g0, mix_g1, lerp_y );
-                        f128 mix_b2 = lerp128( mix_b0, mix_b1, lerp_y );
+                        f128 mix_r2 = lerpq( mix_r0, mix_r1, lerp_y );
+                        f128 mix_g2 = lerpq( mix_g0, mix_g1, lerp_y );
+                        f128 mix_b2 = lerpq( mix_b0, mix_b1, lerp_y );
 
                         smp_r[sample_index] = mix_r2;
                         smp_g[sample_index] = mix_g2;

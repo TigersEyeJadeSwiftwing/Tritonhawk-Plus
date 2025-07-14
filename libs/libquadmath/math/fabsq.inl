@@ -15,23 +15,15 @@
  * ====================================================
  */
 
-namespace quadmath_fabsq
+/*
+ * fabsq(x) returns the absolute value of x.
+ */
+
+static inline __attribute__((always_inline, hot))
+__float128 fabsq(__float128 x)
 {
-    #if defined(LIBM_SCCS) && !defined(lint)
-    static char rcsid[] = "$NetBSD: $";
-    #endif
-
-    /*
-     * fabsq(x) returns the absolute value of x.
-     */
-
-    static inline __float128 fabsq(__float128 x)
-    {
-        uint64_t hx;
-        GET_FLT128_MSW64(hx,x);
-        SET_FLT128_MSW64(x,hx&0x7fffffffffffffffLL);
-            return x;
-    }
+    uint64_t hx;
+    GET_FLT128_MSW64(hx,x);
+    SET_FLT128_MSW64(x,hx&0x7fffffffffffffffLL);
+        return x;
 }
-
-using namespace quadmath_fabsq;

@@ -39,7 +39,20 @@ freely, subject to the following restrictions:
  * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
  * video games, and other fun stuff...
  */
-static inline __float128 distwarpq (__float128 a)
+static inline __attribute__((always_inline, hot))
+__float128 distwarpq (__float128 a)
 {
-    return a / ( ((a < 0) ? -a : a) + 1.Q );
+    return a / ( ((a < 0.Q) ? -a : a) + 1.Q );
+}
+
+static inline __attribute__((always_inline, hot))
+float distwarpf (float a)
+{
+    return a / ( ((a < 0.f) ? -a : a) + 1.f );
+}
+
+static inline __attribute__((always_inline, hot))
+double distwarpd (double a)
+{
+    return a / ( ((a < 0.0) ? -a : a) + 1.0 );
 }

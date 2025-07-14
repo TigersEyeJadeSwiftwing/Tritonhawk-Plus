@@ -1,7 +1,5 @@
 #pragma once
 
-#include "truncq.hpp"
-
 /*
 This file is written by Tiger's Eye Jade Swiftwing, for part of a custom quadmath 128-bit floating type math library.
 Note that my first name is "Tiger's Eye" (which is two words), my middle name is "Jade", and "Swiftwing" is one word that is my last name.
@@ -26,14 +24,16 @@ freely, subject to the following restrictions:
 3. This notice may not be removed or altered from any source distribution.
 */
 
-/** \brief Returns an integer, from the 128-bit floating input value, truncated.
+/** \brief Returns one of two input values, whichever is highest.
  *
- * \param a (__float128) The input value to be made into an int.
- * \return (int) The input value, converted into an int.
+ * \param a (__float128) One of two input values to compare to each other.
+ * \param b (__float128) One of two input values to compare to each other.
+ * \return (__float128) Either "a" or "b", whichever is higher.
  *
- * Returns an integer, from the 128-bit floating input value, truncated.
+ * Returns one of two input values, whichever is highest.  128-bit float version.
  */
-static inline int to_intq (__float128 a)
+static inline __attribute__((always_inline, hot))
+__float128 fmaxq (__float128 a, __float128 b)
 {
-    return int(truncq(a) + 0.1Q);
+    return (a > b) ? a : b;
 }

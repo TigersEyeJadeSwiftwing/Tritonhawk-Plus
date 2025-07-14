@@ -1,6 +1,6 @@
 #pragma once
 
-#include "copysignq.hpp"
+#include "copysignq.inl"
 
 /* s_scalbnl.c -- long double version of s_scalbn.c.
  * Conversion to IEEE quad long double by Jakub Jelinek, jj@ultra.linux.cz.
@@ -37,7 +37,8 @@ namespace quadmath_scalbnq
     huge   = 1.0E+4900Q,
     tiny   = 1.0E-4900Q;
 
-    static inline __float128 scalbnq (__float128 x, int n)
+    static inline __attribute__((always_inline, hot))
+    __float128 scalbnq (__float128 x, int n)
     {
         int64_t k,hx,lx;
         GET_FLT128_WORDS64(hx,lx,x);

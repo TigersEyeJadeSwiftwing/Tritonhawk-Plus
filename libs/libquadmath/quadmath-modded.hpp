@@ -84,25 +84,30 @@ namespace quadmath
 
     #include "quadmath-imp.hpp"
 
-    #include "ceilq.hpp"
-    #include "clampq.hpp"
-    #include "copysignq.hpp"
-    #include "distwarpq.hpp"
-    #include "fabsq.hpp"
-    #include "floorq.hpp"
-    #include "fmaxq.hpp"
-    #include "fminq.hpp"
-    #include "fmodq.hpp"
-    #include "frexpq.hpp"
-    #include "isinfq.hpp"
-    #include "isnanq.hpp"
-    #include "issignalingq.hpp"
-    #include "powq.hpp"
-    #include "roundq.hpp"
-    #include "scalbnq.hpp"
-    #include "sqrtq.hpp"
-    #include "to_intq.hpp"
-    #include "truncq.hpp"
+    #if defined(LIBM_SCCS) && !defined(lint)
+    static char rcsid[] = "$NetBSD: $";
+    #endif
+
+    #include "ceilq.inl"
+    #include "clampq.inl"
+    #include "copysignq.inl"
+    #include "distwarpq.inl"
+    #include "fabsq.inl"
+    #include "floorq.inl"
+    #include "fmaxq.inl"
+    #include "fminq.inl"
+    #include "fmodq.inl"
+    #include "frexpq.inl"
+    #include "isinfq.inl"
+    #include "isnanq.inl"
+    #include "issignalingq.inl"
+    #include "lerp.inl"
+    #include "powq.inl"
+    #include "roundq.inl"
+    #include "scalbnq.inl"
+    #include "sqrtq.inl"
+    #include "to_intq.inl"
+    #include "truncq.inl"
 };
 
 #endif

@@ -24,7 +24,8 @@ namespace quadmath_fmodq
 {
     static const __float128 one = 1.0, Zero[] = {0.0, -0.0,};
 
-    inline static __float128 fmodq (__float128 x, __float128 y)
+    static inline __attribute__((always_inline, hot))
+    __float128 fmodq (__float128 x, __float128 y)
     {
         int64_t n,hx,hy,hz,ix,iy,sx,i;
         uint64_t lx,ly,lz;

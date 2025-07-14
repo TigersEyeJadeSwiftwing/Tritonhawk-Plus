@@ -32,7 +32,8 @@ freely, subject to the following restrictions:
  *
  * Returns one of two input values, whichever is lowest.  128-bit float version.
  */
-static inline __float128 fminq (__float128 a, __float128 b)
+static inline __attribute__((always_inline, hot))
+__float128 fminq (__float128 a, __float128 b)
 {
     return (a < b) ? a : b;
 }

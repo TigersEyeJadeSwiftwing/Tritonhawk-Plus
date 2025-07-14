@@ -1,6 +1,6 @@
 #pragma once
 
-/* Truncate argument to nearest integral value not larger than the argument.
+/* Round long double to integer away from zero.
    Copyright (C) 1997-2018 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
    Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997 and
@@ -22,32 +22,57 @@
 
 #define NO_MATH_REDIRECT
 
-static inline __float128 truncq (__float128 x)
+static inline __attribute__((always_inline, hot))
+__float128 roundq (__float128 x)
 {
   int32_t j0;
-  uint64_t i0, i1, sx;
+  uint64_t i1, i0;
 
   GET_FLT128_WORDS64 (i0, i1, x);
-  sx = i0 & 0x8000000000000000ULL;
   j0 = ((i0 >> 48) & 0x7fff) - 0x3fff;
   if (j0 < 48)
     {
       if (j0 < 0)
-	/* The magnitude of the number is < 1 so the result is +-0.  */
-	SET_FLT128_WORDS64 (x, sx, 0);
+	{
+	  i0 &= 0x8000000000000000ULL;
+	  if (j0 == -1)
+	    i0 |= 0x3fff000000000000LL;
+	  i1 = 0;
+	}
       else
-	SET_FLT128_WORDS64 (x, i0 & ~(0x0000ffffffffffffLL >> j0), 0);
+	{
+	  uint64_t i = 0x0000ffffffffffffLL >> j0;
+	  if (((i0 & i) | i1) == 0)
+	    /* X is integral.  */
+	    return x;
+
+	  i0 += 0x0000800000000000LL >> j0;
+	  i0 &= ~i;
+	  i1 = 0;
+	}
     }
   else if (j0 > 111)
     {
       if (j0 == 0x4000)
-	/* x is inf or NaN.  */
+	/* Inf or NaN.  */
 	return x + x;
+      else
+	return x;
     }
   else
     {
-      SET_FLT128_WORDS64 (x, i0, i1 & ~(0xffffffffffffffffULL >> (j0 - 48)));
+      uint64_t i = -1ULL >> (j0 - 48);
+      if ((i1 & i) == 0)
+	/* X is integral.  */
+	return x;
+
+      uint64_t j = i1 + (1LL << (111 - j0));
+      if (j < i1)
+	i0 += 1;
+      i1 = j;
+      i1 &= ~i;
     }
 
+  SET_FLT128_WORDS64 (x, i0, i1);
   return x;
 }

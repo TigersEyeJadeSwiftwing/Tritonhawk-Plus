@@ -15,26 +15,23 @@
  * ====================================================
  */
 
+/*
+ * for non-zero x
+ *	x = frexpq(arg,&exp);
+ * return a long double fp quantity x such that 0.5 <= |x| <1.0
+ * and the corresponding binary exponent "exp". That is
+ *	arg = x*2^exp.
+ * If arg is inf, 0.0, or NaN, then frexpq(arg,&exp) returns arg
+ * with *exp=0.
+ */
+
 namespace quadmath_frexpq
 {
-    #if defined(LIBM_SCCS) && !defined(lint)
-    static char rcsid[] = "$NetBSD: $";
-    #endif
-
-    /*
-     * for non-zero x
-     *	x = frexpq(arg,&exp);
-     * return a long double fp quantity x such that 0.5 <= |x| <1.0
-     * and the corresponding binary exponent "exp". That is
-     *	arg = x*2^exp.
-     * If arg is inf, 0.0, or NaN, then frexpq(arg,&exp) returns arg
-     * with *exp=0.
-     */
-
     static const __float128
     two114 = 2.0769187434139310514121985316880384E+34Q; /* 0x4071000000000000, 0 */
 
-    static inline __float128 frexpq(__float128 x, int *eptr)
+    static inline __attribute__((always_inline, hot))
+    __float128 frexpq(__float128 x, int *eptr)
     {
         uint64_t hx, lx, ix;
         GET_FLT128_WORDS64(hx,lx,x);

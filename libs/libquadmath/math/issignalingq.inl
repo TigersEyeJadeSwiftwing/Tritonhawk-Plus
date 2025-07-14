@@ -18,7 +18,8 @@
    License along with the GNU C Library; if not, see
    <http://www.gnu.org/licenses/>.  */
 
-static inline int issignalingq (__float128 x)
+static inline __attribute__((always_inline, hot))
+int issignalingq (__float128 x)
 {
   uint64_t hxi, lxi __attribute__ ((unused));
   GET_FLT128_WORDS64 (hxi, lxi, x);
