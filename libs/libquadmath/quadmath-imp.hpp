@@ -1,3 +1,5 @@
+#pragma once
+
 /* GCC Quad-Precision Math Library
    Copyright (C) 2010, 2011 Free Software Foundation, Inc.
    Written by Francois-Xavier Coudert  <fxcoudert@gcc.gnu.org>
@@ -18,8 +20,6 @@ License along with libquadmath; see the file COPYING.LIB.  If
 not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 Boston, MA 02110-1301, USA.  */
 
-#pragma once
-
 #ifndef QUADMATH_IMP_H
 #define QUADMATH_IMP_H
 
@@ -28,12 +28,10 @@ Boston, MA 02110-1301, USA.  */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-// #include "quadmath.h"
 #include "quadmath-config.hpp"
 #ifdef HAVE_FENV_H
 # include <fenv.h>
 #endif
-
 
 /* Under IEEE 754, an architecture may determine tininess of
    floating-point results either "before rounding" or "after
@@ -49,42 +47,21 @@ Boston, MA 02110-1301, USA.  */
 #define FIX_FLT128_LONG_CONVERT_OVERFLOW 0
 #define FIX_FLT128_LLONG_CONVERT_OVERFLOW 0
 
-/* Prototypes for internal functions.  */
 /*
-extern int32_t __quadmath_rem_pio2q (__float128, __float128 *);
-extern void __quadmath_kernel_sincosq (__float128, __float128, __float128 *,
-				       __float128 *, int);
-extern __float128 __quadmath_kernel_sinq (__float128, __float128, int);
-extern __float128 __quadmath_kernel_cosq (__float128, __float128);
-extern __float128 __quadmath_kernel_tanq (__float128, __float128, int);
-extern __float128 __quadmath_gamma_productq (__float128, __float128, int,
-					     __float128 *);
-extern __float128 __quadmath_gammaq_r (__float128, int *);
-extern __float128 __quadmath_lgamma_negq (__float128, int *);
-extern __float128 __quadmath_lgamma_productq (__float128, __float128,
-					      __float128, int);
-extern __float128 __quadmath_lgammaq_r (__float128, int *);
-extern __float128 __quadmath_x2y2m1q (__float128 x, __float128 y);
-extern __complex128 __quadmath_kernel_casinhq (__complex128, int);
-*/
-
 __float128 fmaq(__float128, __float128, __float128);
 
-static inline void
-mul_splitq (__float128 *hi, __float128 *lo, __float128 x, __float128 y)
+static inline void mul_splitq (__float128 *hi, __float128 *lo, __float128 x, __float128 y)
 {
-  /* Fast built-in fused multiply-add.  */
+  // Fast built-in fused multiply-add.
   *hi = x * y;
   *lo = fmaq (x, y, -*hi);
 }
-
-
+*/
 
 /* Frankly, if you have __float128, you have 64-bit integers, right?  */
 #ifndef UINT64_C
 # error "No way!"
 #endif
-
 
 /* Main union type we use to manipulate the floating-point type.  */
 typedef union
@@ -168,7 +145,6 @@ typedef union
 
 } ieee854_float128;
 
-
 /* Get two 64 bit ints from a long double.  */
 #define GET_FLT128_WORDS64(ix0,ix1,d)  \
 do {                                   \
@@ -211,7 +187,6 @@ do {                                   \
   u.value = (d);                       \
   (v) = u.words64.low;                 \
 } while (0)
-
 
 #define IEEE854_FLOAT128_BIAS 0x3fff
 

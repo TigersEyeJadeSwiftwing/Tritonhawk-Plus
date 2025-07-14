@@ -72,8 +72,6 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         gimp_procedure_set_icon_name(procedure, GIMP_ICON_GEGL);
         gimp_procedure_add_menu_path(procedure, PLUG_IN_MENU_PATH);
 
-        // int max_threads = omp_get_max_threads();
-
         gimp_procedure_set_documentation(
             procedure,
             _(PLUG_IN_DOCUMENTATION_BLURB),
@@ -91,14 +89,6 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             PLUG_IN_COPYRIGHT,
             PLUG_IN_DATE
         );
-        /*
-        gimp_procedure_add_layer_argument(
-            procedure,
-            "layer", "Layer", NULL,
-            false,
-            G_PARAM_READWRITE
-        );
-        */
         gimp_procedure_add_int_argument(
             procedure,
             "new-x", "New Width", "The width of the new, resized image.",
@@ -122,7 +112,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.05, (gdouble)1600.00, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)1600.00, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -136,7 +126,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.05, (gdouble)1600.00, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)1600.00, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_boolean_argument(
@@ -178,14 +168,6 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             (gint)32, (gint)32768, (gint)256,
             G_PARAM_READWRITE
         );
-        /*
-        gimp_procedure_add_image_return_value(
-            procedure,
-            "image-out", "Output Image", "The output image to create, resized.",
-            (gboolean)FALSE,
-            G_PARAM_READWRITE
-        );
-        */
     }
 
     return procedure;
@@ -439,8 +421,8 @@ static GimpValueArray* thpimageresize_run(
 
     f64 time_done_ms = Log->GetTimerElapsedMS();
 
-    // if (run_mode == GIMP_RUN_INTERACTIVE)
-        // gimp_displays_flush();
+    if (run_mode == GIMP_RUN_INTERACTIVE)
+        gimp_displays_flush();
 
     Log->Log(false, g_strdup_printf( _("%s"
         "-" "\n"

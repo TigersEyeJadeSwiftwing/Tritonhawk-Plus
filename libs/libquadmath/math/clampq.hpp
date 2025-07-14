@@ -35,7 +35,19 @@ freely, subject to the following restrictions:
  * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
  * If you have trouble understanding it, and you're not brand-new to C or C-style languages, you may want to reconsider being a C/C++ programmer...
  */
-static inline __float128 fclampq (__float128 v, __float128 x, __float128 y)
+static inline __float128 clampq (__float128 v, __float128 x, __float128 y)
 {
     return (v >= x) ? ((v <= y) ? v : y) : x;
+}
+
+/** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
+ *
+ * \param v (__float128) The input value, to be limited to being between 0.0 and 1.0.
+ * \return (__float128) The input value "v", but limited.
+ *
+ * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
+ */
+static inline __float128 clamp01q (__float128 v)
+{
+    return (v >= 0.Q) ? ((v <= 1.Q) ? v : 1.Q) : 0.Q;
 }

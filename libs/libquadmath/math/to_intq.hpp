@@ -1,6 +1,6 @@
 #pragma once
 
-#include "floorq.hpp"
+#include "truncq.hpp"
 
 /*
 This file is written by Tiger's Eye Jade Swiftwing, for part of a custom quadmath 128-bit floating type math library.
@@ -35,5 +35,5 @@ freely, subject to the following restrictions:
  */
 static inline int to_intq (__float128 a)
 {
-    return int(floorq(a) + 0.1Q);
+    return int(truncq(a) + 0.1Q);
 }

@@ -44,14 +44,14 @@
 					<Add option='-DPLUG_IN_SOURCE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize.cpp\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_PROC=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_ROLE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
-					<Add option='-DPLUG_IN_MENU_LABEL=&quot;(gchar*)(\&quot;Resize, Multi-threaded\&quot;)&quot;' />
-					<Add option='-DPLUG_IN_MENU_PATH=&quot;(gchar*)(\&quot;&lt;Image&gt;/Tritonhawk Plus/Image/\&quot;)&quot;' />
-					<Add option='-DPLUG_IN_DOCUMENTATION_BLURB=&quot;(gchar*)(\&quot;Tritonhawk Plus Image Resize, Multi-threaded\&quot;)&quot;' />
-					<Add option='-DPLUG_IN_DOCUMENTATION_HELP_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Image Resize, Multi-threaded\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_LABEL=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-threaded Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_PATH=&quot;(gchar*)(\&quot;&lt;Image&gt;/Image/Tritonhawk Plus/\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_BLURB=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-threaded Image Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_HELP_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-threaded Image Resize\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_AUTHOR=&quot;(gchar*)(\&quot;Tiger J. Swiftwing\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_COPYRIGHT=&quot;(gchar*)(\&quot;(c) 2025 Tiger J. Swiftwing\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_DATE=&quot;(gchar*)(\&quot;July 2025 CE\&quot;)&quot;' />
-					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Image Resize, Multi-threaded\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-threaded Image Resize\&quot;)&quot;' />
 					<Add directory="../../tritonhawk-plus" />
 					<Add directory="../../libs/libquadmath" />
 					<Add directory="../../libs/libquadmath/math" />
@@ -115,9 +115,10 @@
 			<Add directory="../../tritonhawk-plus" />
 		</Compiler>
 		<Unit filename="../../libs/libquadmath/math/ceilq.hpp" />
+		<Unit filename="../../libs/libquadmath/math/clampq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/copysignq.hpp" />
+		<Unit filename="../../libs/libquadmath/math/distwarpq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/fabsq.hpp" />
-		<Unit filename="../../libs/libquadmath/math/fclampq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/floorq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/fmaxq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/fminq.hpp" />
@@ -127,9 +128,11 @@
 		<Unit filename="../../libs/libquadmath/math/isnanq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/issignalingq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/powq.hpp" />
+		<Unit filename="../../libs/libquadmath/math/roundq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/scalbnq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/sqrtq.hpp" />
 		<Unit filename="../../libs/libquadmath/math/to_intq.hpp" />
+		<Unit filename="../../libs/libquadmath/math/truncq.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-config.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-imp.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-modded.hpp" />
@@ -142,6 +145,7 @@
 		<Unit filename="../../tritonhawk-plus/components/thp_resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_resize.h" />
 		<Unit filename="../../tritonhawk-plus/components/thp_types.h" />
+		<Unit filename="../../tritonhawk-plus/config_h/clang64/config-tritonhawk-plus-image-resize.hpp" />
 		<Unit filename="../../tritonhawk-plus/config_h/clang64/config.h" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" />

@@ -132,32 +132,9 @@ namespace TritonhawkPlus
 
         sample_grid_scale_x = 0.0Q;
         sample_grid_scale_y = 0.0Q;
-        sample_grid_offset_x = 0.5Q;
-        sample_grid_offset_y = 0.5Q;
         sample_grid_offset_x = 0.Q;
         sample_grid_offset_y = 0.Q;
-
-        // sample_grid_offset_x = (0.5Q - (grid_scale_x * 0.5Q)) - (0.5Q);
-        // sample_grid_offset_y = (0.5Q - (grid_scale_y * 0.5Q)) - (0.5Q);
-
-        /*
-        sample_grid_offset_x = (1.0Q - grid_scale_x) * 0.5Q;
-        sample_grid_offset_y = (1.0Q - grid_scale_y) * 0.5Q;
-        sample_grid_offset_x = sample_grid_offset_x * grid_scale_x;
-        sample_grid_offset_y = sample_grid_offset_y * grid_scale_y;
-        */
-
-        // sample_grid_offset_x = 5.0Q; // Left
-        // sample_grid_offset_y = 5.0Q; // Up
-
-        // sample_grid_offset_x = 0.0Q;
-        // sample_grid_offset_y = 0.0Q;
     }
-
-    /// %100 -> 0.0Q
-    /// %200 -> -0.5Q
-    /// %300 -> -1.0Q
-    /// %400 -> -1.5Q
 
     void ThpParams::CalcNumberOfChunks()
     {
