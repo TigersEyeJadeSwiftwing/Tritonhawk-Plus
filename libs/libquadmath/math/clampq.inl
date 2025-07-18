@@ -24,11 +24,19 @@ You should have received a copy of the GNU General Public License along with thi
  * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
  * If you have trouble understanding it, and you're not brand-new to C or C-style languages, you may want to reconsider being a C/C++ programmer...
  */
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 static inline __attribute__((always_inline, hot))
 __float128 clampq(__float128 v, __float128 lo, __float128 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
+#else
+static inline __attribute__((always_inline, hot))
+long double clampq(long double v, long double lo, long double hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+#endif
 
 /** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
  *
@@ -37,11 +45,19 @@ __float128 clampq(__float128 v, __float128 lo, __float128 hi)
  *
  * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
  */
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 static inline __attribute__((always_inline, hot))
 __float128 clamp01q(__float128 v)
 {
     return (v >= 0.q) ? ((v <= 1.q) ? v : 1.q) : 0.q;
 }
+#else
+static inline __attribute__((always_inline, hot))
+long double clamp01q(long double v)
+{
+    return (v >= 0.L) ? ((v <= 1.L) ? v : 1.L) : 0.L;
+}
+#endif
 
 static inline __attribute__((always_inline, hot))
 float clampf (float v, float lo, float hi)

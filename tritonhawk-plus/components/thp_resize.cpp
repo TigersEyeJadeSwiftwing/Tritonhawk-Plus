@@ -160,28 +160,20 @@ namespace TritonhawkPlus
             {
                 int p1_x = pixel_index % new_x;
                 int p1_y = pixel_index / new_x;
-                /*
-                int ox = max(old_x - 1, 1);
-                int oy = max(old_y - 1, 1);
-                int nx = max(new_x - 1, 1);
-                int ny = max(new_y - 1, 1);
-                f128 sample_grid_center_x = f128(ox) * f128(p1_x) / f128(nx);
-                f128 sample_grid_center_y = f128(oy) * f128(p1_y) / f128(ny);
-                */
-                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x - 1);
-                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y - 1);
+                f128 sample_grid_center_x = f128(old_x - 1) * f128(p1_x) / f128(new_x - 1);
+                f128 sample_grid_center_y = f128(old_y - 1) * f128(p1_y) / f128(new_y - 1);
                 sample_grid_center_x += sample_grid_offset_x;
                 sample_grid_center_y += sample_grid_offset_y;
-                f128 sample_count = fmaxq(f128(samples_total), 1.0Q);
-                f128 s_acc_r = 0.0Q;
-                f128 s_acc_g = 0.0Q;
-                f128 s_acc_b = 0.0Q;
-                f128 s_acc_a = 0.0Q;
+                f128 sample_count = fmaxq(f128(samples_total), 1.0_q);
+                f128 s_acc_r = 0.0_q;
+                f128 s_acc_g = 0.0_q;
+                f128 s_acc_b = 0.0_q;
+                f128 s_acc_a = 0.0_q;
 
-                vector<f128> smp_r(samples_total, 0.0Q);
-                vector<f128> smp_g(samples_total, 0.0Q);
-                vector<f128> smp_b(samples_total, 0.0Q);
-                vector<f128> smp_a(samples_total, 0.0Q);
+                vector<f128> smp_r(samples_total, 0.0_q);
+                vector<f128> smp_g(samples_total, 0.0_q);
+                vector<f128> smp_b(samples_total, 0.0_q);
+                vector<f128> smp_a(samples_total, 0.0_q);
 
                 #pragma omp parallel for collapse(2) shared( \
                     new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
@@ -202,66 +194,64 @@ namespace TritonhawkPlus
                         f128 sample_position_x = sample_grid_center_x;
                         f128 sample_position_y = sample_grid_center_y;
                         if (samples_x > 1)
-                            sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5Q);
+                            sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5_q);
                         if (samples_y > 1)
-                            sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5Q);
+                            sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5_q);
 
                         int pos_x0 = 0;
                         int pos_x1 = 0;
                         int pos_y0 = 0;
                         int pos_y1 = 0;
-                        f128 lerp_x = 0.0Q;
-                        f128 lerp_y = 0.0Q;
+                        f128 lerp_x = 0.0_q;
+                        f128 lerp_y = 0.0_q;
                         f128 oxf = f128(old_x);
                         f128 oyf = f128(old_y);
-                        // f128 nxf = f128(new_x);
-                        // f128 nyf = f128(new_y);
 
                         if (seamless_x == true)
                         {
                             sample_position_x = fmodq(sample_position_x + oxf, oxf);
                             pos_x0 = to_intq(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            if (offcenter < 0.5_q)
                             {
                                 pos_x1 = (old_x + pos_x0 - 1) % old_x;
-                                lerp_x = 0.5Q - offcenter;
+                                lerp_x = 0.5_q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = (old_x + pos_x0 + 1) % old_x;
-                                lerp_x = offcenter - 0.5Q;
+                                lerp_x = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0Q), oxf);
-                            if (sample_position_x < 0.5Q)
+                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0_q), oxf);
+                            if (sample_position_x < 0.5_q)
                             {
                                 pos_x0 = 0;
                                 pos_x1 = 0;
-                                lerp_x = 0.0Q;
+                                lerp_x = 0.0_q;
                             }
-                            else if (sample_position_x > oxf - 0.5Q)
+                            else if (sample_position_x > oxf - 0.5_q)
                             {
                                 pos_x0 = old_x - 1;
                                 pos_x1 = old_x - 1;
-                                lerp_x = 0.0Q;
+                                lerp_x = 0.0_q;
                             }
                             else
                             {
                                 pos_x0 = to_intq(sample_position_x);
-                                f128 offcenter = fmodq(sample_position_x, 1.0Q);
+                                f128 offcenter = fmodq(sample_position_x, 1.0_q);
 
-                                if (offcenter < 0.5Q)
+                                if (offcenter < 0.5_q)
                                 {
                                     pos_x1 = min(max(pos_x0 - 1, 0), old_x - 1);
-                                    lerp_x = 0.5Q - offcenter;
+                                    lerp_x = 0.5_q - offcenter;
                                 }
                                 else
                                 {
                                     pos_x1 = min(max(pos_x0 + 1, 0), old_x - 1);
-                                    lerp_x = offcenter - 0.5Q;
+                                    lerp_x = offcenter - 0.5_q;
                                 }
                             }
                         }
@@ -270,47 +260,47 @@ namespace TritonhawkPlus
                         {
                             sample_position_y = fmodq(sample_position_y + oyf, oyf);
                             pos_y0 = to_intq(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            if (offcenter < 0.5_q)
                             {
                                 pos_y1 = (old_y + pos_y0 - 1) % old_y;
-                                lerp_y = 0.5Q - offcenter;
+                                lerp_y = 0.5_q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = (old_y + pos_y0 + 1) % old_y;
-                                lerp_y = offcenter - 0.5Q;
+                                lerp_y = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0Q), oyf);
-                            if (sample_position_y < 0.5Q)
+                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0_q), oyf);
+                            if (sample_position_y < 0.5_q)
                             {
                                 pos_y0 = 0;
                                 pos_y1 = 0;
-                                lerp_y = 0.0Q;
+                                lerp_y = 0.0_q;
                             }
-                            else if (sample_position_y > oyf - 0.5Q)
+                            else if (sample_position_y > oyf - 0.5_q)
                             {
                                 pos_y0 = old_y - 1;
                                 pos_y1 = old_y - 1;
-                                lerp_y = 0.0Q;
+                                lerp_y = 0.0_q;
                             }
                             else
                             {
                                 pos_y0 = to_intq(sample_position_y);
-                                f128 offcenter = fmodq(sample_position_y, 1.0Q);
+                                f128 offcenter = fmodq(sample_position_y, 1.0_q);
 
-                                if (offcenter < 0.5Q)
+                                if (offcenter < 0.5_q)
                                 {
                                     pos_y1 = min(max(pos_y0 - 1, 0), old_y - 1);
-                                    lerp_y = 0.5Q - offcenter;
+                                    lerp_y = 0.5_q - offcenter;
                                 }
                                 else
                                 {
                                     pos_y1 = min(max(pos_y0 + 1, 0), old_y - 1);
-                                    lerp_y = offcenter - 0.5Q;
+                                    lerp_y = offcenter - 0.5_q;
                                 }
                             }
                         }
@@ -522,26 +512,18 @@ namespace TritonhawkPlus
             {
                 int p1_x = pixel_index % new_x;
                 int p1_y = pixel_index / new_x;
-                /*
-                int ox = max(old_x - 1, 1);
-                int oy = max(old_y - 1, 1);
-                int nx = max(new_x - 1, 1);
-                int ny = max(new_y - 1, 1);
-                f128 sample_grid_center_x = f128(ox) * f128(p1_x) / f128(nx);
-                f128 sample_grid_center_y = f128(oy) * f128(p1_y) / f128(ny);
-                */
-                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x - 1);
-                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y - 1);
+                f128 sample_grid_center_x = f128(old_x - 1) * f128(p1_x) / f128(new_x - 1);
+                f128 sample_grid_center_y = f128(old_y - 1) * f128(p1_y) / f128(new_y - 1);
                 sample_grid_center_x += sample_grid_offset_x;
                 sample_grid_center_y += sample_grid_offset_y;
-                f128 sample_count = fmaxq(f128(samples_total), 1.0Q);
-                f128 s_acc_r = 0.0Q;
-                f128 s_acc_g = 0.0Q;
-                f128 s_acc_b = 0.0Q;
+                f128 sample_count = fmaxq(f128(samples_total), 1.0_q);
+                f128 s_acc_r = 0.0_q;
+                f128 s_acc_g = 0.0_q;
+                f128 s_acc_b = 0.0_q;
 
-                vector<f128> smp_r(samples_total, 0.0Q);
-                vector<f128> smp_g(samples_total, 0.0Q);
-                vector<f128> smp_b(samples_total, 0.0Q);
+                vector<f128> smp_r(samples_total, 0.0_q);
+                vector<f128> smp_g(samples_total, 0.0_q);
+                vector<f128> smp_b(samples_total, 0.0_q);
 
                 #pragma omp parallel for collapse(2) shared( \
                     new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
@@ -562,98 +544,150 @@ namespace TritonhawkPlus
                         f128 sample_position_x = sample_grid_center_x;
                         f128 sample_position_y = sample_grid_center_y;
                         if (samples_x > 1)
-                            sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5Q);
+                            sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5_q);
                         if (samples_y > 1)
-                            sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5Q);
+                            sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5_q);
 
                         int pos_x0 = 0;
                         int pos_x1 = 0;
                         int pos_y0 = 0;
                         int pos_y1 = 0;
-                        f128 lerp_x = 0.0Q;
-                        f128 lerp_y = 0.0Q;
+                        f128 lerp_x = 0.0_q;
+                        f128 lerp_y = 0.0_q;
+                        f128 oxf = f128(old_x);
+                        f128 oyf = f128(old_y);
 
                         if (seamless_x == true)
                         {
-                            sample_position_x = fmodq(sample_position_x + f128(old_x), f128(old_x));
-                            pos_x0 = int(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            sample_position_x = fmodq(sample_position_x + oxf, oxf);
+                            pos_x0 = to_intq(sample_position_x);
+                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            if (offcenter < 0.5_q)
                             {
                                 pos_x1 = (old_x + pos_x0 - 1) % old_x;
-                                lerp_x = 0.5Q - offcenter;
+                                lerp_x = 0.5_q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = (old_x + pos_x0 + 1) % old_x;
-                                lerp_x = offcenter - 0.5Q;
+                                lerp_x = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0Q), f128(old_x - 1));
-                            pos_x0 = int(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0_q), oxf);
+                            if (sample_position_x < 0.5_q)
                             {
-                                pos_x1 = min(max(pos_x0 - 1, 0), old_x);
-                                lerp_x = 0.5Q - offcenter;
+                                pos_x0 = 0;
+                                pos_x1 = 0;
+                                lerp_x = 0.0_q;
+                            }
+                            else if (sample_position_x > oxf - 0.5_q)
+                            {
+                                pos_x0 = old_x - 1;
+                                pos_x1 = old_x - 1;
+                                lerp_x = 0.0_q;
                             }
                             else
                             {
-                                pos_x1 = min(max(pos_x0 + 1, 0), old_x);
-                                lerp_x = offcenter - 0.5Q;
+                                pos_x0 = to_intq(sample_position_x);
+                                f128 offcenter = fmodq(sample_position_x, 1.0_q);
+
+                                if (offcenter < 0.5_q)
+                                {
+                                    pos_x1 = min(max(pos_x0 - 1, 0), old_x - 1);
+                                    lerp_x = 0.5_q - offcenter;
+                                }
+                                else
+                                {
+                                    pos_x1 = min(max(pos_x0 + 1, 0), old_x - 1);
+                                    lerp_x = offcenter - 0.5_q;
+                                }
                             }
                         }
 
                         if (seamless_y == true)
                         {
-                            sample_position_y = fmodq(sample_position_y + f128(old_y), f128(old_y));
-                            pos_y0 = int(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            sample_position_y = fmodq(sample_position_y + oyf, oyf);
+                            pos_y0 = to_intq(sample_position_y);
+                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            if (offcenter < 0.5_q)
                             {
                                 pos_y1 = (old_y + pos_y0 - 1) % old_y;
-                                lerp_y = 0.5Q - offcenter;
+                                lerp_y = 0.5_q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = (old_y + pos_y0 + 1) % old_y;
-                                lerp_y = offcenter - 0.5Q;
+                                lerp_y = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0Q), f128(old_y - 1));
-                            pos_y0 = int(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0Q);
-                            if (offcenter < 0.5Q)
+                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0_q), oyf);
+                            if (sample_position_y < 0.5_q)
                             {
-                                pos_y1 = min(max(pos_y0 - 1, 0), old_y);
-                                lerp_y = 0.5Q - offcenter;
+                                pos_y0 = 0;
+                                pos_y1 = 0;
+                                lerp_y = 0.0_q;
+                            }
+                            else if (sample_position_y > oyf - 0.5_q)
+                            {
+                                pos_y0 = old_y - 1;
+                                pos_y1 = old_y - 1;
+                                lerp_y = 0.0_q;
                             }
                             else
                             {
-                                pos_y1 = min(max(pos_y0 + 1, 0), old_y);
-                                lerp_y = offcenter - 0.5Q;
+                                pos_y0 = to_intq(sample_position_y);
+                                f128 offcenter = fmodq(sample_position_y, 1.0_q);
+
+                                if (offcenter < 0.5_q)
+                                {
+                                    pos_y1 = min(max(pos_y0 - 1, 0), old_y - 1);
+                                    lerp_y = 0.5_q - offcenter;
+                                }
+                                else
+                                {
+                                    pos_y1 = min(max(pos_y0 + 1, 0), old_y - 1);
+                                    lerp_y = offcenter - 0.5_q;
+                                }
                             }
                         }
 
-                        f128 mix_r0 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
-                        f128 mix_g0 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
-                        f128 mix_b0 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
+                        if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
+                        {
+                            smp_r[sample_index] = f128(old_pixelarray[o_red(pos_x0, pos_y0)]);
+                            smp_g[sample_index] = f128(old_pixelarray[o_green(pos_x0, pos_y0)]);
+                            smp_b[sample_index] = f128(old_pixelarray[o_blue(pos_x0, pos_y0)]);
+                        }
+                        else if ((pos_x0 != pos_x1) && (pos_y0 == pos_y1))
+                        {
+                            smp_r[sample_index] = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
+                            smp_g[sample_index] = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
+                            smp_b[sample_index] = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
+                        }
+                        else if ((pos_x0 == pos_x1) && (pos_y0 != pos_y1))
+                        {
+                            smp_r[sample_index] = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x0, pos_y1)]), lerp_y);
+                            smp_g[sample_index] = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x0, pos_y1)]), lerp_y);
+                            smp_b[sample_index] = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), lerp_y);
+                        }
+                        else
+                        {
+                            f128 mix_r0 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y0)]), f128(old_pixelarray[o_red(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_g0 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y0)]), f128(old_pixelarray[o_green(pos_x1, pos_y0)]), lerp_x);
+                            f128 mix_b0 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y0)]), f128(old_pixelarray[o_blue(pos_x1, pos_y0)]), lerp_x);
 
-                        f128 mix_r1 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
-                        f128 mix_g1 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
-                        f128 mix_b1 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_r1 = lerpq(f128(old_pixelarray[o_red(pos_x0, pos_y1)]), f128(old_pixelarray[o_red(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_g1 = lerpq(f128(old_pixelarray[o_green(pos_x0, pos_y1)]), f128(old_pixelarray[o_green(pos_x1, pos_y1)]), lerp_x);
+                            f128 mix_b1 = lerpq(f128(old_pixelarray[o_blue(pos_x0, pos_y1)]), f128(old_pixelarray[o_blue(pos_x1, pos_y1)]), lerp_x);
 
-                        f128 mix_r2 = lerpq( mix_r0, mix_r1, lerp_y );
-                        f128 mix_g2 = lerpq( mix_g0, mix_g1, lerp_y );
-                        f128 mix_b2 = lerpq( mix_b0, mix_b1, lerp_y );
+                            smp_r[sample_index] = lerpq( mix_r0, mix_r1, lerp_y );
+                            smp_g[sample_index] = lerpq( mix_g0, mix_g1, lerp_y );
+                            smp_b[sample_index] = lerpq( mix_b0, mix_b1, lerp_y );
+                        }
 
-                        smp_r[sample_index] = mix_r2;
-                        smp_g[sample_index] = mix_g2;
-                        smp_b[sample_index] = mix_b2;
                     }
                 } // END nested for(s_y = 0 - samples_y), for(s_x = 0 - samples_x)
 

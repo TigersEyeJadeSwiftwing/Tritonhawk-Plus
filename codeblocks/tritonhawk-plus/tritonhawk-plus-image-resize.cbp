@@ -14,12 +14,17 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-m64" />
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-Wall" />
 					<Add option="-std=gnu17" />
 					<Add option="-std=gnu++17" />
 					<Add option="-msse4.1" />
+					<Add option="-mlong-double-80" />
 					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=fast" />
 					<Add option="-IC:/msys64/clang64/include/gimp-3.0" />
 					<Add option="-IC:/msys64/clang64/include/gtk-3.0" />
 					<Add option="-IC:/msys64/clang64/include/pango-1.0" />
@@ -61,7 +66,12 @@
 					<Add option="-std=gnu17" />
 					<Add option="-std=gnu++17" />
 					<Add option="-msse4.1" />
+					<Add option="-mlong-double-80" />
 					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=fast" />
 					<Add option="-static-libgcc" />
 					<Add option="-static-libstdc++" />
 					<Add option="-lgimpui-3.0" />
@@ -118,6 +128,7 @@
 		<Unit filename="../../libs/libquadmath/math/clampq.inl" />
 		<Unit filename="../../libs/libquadmath/math/copysignq.inl" />
 		<Unit filename="../../libs/libquadmath/math/distwarpq.inl" />
+		<Unit filename="../../libs/libquadmath/math/expq.inl" />
 		<Unit filename="../../libs/libquadmath/math/fabsq.inl" />
 		<Unit filename="../../libs/libquadmath/math/floorq.inl" />
 		<Unit filename="../../libs/libquadmath/math/fmaxq.inl" />
@@ -128,6 +139,7 @@
 		<Unit filename="../../libs/libquadmath/math/isnanq.inl" />
 		<Unit filename="../../libs/libquadmath/math/issignalingq.inl" />
 		<Unit filename="../../libs/libquadmath/math/lerp.inl" />
+		<Unit filename="../../libs/libquadmath/math/lnq.inl" />
 		<Unit filename="../../libs/libquadmath/math/powq.inl" />
 		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
 		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />

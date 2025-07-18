@@ -57,7 +57,7 @@ It lists all of the stuff that Codeblocks sends to the Clang++ command line.
 -std=gnu++17
 -msse4.1
 -m64
--O2
+-O3
 -fopenmp=libomp
 -Wall
 */
@@ -68,7 +68,7 @@ It lists all of the stuff that Codeblocks sends to the Clang++ command line.
 -std=gnu++17
 -msse4.1
 -m64
--O2
+-O3
 -fopenmp=libomp
 -Wall
 */

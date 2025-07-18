@@ -87,66 +87,105 @@ namespace TritonhawkPlus
         sample_count_x = 1;
         sample_count_y = 1;
         sample_count_xy = 1;
-        f128 grid_scale_x = f128(sample_grid_width_percent) * 0.01Q;
-        f128 grid_scale_y = f128(sample_grid_height_percent) * 0.01Q;
+        f128 grid_scale_x = f128(sample_grid_width_percent) * 0.01_q;
+        f128 grid_scale_y = f128(sample_grid_height_percent) * 0.01_q;
+        sample_grid_scale_x = 0.0_q;
+        sample_grid_scale_y = 0.0_q;
 
+        // Shrinking
         if (input_size_x > output_size_x)
         {
-            f128 scale_factor = ((grid_scale_x * image_ratio_x) - 1.00001Q) / 2.0Q;
+            f128 scale_factor = ((grid_scale_x * image_ratio_x) - 0.0_q) / 2.0_q;
             int additional_samples = int(scale_factor) * 2;
-
             sample_count_x = 3 + additional_samples;
+            sample_grid_scale_x = grid_scale_x * image_ratio_x;
         }
-        else
+        // Growing
+        else if (input_size_x < output_size_x)
         {
-            if (grid_scale_x > 1.00001Q)
+            if (grid_scale_x > 1.00001_q)
             {
-                f128 scale_factor = (grid_scale_x) * 0.5Q;
+                f128 scale_factor = (grid_scale_x) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-
                 sample_count_x = 3 + additional_samples;
+                sample_grid_scale_x = grid_scale_x - 1.0_q;
             }
             else
+            {
                 sample_count_x = 1;
+                sample_grid_scale_x = 0.0_q;
+            }
+        }
+        // No change
+        else
+        {
+            if (grid_scale_x > 1.00001_q)
+            {
+                f128 scale_factor = (grid_scale_x) * 0.5_q;
+                int additional_samples = int(scale_factor) * 2;
+                sample_count_x = 3 + additional_samples;
+                sample_grid_scale_x = grid_scale_x - 1.0_q;
+            }
+            else
+            {
+                sample_count_x = 1;
+                sample_grid_scale_x = 0.0_q;
+            }
         }
 
+        // Shrinking
         if (input_size_y > output_size_y)
         {
-            f128 scale_factor = ((grid_scale_y * image_ratio_y) - 1.00001Q) / 2.0Q;
+            f128 scale_factor = ((grid_scale_y * image_ratio_y) - 0.0_q) / 2.0_q;
             int additional_samples = int(scale_factor) * 2;
-
             sample_count_y = 3 + additional_samples;
+            sample_grid_scale_y = grid_scale_y * image_ratio_y;
         }
-        else
+        // Growing
+        else if (input_size_y < output_size_y)
         {
-            if (grid_scale_y > 1.00001Q)
+            if (grid_scale_y > 1.00001_q)
             {
-                f128 scale_factor = (grid_scale_y) * 0.5Q;
+                f128 scale_factor = (grid_scale_y) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-
                 sample_count_y = 3 + additional_samples;
+                sample_grid_scale_y = grid_scale_y - 1.0_q;
             }
             else
+            {
                 sample_count_y = 1;
+                sample_grid_scale_y = 0.0_q;
+            }
+        }
+        // No change
+        else
+        {
+            if (grid_scale_y > 1.00001_q)
+            {
+                f128 scale_factor = (grid_scale_y) * 0.5_q;
+                int additional_samples = int(scale_factor) * 2;
+                sample_count_y = 3 + additional_samples;
+                sample_grid_scale_y = grid_scale_y - 1.0_q;
+            }
+            else
+            {
+                sample_count_y = 1;
+                sample_grid_scale_y = 0.0_q;
+            }
         }
 
-        if (sample_count_adjustment > 1.0Q)
+        if (sample_count_adjustment > 1.0_q)
         {
-            sample_count_x = to_intq(f128(sample_count_x) * sample_count_adjustment);
-            sample_count_y = to_intq(f128(sample_count_y) * sample_count_adjustment);
+            f128 s_c_xf = fmaxq(f128(sample_count_x) * sample_count_adjustment, 1.00001_q);
+            f128 s_c_yf = fmaxq(f128(sample_count_y) * sample_count_adjustment, 1.00001_q);
+            sample_count_x = to_intq(s_c_xf);
+            sample_count_y = to_intq(s_c_yf);
         }
 
         sample_count_xy = sample_count_x * sample_count_y;
 
-        const f128 r_x = fmaxq(image_ratio_x, 0.50Q);
-        const f128 r_y = fmaxq(image_ratio_y, 0.50Q);
-        sample_grid_scale_x = grid_scale_x * r_x;
-        sample_grid_scale_y = grid_scale_y * r_y;
-
-        sample_grid_scale_x = 0.0Q;
-        sample_grid_scale_y = 0.0Q;
-        sample_grid_offset_x = 0.Q;
-        sample_grid_offset_y = 0.Q;
+        sample_grid_offset_x = 0.5_q;
+        sample_grid_offset_y = 0.5_q;
     }
 
     void ThpParams::CalcNumberOfChunks()

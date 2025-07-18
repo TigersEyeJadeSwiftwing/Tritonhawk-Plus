@@ -31,7 +31,6 @@ You should have received a copy of the GNU General Public License along with thi
 
 using namespace TritonhawkPlus;
 using namespace std;
-using namespace quadmath;
 
 namespace TritonhawkPlus
 {
@@ -155,8 +154,8 @@ namespace TritonhawkPlus
 
         bool                    ignore_auto_changes = false;
         gboolean                chain_button_on = (gboolean) TRUE;
-        f128                    original_ratio_xy = 1.0Q;
-        f128                    locked_ratio_xy = 1.0Q;
+        f128                    original_ratio_xy = 1.0_q;
+        f128                    locked_ratio_xy = 1.0_q;
         gint                    original_x = (gint) 256;
         gint                    original_y = (gint) 256;
         gint                    size_x = (gint) 256;
@@ -166,7 +165,7 @@ namespace TritonhawkPlus
         gboolean                chain_button_sample_grid_scale_on = (gboolean) TRUE;
         gboolean                seamless_x = (gboolean) FALSE;
         gboolean                seamless_y = (gboolean) FALSE;
-        f128                    sample_grid_scale_locked_ratio_xy = 1.0Q;
+        f128                    sample_grid_scale_locked_ratio_xy = 1.0_q;
         gdouble                 sample_grid_scale_x = (gdouble) 1.0;
         gdouble                 sample_grid_scale_y = (gdouble) 1.0;
 

@@ -1,6 +1,8 @@
 #pragma once
 
-#include "truncq.inl"
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "truncq.inl"
+#endif
 
 /*
 Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
@@ -22,11 +24,19 @@ You should have received a copy of the GNU General Public License along with thi
  *
  * Returns an integer, from the 128-bit floating input value, truncated.
  */
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 static inline __attribute__((always_inline, hot))
 int to_intq (__float128 a)
 {
     return int(truncq(a) + 0.1Q);
 }
+#else
+static inline __attribute__((always_inline, hot))
+int to_intq (long double a)
+{
+    return int(truncl(a) + 0.1L);
+}
+#endif
 
 static inline __attribute__((always_inline, hot))
 int to_intf (float a)

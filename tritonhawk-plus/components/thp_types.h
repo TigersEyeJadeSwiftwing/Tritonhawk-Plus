@@ -13,6 +13,57 @@ This program is distributed in the hope that it will be useful, but WITHOUT ANY 
 You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+namespace TritonhawkPlus {};
+namespace quadmath {};
+
+namespace TritonhawkPlus
+{
+    #undef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #if defined(__SIZEOF_LONG_DOUBLE__) && __SIZEOF_LONG_DOUBLE__ == 16
+        #define THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #endif
+    #if defined(__SIZEOF_FLOAT128__) || defined(__FLT128_IS_LONG_DOUBLE__)
+        #define THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #endif
+
+    #ifdef __cplusplus
+        extern "C" {
+    #endif
+        using f32 = float;
+        using f64 = double;
+    #ifdef __cplusplus
+        }
+    #endif
+
+
+    #ifdef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+        #ifdef __cplusplus
+            extern "C" {
+        #endif
+            using f128 = long double;
+        #ifdef __cplusplus
+            }
+        #endif
+
+        constexpr long double operator ""_q(long double x)
+        {
+            return static_cast<long double>(x);
+        };
+    #else
+        #ifdef __cplusplus
+            extern "C" {
+        #endif
+            using f128 = __float128;
+        #ifdef __cplusplus
+            }
+        #endif
+
+        constexpr __float128 operator ""_q(__float128 x)
+        {
+            return static_cast<__float128>(x);
+        };
+    #endif
+};
 
 #include "config_h/clang64/config.h"
 
@@ -38,19 +89,13 @@ You should have received a copy of the GNU General Public License along with thi
 // #define NULL_TERMINATE ((void*) 0)
 #endif
 
-namespace TritonhawkPlus {};
-
 using namespace TritonhawkPlus;
 using namespace std;
 using namespace quadmath;
 
+/*
 namespace TritonhawkPlus
 {
-    typedef float f32;
-    typedef double f64;
-    typedef __float128 f128;
-
-    /*
     static inline string thp_get_special_param_text(gint value)
     {
         if (value == (gint)0)
@@ -66,5 +111,5 @@ namespace TritonhawkPlus
         else
             return "-----";
     }
-    */
 }
+*/

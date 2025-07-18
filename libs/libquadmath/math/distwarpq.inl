@@ -28,11 +28,19 @@ You should have received a copy of the GNU General Public License along with thi
  * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
  * video games, and other fun stuff...
  */
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 static inline __attribute__((always_inline, hot))
 __float128 distwarpq (__float128 a)
 {
     return a / ( ((a < 0.Q) ? -a : a) + 1.Q );
 }
+#else
+static inline __attribute__((always_inline, hot))
+long double distwarpq (long double a)
+{
+    return a / ( ((a < 0.L) ? -a : a) + 1.L );
+}
+#endif
 
 static inline __attribute__((always_inline, hot))
 float distwarpf (float a)

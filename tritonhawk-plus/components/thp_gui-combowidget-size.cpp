@@ -1017,7 +1017,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 1.0;
             sample_grid_scale_y = (gdouble) 1.0;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1028,7 +1028,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 1.25;
             sample_grid_scale_y = (gdouble) 1.25;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1039,7 +1039,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 1.50;
             sample_grid_scale_y = (gdouble) 1.50;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1050,7 +1050,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 2.0;
             sample_grid_scale_y = (gdouble) 2.0;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1061,7 +1061,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 2.50;
             sample_grid_scale_y = (gdouble) 2.50;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1072,7 +1072,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 3.25;
             sample_grid_scale_y = (gdouble) 3.25;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1083,7 +1083,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 5.0;
             sample_grid_scale_y = (gdouble) 5.0;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
@@ -1094,7 +1094,7 @@ namespace TritonhawkPlus
 
             sample_grid_scale_x = (gdouble) 9.0;
             sample_grid_scale_y = (gdouble) 9.0;
-            sample_grid_scale_locked_ratio_xy = 1.0Q;
+            sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;
