@@ -160,8 +160,8 @@ namespace TritonhawkPlus
             {
                 int p1_x = pixel_index % new_x;
                 int p1_y = pixel_index / new_x;
-                f128 sample_grid_center_x = f128(old_x - 1) * f128(p1_x) / f128(new_x - 1);
-                f128 sample_grid_center_y = f128(old_y - 1) * f128(p1_y) / f128(new_y - 1);
+                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x);
+                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y);
                 sample_grid_center_x += sample_grid_offset_x;
                 sample_grid_center_y += sample_grid_offset_y;
                 f128 sample_count = fmaxq(f128(samples_total), 1.0_q);
@@ -304,6 +304,10 @@ namespace TritonhawkPlus
                                 }
                             }
                         }
+
+                        // Cubic interpolation test
+                        // lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, 3.0_q);
+                        // lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, 3.0_q);
 
                         if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
                         {
@@ -512,8 +516,8 @@ namespace TritonhawkPlus
             {
                 int p1_x = pixel_index % new_x;
                 int p1_y = pixel_index / new_x;
-                f128 sample_grid_center_x = f128(old_x - 1) * f128(p1_x) / f128(new_x - 1);
-                f128 sample_grid_center_y = f128(old_y - 1) * f128(p1_y) / f128(new_y - 1);
+                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x);
+                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y);
                 sample_grid_center_x += sample_grid_offset_x;
                 sample_grid_center_y += sample_grid_offset_y;
                 f128 sample_count = fmaxq(f128(samples_total), 1.0_q);

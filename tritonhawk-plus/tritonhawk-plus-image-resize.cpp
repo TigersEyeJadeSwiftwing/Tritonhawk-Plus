@@ -105,13 +105,13 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         gimp_procedure_add_int_argument(
             procedure,
             "new-x", "New Width", "The width of the new, resized image.",
-            (gint)4, (gint)65536, (gint)256,
+            (gint)1, (gint)65536, (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_int_argument(
             procedure,
             "new-y", "New Height", "The height of the new, resized image.",
-            (gint)4, (gint)65536, (gint)256,
+            (gint)1, (gint)65536, (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -125,7 +125,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.01, (gdouble)1600.00, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)3200.0, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -139,7 +139,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.01, (gdouble)1600.00, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)3200.0, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_boolean_argument(
@@ -160,25 +160,6 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that this doesn't create a smooth blend if the graphic doesn't already tile nicely, but if turned on "
             "then it prevents a seam from appearing.",
             (gboolean)FALSE,
-            G_PARAM_READWRITE
-        );
-        gimp_procedure_add_int_argument(
-            procedure,
-            "chunk-size", "Chunk Size, in kilopixels",
-            "A \"chunk\", in this case, is a group of pixels of the output image that is to be processed.  "
-            "A \"kilopixel\" is 1,024 pixels.  "
-            "Each thread will process one chunk at a time, then move on to another chunk that hasn't been completed yet.  "
-            "This setting doesn't specify anything about the input image that you start out with to begin with.  "
-            "What does matter about the input image is that if it is rather large, then you might want to set this parameter to a "
-            "lower value if you want to save on memory usage, as setting this value higher can make the plug-in use more memory.  "
-            "If the plug-in seems to processes many chunks very quickly, it might actually be running slower than at an optimal speed "
-            "because the GUI updates it's reported progress after each chunk is completed, which means that if your display is set to "
-            "display things at a low refresh rate, then the plug-in might choke at a bottle-neck where it is updating the GUI for the "
-            "plug-in, slowing everything down, which means that you therefore might want to increase the chunk size, at the cost of more "
-            "memory usage from each thread.  Also, having a large chunk size and using a large number of samples of the image as it is to begin with "
-            "will increase memory usage and slow down processing of each chunk.  Used outside of Interactive Mode, for example as a procedure in a "
-            "script or inside of another plug-in, the GUI and screen refresh rate are of course not relevant the same.",
-            (gint)32, (gint)32768, (gint)256,
             G_PARAM_READWRITE
         );
     }
@@ -342,7 +323,6 @@ static GimpValueArray* thpimageresize_run(
             "sample-grid-y",        &sample_grid_y,
             "seamless-x",           &seamless_x,
             "seamless-y",           &seamless_y,
-            "chunk-size",           &chunk_size,
             NULL_TERMINATE
         );
 

@@ -91,14 +91,18 @@ namespace TritonhawkPlus
         f128 grid_scale_y = f128(sample_grid_height_percent) * 0.01_q;
         sample_grid_scale_x = 0.0_q;
         sample_grid_scale_y = 0.0_q;
+        sample_grid_offset_x = 0.5_q;
+        sample_grid_offset_y = 0.5_q;
 
         // Shrinking
         if (input_size_x > output_size_x)
         {
-            f128 scale_factor = ((grid_scale_x * image_ratio_x) - 0.0_q) / 2.0_q;
+            f128 scale_factor = (grid_scale_x * image_ratio_x) / 2.0_q;
             int additional_samples = int(scale_factor) * 2;
             sample_count_x = 3 + additional_samples;
             sample_grid_scale_x = grid_scale_x * image_ratio_x;
+
+            sample_grid_offset_x = 0.5_q * image_ratio_x;
         }
         // Growing
         else if (input_size_x < output_size_x)
@@ -115,6 +119,8 @@ namespace TritonhawkPlus
                 sample_count_x = 1;
                 sample_grid_scale_x = 0.0_q;
             }
+
+            sample_grid_offset_x = 0.5_q * image_ratio_x;
         }
         // No change
         else
@@ -131,15 +137,19 @@ namespace TritonhawkPlus
                 sample_count_x = 1;
                 sample_grid_scale_x = 0.0_q;
             }
+
+            sample_grid_offset_x = 0.5_q;
         }
 
         // Shrinking
         if (input_size_y > output_size_y)
         {
-            f128 scale_factor = ((grid_scale_y * image_ratio_y) - 0.0_q) / 2.0_q;
+            f128 scale_factor = (grid_scale_y * image_ratio_y) / 2.0_q;
             int additional_samples = int(scale_factor) * 2;
             sample_count_y = 3 + additional_samples;
             sample_grid_scale_y = grid_scale_y * image_ratio_y;
+
+            sample_grid_offset_y = 0.5_q * image_ratio_y;
         }
         // Growing
         else if (input_size_y < output_size_y)
@@ -156,6 +166,8 @@ namespace TritonhawkPlus
                 sample_count_y = 1;
                 sample_grid_scale_y = 0.0_q;
             }
+
+            sample_grid_offset_y = 0.5_q * image_ratio_y;
         }
         // No change
         else
@@ -172,6 +184,8 @@ namespace TritonhawkPlus
                 sample_count_y = 1;
                 sample_grid_scale_y = 0.0_q;
             }
+
+            sample_grid_offset_y = 0.5_q;
         }
 
         if (sample_count_adjustment > 1.0_q)
@@ -183,9 +197,6 @@ namespace TritonhawkPlus
         }
 
         sample_count_xy = sample_count_x * sample_count_y;
-
-        sample_grid_offset_x = 0.5_q;
-        sample_grid_offset_y = 0.5_q;
     }
 
     void ThpParams::CalcNumberOfChunks()

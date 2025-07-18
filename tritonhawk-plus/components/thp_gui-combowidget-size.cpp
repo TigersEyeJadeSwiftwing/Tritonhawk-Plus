@@ -161,7 +161,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_Text_Size_New_Pixels_Label);
         gtk_label_set_text((GtkLabel*)Gui_Text_Size_New_Pixels_Label, g_strdup_printf(_("%s" "New Size (Pixels)"), "") );
         // Spin Button that determines the new image data's dimensions
-        Gui_SpinButton_Size_X_Pixels = gimp_spin_button_new_with_range((gdouble) 2.0, (gdouble) 65536.0, (gdouble) 1.0);
+        Gui_SpinButton_Size_X_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 65536.0, (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_X_Pixels, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_X_Pixels), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_X_Pixels), GTK_ALIGN_START);
@@ -170,7 +170,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_SpinButton_Size_X_Pixels);
         gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Pixels, (gdouble)size_x);
         // Spin Button that determines the new image data's dimensions
-        Gui_SpinButton_Size_Y_Pixels = gimp_spin_button_new_with_range((gdouble) 2.0, (gdouble) 65536.0, (gdouble) 1.0);
+        Gui_SpinButton_Size_Y_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 65536.0, (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_Y_Pixels, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_Y_Pixels), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_Y_Pixels), GTK_ALIGN_START);
@@ -196,7 +196,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_Text_Size_New_Scale_Label);
         gtk_label_set_text((GtkLabel*)Gui_Text_Size_New_Scale_Label, g_strdup_printf(_("%s" "New Scale (Percent)"), "") );
         // Spin Button that determines the new image data's scale
-        Gui_SpinButton_Size_X_Scale = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 99999.9999, (gdouble) 1.0);
+        Gui_SpinButton_Size_X_Scale = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 99999.9999, (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_X_Scale, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_X_Scale), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_X_Scale), GTK_ALIGN_START);
@@ -205,7 +205,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_SpinButton_Size_X_Scale);
         gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)scale_x * (gdouble)100.0);
         // Spin Button that determines the new image data's scale
-        Gui_SpinButton_Size_Y_Scale = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 99999.9999, (gdouble) 1.0);
+        Gui_SpinButton_Size_Y_Scale = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 99999.9999, (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_Y_Scale, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_Y_Scale), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_Y_Scale), GTK_ALIGN_START);
@@ -347,7 +347,7 @@ namespace TritonhawkPlus
         gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_2), (GtkWidget*)Gui_Box_V_Sample_Grid_Scale_SpinButtons, FALSE, FALSE, 0);
         gtk_widget_show(Gui_Box_V_Sample_Grid_Scale_SpinButtons);
         // Spin Button that determines the sample grid's scale, X
-        Gui_SpinButton_Sample_Grid_Scale_X = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 1600.0, (gdouble) 1.00);
+        Gui_SpinButton_Sample_Grid_Scale_X = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 3200.0, (gdouble) 1.00);
         gtk_widget_set_size_request(Gui_SpinButton_Sample_Grid_Scale_X, cell_r2_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Sample_Grid_Scale_X), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Sample_Grid_Scale_X), GTK_ALIGN_START);
@@ -356,7 +356,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_SpinButton_Sample_Grid_Scale_X);
         gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)sample_grid_scale_x * (gdouble)100.0);
         // Spin Button that determines the sample grid's scale, Y
-        Gui_SpinButton_Sample_Grid_Scale_Y = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 1600.0, (gdouble) 1.00);
+        Gui_SpinButton_Sample_Grid_Scale_Y = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) 3200.0, (gdouble) 1.00);
         gtk_widget_set_size_request(Gui_SpinButton_Sample_Grid_Scale_Y, cell_r2_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Sample_Grid_Scale_Y), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Sample_Grid_Scale_Y), GTK_ALIGN_START);
@@ -446,7 +446,7 @@ namespace TritonhawkPlus
         gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Grid_Scale_QuickSet_1), (GtkWidget*)Gui_Button_SampleGridScale_500, FALSE, FALSE, 0);
         gtk_widget_show(Gui_Button_SampleGridScale_500);
         // Sample Grid Scale Quickset Button
-        Gui_Button_SampleGridScale_900 = gtk_button_new_with_label("%900");
+        Gui_Button_SampleGridScale_900 = gtk_button_new_with_label("%1200");
         gtk_widget_set_size_request(Gui_Button_SampleGridScale_900, cell_quickset_button_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_Button_SampleGridScale_900), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_Button_SampleGridScale_900), GTK_ALIGN_START);
@@ -1092,8 +1092,8 @@ namespace TritonhawkPlus
         {
             ignore_auto_changes = true;
 
-            sample_grid_scale_x = (gdouble) 9.0;
-            sample_grid_scale_y = (gdouble) 9.0;
+            sample_grid_scale_x = (gdouble) 12.0;
+            sample_grid_scale_y = (gdouble) 12.0;
             sample_grid_scale_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
