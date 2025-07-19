@@ -50,6 +50,9 @@ namespace TritonhawkPlus
         void SetScale_SampleGridScaleX(gdouble val);
         void SetScale_SampleGridScaleY(gdouble val);
         void SetChainButton_SampleGridScale(gboolean val);
+        void SetSampleInterpolationX(gdouble val);
+        void SetSampleInterpolationY(gdouble val);
+        void SetChainButton_SampleInterpolation(gboolean val);
         void SetButtonClicked(int* button_name);
         int GetChoicesDoneResult();
 
@@ -63,70 +66,65 @@ namespace TritonhawkPlus
         ThpLog*    Log = NULL;
 
         GtkWidget* Gui_Box_Master = NULL;
-
-        GtkWidget* Gui_Box_H_Row_0 = NULL;
-
-        GtkWidget* Gui_Box_V_Size_Original = NULL;
-        GtkWidget* Gui_Text_Size_Original_Label = NULL;
-        GtkWidget* Gui_Text_Size_Original_X = NULL;
-        GtkWidget* Gui_Text_Size_Original_Y = NULL;
-
-        GtkWidget* Gui_Box_V_Size_Pixels = NULL;
-        GtkWidget* Gui_Text_Size_New_Pixels_Label = NULL;
-        GtkWidget* Gui_SpinButton_Size_X_Pixels = NULL;
-        GtkWidget* Gui_SpinButton_Size_Y_Pixels = NULL;
-
-        GtkWidget* Gui_Box_V_Size_Scale = NULL;
-        GtkWidget* Gui_Text_Size_New_Scale_Label = NULL;
-        GtkWidget* Gui_SpinButton_Size_X_Scale = NULL;
-        GtkWidget* Gui_SpinButton_Size_Y_Scale = NULL;
-
-        GtkWidget* Gui_Box_V_Chainbutton = NULL;
-        GtkWidget* Gui_Box_V_Spacer = NULL;
-        GtkWidget* Gui_ChainButton = NULL;
-
-        GtkWidget* Gui_Box_H_Row_1 = NULL;
-
-        GtkWidget* Gui_Button_Size_Reset = NULL;
-        GtkWidget* Gui_Button_m2 = NULL;
-        GtkWidget* Gui_Button_m5 = NULL;
-        GtkWidget* Gui_Button_m10 = NULL;
-        GtkWidget* Gui_Button_d2 = NULL;
-        GtkWidget* Gui_Button_d5 = NULL;
-        GtkWidget* Gui_Button_d10 = NULL;
-        GtkWidget* Gui_Button_flip_xy = NULL;
-
-        GtkWidget* Gui_Box_H_Row_2 = NULL;
-
-        GtkWidget* Gui_Box_V_Sample_Grid_Scale_Labels = NULL;
-        GtkWidget* Gui_SpinButton_Sample_Grid_Scale_X_Label = NULL;
-        GtkWidget* Gui_SpinButton_Sample_Grid_Scale_Y_Label = NULL;
-
-        GtkWidget* Gui_Box_V_Sample_Grid_Scale_SpinButtons = NULL;
-        GtkWidget* Gui_SpinButton_Sample_Grid_Scale_X = NULL;
-        GtkWidget* Gui_SpinButton_Sample_Grid_Scale_Y = NULL;
-        GtkWidget* Gui_ChainButton_Sample_Grid_Scale = NULL;
-
-        GtkWidget* Gui_Box_V_Sample_Grid_Scale_QuickSetButtons = NULL;
-        GtkWidget* Gui_Box_H_Sample_Grid_Scale_QuickSet_0 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_Reset = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_125 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_150 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_200 = NULL;
-        GtkWidget* Gui_Box_H_Sample_Grid_Scale_QuickSet_1 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_250 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_325 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_500 = NULL;
-        GtkWidget* Gui_Button_SampleGridScale_900 = NULL;
-
-        GtkWidget* Gui_Box_H_Row_3 = NULL;
-        GtkWidget* Gui_Button_Seamless_X = NULL;
-        GtkWidget* Gui_Button_Seamless_Y = NULL;
-
-        GtkWidget* Gui_Box_H_Row_4 = NULL;
-        GtkWidget* Gui_Button_Plugin_Run = NULL;
-        GtkWidget* Gui_Button_Plugin_Reset = NULL;
-        GtkWidget* Gui_Button_Plugin_Cancel = NULL;
+            GtkWidget* Gui_Box_H_Row_0 = NULL;
+                GtkWidget* Gui_Box_V_Size_Original = NULL;
+                    GtkWidget* Gui_Text_Size_Original_Label = NULL;
+                    GtkWidget* Gui_Text_Size_Original_X = NULL;
+                    GtkWidget* Gui_Text_Size_Original_Y = NULL;
+                GtkWidget* Gui_Box_V_Size_Pixels = NULL;
+                    GtkWidget* Gui_Text_Size_New_Pixels_Label = NULL;
+                    GtkWidget* Gui_SpinButton_Size_X_Pixels = NULL;
+                    GtkWidget* Gui_SpinButton_Size_Y_Pixels = NULL;
+                GtkWidget* Gui_Box_V_Size_Scale = NULL;
+                    GtkWidget* Gui_Text_Size_New_Scale_Label = NULL;
+                    GtkWidget* Gui_SpinButton_Size_X_Scale = NULL;
+                    GtkWidget* Gui_SpinButton_Size_Y_Scale = NULL;
+                GtkWidget* Gui_Box_V_Chainbutton = NULL;
+                    GtkWidget* Gui_Box_V_Spacer = NULL;
+                    GtkWidget* Gui_ChainButton = NULL;
+            GtkWidget* Gui_Box_H_Row_1 = NULL;
+                GtkWidget* Gui_Button_Size_Reset = NULL;
+                GtkWidget* Gui_Button_m2 = NULL;
+                GtkWidget* Gui_Button_m5 = NULL;
+                GtkWidget* Gui_Button_m10 = NULL;
+                GtkWidget* Gui_Button_d2 = NULL;
+                GtkWidget* Gui_Button_d5 = NULL;
+                GtkWidget* Gui_Button_d10 = NULL;
+                GtkWidget* Gui_Button_flip_xy = NULL;
+            GtkWidget* Gui_Box_H_Row_2 = NULL;
+                GtkWidget* Gui_Box_V_Sample_Grid_Scale_Labels = NULL;
+                    GtkWidget* Gui_SpinButton_Sample_Grid_Scale_X_Label = NULL;
+                    GtkWidget* Gui_SpinButton_Sample_Grid_Scale_Y_Label = NULL;
+                GtkWidget* Gui_Box_V_Sample_Grid_Scale_SpinButtons = NULL;
+                    GtkWidget* Gui_SpinButton_Sample_Grid_Scale_X = NULL;
+                    GtkWidget* Gui_SpinButton_Sample_Grid_Scale_Y = NULL;
+                    GtkWidget* Gui_ChainButton_Sample_Grid_Scale = NULL;
+                GtkWidget* Gui_Box_V_Sample_Grid_Scale_QuickSetButtons = NULL;
+                    GtkWidget* Gui_Box_H_Sample_Grid_Scale_QuickSet_0 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_Reset = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_125 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_150 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_200 = NULL;
+                    GtkWidget* Gui_Box_H_Sample_Grid_Scale_QuickSet_1 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_250 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_325 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_500 = NULL;
+                        GtkWidget* Gui_Button_SampleGridScale_1200 = NULL;
+            GtkWidget* Gui_Box_H_Row_3 = NULL;
+                GtkWidget* Gui_Box_V_Sample_Interpolation_Labels = NULL;
+                    GtkWidget* Gui_Sample_Interpolation_X_Label = NULL;
+                    GtkWidget* Gui_Sample_Interpolation_Y_Label = NULL;
+                GtkWidget* Gui_Box_V_Sample_Interpolation_SpinButtons = NULL;
+                    GtkWidget* Gui_Sample_Interpolation_X_SpinButton = NULL;
+                    GtkWidget* Gui_Sample_Interpolation_Y_SpinButton = NULL;
+                    GtkWidget* Gui_Sample_Interpolation_ChainButton = NULL;
+            GtkWidget* Gui_Box_H_Row_4 = NULL;
+                GtkWidget* Gui_Button_Seamless_X = NULL;
+                GtkWidget* Gui_Button_Seamless_Y = NULL;
+            GtkWidget* Gui_Box_H_Row_5 = NULL;
+                GtkWidget* Gui_Button_Plugin_Run = NULL;
+                GtkWidget* Gui_Button_Plugin_Reset = NULL;
+                GtkWidget* Gui_Button_Plugin_Cancel = NULL;
 
         int* button_pointer_Size_Reset = NULL;
         int* button_pointer_m2 = NULL;
@@ -143,7 +141,7 @@ namespace TritonhawkPlus
         int* button_pointer_sample_grid_scale_250 = NULL;
         int* button_pointer_sample_grid_scale_325 = NULL;
         int* button_pointer_sample_grid_scale_500 = NULL;
-        int* button_pointer_sample_grid_scale_900 = NULL;
+        int* button_pointer_sample_grid_scale_1200 = NULL;
         int* button_pointer_seamless_x = NULL;
         int* button_pointer_seamless_y = NULL;
         int* button_pointer_run_plugin = NULL;
@@ -168,6 +166,10 @@ namespace TritonhawkPlus
         f128                    sample_grid_scale_locked_ratio_xy = 1.0_q;
         gdouble                 sample_grid_scale_x = (gdouble) 1.0;
         gdouble                 sample_grid_scale_y = (gdouble) 1.0;
+        gboolean                chain_button_sample_interpolation_on = (gboolean) TRUE;
+        gdouble                 sample_interpolation_x = (gdouble) 1.0;
+        gdouble                 sample_interpolation_y = (gdouble) 1.0;
+        f128                    sample_interpolation_locked_ratio_xy = 1.0_q;
 
         int                     choices_done_result = 0;
     };

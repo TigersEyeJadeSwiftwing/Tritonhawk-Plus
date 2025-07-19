@@ -59,6 +59,8 @@ namespace TritonhawkPlus
         f128 sample_grid_scale_y = 1.0_q;
         f128 sample_grid_offset_x = 0.0_q;
         f128 sample_grid_offset_y = 0.0_q;
+        f128 sample_interpolation_x = 1.0_q;
+        f128 sample_interpolation_y = 1.0_q;
         int chunk_size_default = 8192;
         int chunk_size_samples = 1;
         int chunk_size_pixels = 1;

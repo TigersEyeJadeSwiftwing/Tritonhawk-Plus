@@ -66,6 +66,8 @@ namespace TritonhawkPlus
         const f128 sample_grid_height = params->sample_grid_scale_y;
         const f128 sample_grid_offset_x = params->sample_grid_offset_x;
         const f128 sample_grid_offset_y = params->sample_grid_offset_y;
+        const f128 sample_interpolation_x = params->sample_interpolation_x;
+        const f128 sample_interpolation_y = params->sample_interpolation_y;
 
         string process_text_base = g_strdup_printf (
             _(  "%s"
@@ -111,7 +113,7 @@ namespace TritonhawkPlus
         #pragma omp parallel for shared( \
             new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
             samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-            sample_grid_offset_x, sample_grid_offset_y, \
+            sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
             progress_steps, progress_start, progress_end, progress_increment, \
             process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray)
         for (int chunk_index = 0; chunk_index <= progress_steps; chunk_index++)
@@ -152,7 +154,7 @@ namespace TritonhawkPlus
             #pragma omp parallel for shared( \
                 new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
                 samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                sample_grid_offset_x, sample_grid_offset_y, \
+                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                 progress_steps, progress_start, progress_end, progress_increment, \
                 process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray, \
                 pixel_start, pixel_end)
@@ -178,7 +180,7 @@ namespace TritonhawkPlus
                 #pragma omp parallel for collapse(2) shared( \
                     new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
                     samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, \
+                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                     progress_steps, progress_start, progress_end, progress_increment, \
                     process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray, \
                     pixel_start, pixel_end, p1_x, p1_y, \
@@ -207,7 +209,14 @@ namespace TritonhawkPlus
                         f128 oxf = f128(old_x);
                         f128 oyf = f128(old_y);
 
-                        if (seamless_x == true)
+                        if (sample_interpolation_x < 0.00001_q)
+                        {
+                            sample_position_x = fmodq(sample_position_x + oxf, oxf);
+                            pos_x0 = to_intq(sample_position_x);
+                            pos_x1 = pos_x0;
+                            lerp_x = 0.0_q;
+                        }
+                        else if (seamless_x == true)
                         {
                             sample_position_x = fmodq(sample_position_x + oxf, oxf);
                             pos_x0 = to_intq(sample_position_x);
@@ -256,7 +265,14 @@ namespace TritonhawkPlus
                             }
                         }
 
-                        if (seamless_y == true)
+                        if (sample_interpolation_y < 0.00001_q)
+                        {
+                            sample_position_y = fmodq(sample_position_y + oyf, oyf);
+                            pos_y0 = to_intq(sample_position_y);
+                            pos_y1 = pos_y0;
+                            lerp_y = 0.0_q;
+                        }
+                        else if (seamless_y == true)
                         {
                             sample_position_y = fmodq(sample_position_y + oyf, oyf);
                             pos_y0 = to_intq(sample_position_y);
@@ -305,9 +321,10 @@ namespace TritonhawkPlus
                             }
                         }
 
-                        // Cubic interpolation test
-                        // lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, 3.0_q);
-                        // lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, 3.0_q);
+                        if ((sample_interpolation_x > 1.0_q) && (pos_x0 != pos_x1))
+                            lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
+                        if ((sample_interpolation_y > 1.0_q) && (pos_y0 != pos_y1))
+                            lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                         if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
                         {
@@ -424,6 +441,8 @@ namespace TritonhawkPlus
         const f128 sample_grid_height = params->sample_grid_scale_y;
         const f128 sample_grid_offset_x = params->sample_grid_offset_x;
         const f128 sample_grid_offset_y = params->sample_grid_offset_y;
+        const f128 sample_interpolation_x = params->sample_interpolation_x;
+        const f128 sample_interpolation_y = params->sample_interpolation_y;
 
         string process_text_base = g_strdup_printf (
             _(  "%s"
@@ -467,7 +486,7 @@ namespace TritonhawkPlus
         #pragma omp parallel for shared( \
             new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
             samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-            sample_grid_offset_x, sample_grid_offset_y, \
+            sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
             progress_steps, progress_start, progress_end, progress_increment, \
             process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray)
         for (int chunk_index = 0; chunk_index <= progress_steps; chunk_index++)
@@ -508,7 +527,7 @@ namespace TritonhawkPlus
             #pragma omp parallel for shared( \
                 new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
                 samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                sample_grid_offset_x, sample_grid_offset_y, \
+                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                 progress_steps, progress_start, progress_end, progress_increment, \
                 process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray, \
                 pixel_start, pixel_end)
@@ -532,7 +551,7 @@ namespace TritonhawkPlus
                 #pragma omp parallel for collapse(2) shared( \
                     new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, chunk_accum, \
                     samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, \
+                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                     progress_steps, progress_start, progress_end, progress_increment, \
                     process_text_base, seamless_x, seamless_y, old_pixelarray, new_pixelarray, \
                     pixel_start, pixel_end, p1_x, p1_y, \
@@ -561,7 +580,14 @@ namespace TritonhawkPlus
                         f128 oxf = f128(old_x);
                         f128 oyf = f128(old_y);
 
-                        if (seamless_x == true)
+                        if (sample_interpolation_x < 0.00001_q)
+                        {
+                            sample_position_x = fmodq(sample_position_x + oxf, oxf);
+                            pos_x0 = to_intq(sample_position_x);
+                            pos_x1 = pos_x0;
+                            lerp_x = 0.0_q;
+                        }
+                        else if (seamless_x == true)
                         {
                             sample_position_x = fmodq(sample_position_x + oxf, oxf);
                             pos_x0 = to_intq(sample_position_x);
@@ -610,7 +636,14 @@ namespace TritonhawkPlus
                             }
                         }
 
-                        if (seamless_y == true)
+                        if (sample_interpolation_y < 0.00001_q)
+                        {
+                            sample_position_y = fmodq(sample_position_y + oyf, oyf);
+                            pos_y0 = to_intq(sample_position_y);
+                            pos_y1 = pos_y0;
+                            lerp_y = 0.0_q;
+                        }
+                        else if (seamless_y == true)
                         {
                             sample_position_y = fmodq(sample_position_y + oyf, oyf);
                             pos_y0 = to_intq(sample_position_y);
@@ -658,6 +691,11 @@ namespace TritonhawkPlus
                                 }
                             }
                         }
+
+                        if ((sample_interpolation_x > 1.0_q) && (pos_x0 != pos_x1))
+                            lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
+                        if ((sample_interpolation_y > 1.0_q) && (pos_y0 != pos_y1))
+                            lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                         if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
                         {
