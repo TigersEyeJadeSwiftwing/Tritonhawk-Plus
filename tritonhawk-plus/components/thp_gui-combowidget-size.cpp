@@ -1,26 +1,26 @@
-/*
-Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
-
-This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the GPLv3 license.
-Note that my first name is "Tiger's Eye" (which is two words), my middle name is "Jade", and "Swiftwing" is one word that is my last name.
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
-
 #include "components/thp_types.h"
 #include "components/thp_gui-combowidget-size.h"
 #include "components/thp_parameters.h"
 #include "components/thp_log.h"
 
+/*
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+
 using namespace TritonhawkPlus;
 using namespace std;
 using namespace quadmath;
-
-using namespace TritonhawkPlus;
 
 namespace TritonhawkPlus
 {
@@ -176,7 +176,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_Text_Size_New_Pixels_Label);
         gtk_label_set_text((GtkLabel*)Gui_Text_Size_New_Pixels_Label, g_strdup_printf(_("%s" "New Size (Pixels)"), "") );
         // Spin Button that determines the new image data's dimensions
-        Gui_SpinButton_Size_X_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 65536.0, (gdouble) 1.0);
+        Gui_SpinButton_Size_X_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble)(65536 * 16), (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_X_Pixels, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_X_Pixels), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_X_Pixels), GTK_ALIGN_START);
@@ -185,7 +185,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_SpinButton_Size_X_Pixels);
         gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Pixels, (gdouble)size_x);
         // Spin Button that determines the new image data's dimensions
-        Gui_SpinButton_Size_Y_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) 65536.0, (gdouble) 1.0);
+        Gui_SpinButton_Size_Y_Pixels = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble)(65536 * 16), (gdouble) 1.0);
         gtk_widget_set_size_request(Gui_SpinButton_Size_Y_Pixels, cell_r0_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_SpinButton_Size_Y_Pixels), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_SpinButton_Size_Y_Pixels), GTK_ALIGN_START);

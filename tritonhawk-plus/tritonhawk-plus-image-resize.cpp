@@ -1,16 +1,3 @@
-/*
-Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
-
-This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the GPLv3 license.
-Note that my first name is "Tiger's Eye" (which is two words), my middle name is "Jade", and "Swiftwing" is one word that is my last name.
-
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
-
 #include <algorithm>
 
 #include "components/thp_types.h"
@@ -22,6 +9,21 @@ You should have received a copy of the GNU General Public License along with thi
 
 #include <iostream>
 #include <omp.h>
+
+/*
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 G_DEFINE_TYPE(ThpImageResize, thpimageresize, GIMP_TYPE_PLUG_IN)
 
@@ -80,7 +82,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         );
 
         gimp_procedure_set_image_types(procedure, "RGB,RGBA");
-        gimp_procedure_set_sensitivity_mask(procedure, GIMP_PROCEDURE_SENSITIVE_ALWAYS);
+        gimp_procedure_set_sensitivity_mask(procedure, 0);
         gimp_procedure_set_menu_label(procedure, _(PLUG_IN_MENU_LABEL));
         gimp_procedure_set_icon_name(procedure, GIMP_ICON_GEGL);
         gimp_procedure_add_menu_path(procedure, PLUG_IN_MENU_PATH);
@@ -105,13 +107,13 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         gimp_procedure_add_int_argument(
             procedure,
             "new-x", "New Width", "The width of the new, resized image.",
-            (gint)1, (gint)65536, (gint)256,
+            (gint)1, (gint)65536 * 16, (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_int_argument(
             procedure,
             "new-y", "New Height", "The height of the new, resized image.",
-            (gint)1, (gint)65536, (gint)256,
+            (gint)1, (gint)65536 * 16, (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -125,7 +127,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.01, (gdouble)3200.0, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)5000.0, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -139,7 +141,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
             "Note that when this parameter is set higher, it often results in more total samples being taken to make the "
             "end-result image, which slows down the process and also means breaking the work up into smaller chunks at a "
             "time, which is calculated automatically.",
-            (gdouble)0.01, (gdouble)3200.0, (gdouble)100.00,
+            (gdouble)0.01, (gdouble)5000.0, (gdouble)100.00,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_boolean_argument(
@@ -374,28 +376,9 @@ static GimpValueArray* thpimageresize_run(
         GimpDrawable* layer_image = (GimpDrawable*)g_list_nth_data (layer_list_image, (guint)drawable_index);
         GimpDrawable* layer_image_copy = (GimpDrawable*)g_list_nth_data (layer_list_image_copy, (guint)drawable_index);
 
-        int size0_x = (int)gimp_drawable_get_width(layer_image_copy);
-        int size0_y = (int)gimp_drawable_get_height(layer_image_copy);
-        int size0_xy = size0_x * size0_y;
-        int size1_x = (int)gimp_drawable_get_width(layer_image);
-        int size1_y = (int)gimp_drawable_get_height(layer_image);
-        int size1_xy = size1_x * size1_y;
-
-        if (size0_xy < 1) continue;
-        if (size1_xy < 1) continue;
-
         f64 progress_start = f64(drawable_index) / f64(drawable_count);
-
-        Params->draw_index = (int)drawable_index;
-        Params->input_size_x = (int)size0_x;
-        Params->input_size_y = (int)size0_y;
-        Params->input_size_xy = (int)size0_xy;
-        Params->output_size_x = (int)size1_x;
-        Params->output_size_y = (int)size1_y;
-        Params->output_size_xy = (int)size1_xy;
         Params->progress_start = (f64)progress_start;
         Params->progress_end = f64(progress_start + progress_size);
-        Params->CalcAll();
 
         if (gimp_drawable_has_alpha(layer_image_copy) == TRUE)
             Thp_Resize_drawable_RGBA(Params, layer_image_copy, layer_image);

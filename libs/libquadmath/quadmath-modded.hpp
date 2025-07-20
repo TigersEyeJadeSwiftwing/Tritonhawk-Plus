@@ -113,14 +113,23 @@ namespace quadmath
         #include "truncq.inl"
     #else
         inline constexpr auto &ceilq = ceill;
+        inline constexpr auto &copysignq = copysignl;
+        inline constexpr auto &expq = expl;
         inline constexpr auto &fabsq = fabsl;
         inline constexpr auto &floorq = floorl;
         inline constexpr auto &fmaxq = fmaxl;
         inline constexpr auto &fminq = fminl;
         inline constexpr auto &fmodq = fmodl;
+        inline constexpr auto &frexpq = frexpl;
+        // inline constexpr auto &isinfq = isinfl;
+        // inline constexpr auto &isnanq = isnanl;
+        // inline constexpr auto &issignalingq = issignalingl;
+        // inline constexpr auto &lnq = lnl;
         inline constexpr auto &powq = powl;
         inline constexpr auto &roundq = roundl;
+        inline constexpr auto &scalbnq = scalbnl;
         inline constexpr auto &sqrtq = sqrtl;
+        inline constexpr auto &truncq = truncl;
 
         #include "clampq.inl"
         #include "distwarpq.inl"

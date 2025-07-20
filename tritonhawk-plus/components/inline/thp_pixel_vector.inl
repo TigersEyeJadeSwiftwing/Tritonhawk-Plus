@@ -15,16 +15,39 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/** \brief Returns one of two input values, whichever is highest.
- *
- * \param a (__float128) One of two input values to compare to each other.
- * \param b (__float128) One of two input values to compare to each other.
- * \return (__float128) Either "a" or "b", whichever is higher.
- *
- * Returns one of two input values, whichever is highest.  128-bit float version.
- */
 static inline __attribute__((always_inline, hot))
-__float128 fmaxq (__float128 a, __float128 b)
+int RGBA_red(int size_x, int x, int y)
 {
-    return (a > b) ? a : b;
+    return (((y * size_x) + x) * 4);
+}
+static inline __attribute__((always_inline, hot))
+int RGBA_green(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 4) + 1;
+}
+static inline __attribute__((always_inline, hot))
+int RGBA_blue(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 4) + 2;
+}
+static inline __attribute__((always_inline, hot))
+int RGBA_alpha(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 4) + 3;
+}
+
+static inline __attribute__((always_inline, hot))
+int RGB_red(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 3);
+}
+static inline __attribute__((always_inline, hot))
+int RGB_green(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 3) + 1;
+}
+static inline __attribute__((always_inline, hot))
+int RGB_blue(int size_x, int x, int y)
+{
+    return (((y * size_x) + x) * 3) + 2;
 }
