@@ -923,13 +923,6 @@ namespace TritonhawkPlus
             sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
         }
 
-        if (chain_button_sample_grid_scale_on == TRUE)
-        {
-        } else
-        {
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
-        }
-
         ignore_auto_changes = true;
         UpdateGUI();
         ignore_auto_changes = false;
