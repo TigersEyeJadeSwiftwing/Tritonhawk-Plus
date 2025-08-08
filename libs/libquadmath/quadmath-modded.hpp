@@ -20,6 +20,11 @@ License along with libquadmath; see the file COPYING.LIB.  If
 not, write to the Free Software Foundation, Inc., 51 Franklin Street - Fifth Floor,
 Boston, MA 02110-1301, USA.  */
 
+/*
+Note that this file has been heavily modified from the original, and is not much like
+the libquadmath library it was derived from.
+*/
+
 #ifndef QUADMATH_H
 #define QUADMATH_H
 
@@ -80,6 +85,9 @@ namespace quadmath
 
     inline static constexpr __float128 M_SQRT2_m1q = M_SQRT2q - 1.q;
     inline static constexpr __float128 SMP_GRID_ELLIPSE_COS_FACTOR = M_PI_2q / M_SQRT2_m1q;
+    inline static constexpr __float128 INFINITYq =      (__float128)INFINITY;
+    inline static constexpr __float128 INFINITYnq =     -(__float128)INFINITY;
+    inline static constexpr __float128 NANq =           (__float128)NAN;
 
     #ifdef __cplusplus
     }
@@ -114,7 +122,9 @@ namespace quadmath
         #include "sqrtq.inl"
         #include "to_intq.inl"
         #include "truncq.inl"
+        #include "sinq.inl"
         #include "cosq.inl"
+        #include "tanq.inl"
     #else
         inline constexpr auto &ceilq = ceill;
         inline constexpr auto &copysignq = copysignl;
@@ -134,7 +144,9 @@ namespace quadmath
         inline constexpr auto &scalbnq = scalbnl;
         inline constexpr auto &sqrtq = sqrtl;
         inline constexpr auto &truncq = truncl;
+        inline constexpr auto &sinq = sinl;
         inline constexpr auto &cosq = cosl;
+        inline constexpr auto &tanq = tanl;
 
         #include "clampq.inl"
         #include "distwarpq.inl"

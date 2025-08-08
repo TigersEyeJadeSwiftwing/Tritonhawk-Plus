@@ -16,7 +16,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 static inline __attribute__((always_inline, hot))
-__float128 cosq(__float128 x)
+__float128 sinq(__float128 x)
 {
     // Precomputed leading 192 bits of 2/π in quad precision (hex)
     inline static constexpr __float128 TWO_OVER_PI_HI[3] = {
@@ -42,6 +42,16 @@ __float128 cosq(__float128 x)
         (__float128) 0x2f066c59fcf53ceULL
     };
 
+    // Minimax polynomial coefficients for sin(r) on [0, π/4]:
+    // sin(r) ≈ r + r^3·s1 + r^5·s2 + ... + r^13·s6
+    inline static constexpr __float128 S[] = {
+        ( (__float128) -0.166666666666666666666666666666666666L),  // r^3
+        ( (__float128) +0.008333333333333333333333333333333333L),  // r^5
+        ( (__float128) -0.000198412698412698412698412698412698L),  // r^7
+        ( (__float128) +0.000002755731922398589065255731922398L),  // r^9
+        ( (__float128) -0.00000002505210838544171877505210839L),   // r^11
+        ( (__float128) +0.00000000016059043836821614500000000L)   // r^13
+    };
     inline static constexpr __float128 C[] = {
         // Coefficients for P(r^2) = 1 + c1·r² + c2·r⁴ + ... + c7·r¹⁴
         ( (__float128) -0.5L),
@@ -69,9 +79,9 @@ __float128 cosq(__float128 x)
                   + (z1 * ZN_Z1_FACTOR)
                   + (z2 * ZN_Z2_FACTOR);
     // n = integer part of zn (round to nearest even):
-    int64_t n = (int64_t) (__builtin_nearbyintl(zn));
+    s64 n = s64(__builtin_nearbyintl(zn)); // quadrant index
 
-    // Reconstruct r = x - n*(π/2) using hi, mid, lo
+    // Reconstruct r = x – n*(π/2) using hi, mid, lo
     __float128 prod_hi = PI_OVER_2_HI[0] * (__float128)n;
     __float128 prod_mi = PI_OVER_2_MI[0] * (__float128)n;
     __float128 prod_lo = PI_OVER_2_LO[0] * (__float128)n;
@@ -79,21 +89,30 @@ __float128 cosq(__float128 x)
     r -= prod_mi;
     r -= prod_lo;
 
-    // Reduce r into [0, π/2)
-    int64_t quadrant = n & 3;
-    bool negate = (quadrant == 1 || quadrant == 2);
-    bool swap_xy = (quadrant == 1 || quadrant == 3);
-    // For cos: use cos(r) or sin(r) based on quadrant
-    // If swap_xy, compute sin from cos polynomial via cos(π/2 - r).
-    if (swap_xy == true)
+    // Determine quadrant behavior
+    s64 quadrant = n & 3;
+    bool negate = (quadrant == 3 || quadrant == 2);
+    bool use_cos = (quadrant == 1 || quadrant == 3);
+    // If use_cos, compute sin via cos(π/2 − r)
+    if (use_cos)
         r = M_PI_2q - r;
 
-    // Evaluate minimax polynomial P(r²) with Horner + FMA
+    // Evaluate minimax polynomial for sin or cos on [0, π/4]
     __float128 r2 = r * r;
-    __float128 p = C[6];
-    for (s32 i = 5; i >= 0; --i)
-        p = __builtin_fmaf(p, r2, C[i]);
-    __float128 y = __builtin_fmaf(p, r2, 1.q);
+    __float128 y;
+    if (use_cos == false) {
+        // sin(r) ≈ r + r^3·S[0] + r^5·S[1] + ... + r^13·S[5]
+        __float128 p = S[5];
+        for (s32 i = 4; i >= 0; --i)
+            p = __builtin_fmaf(p, r2, S[i]);
+        y = __builtin_fmaf(p, r2 * r, r);  // p*r^3 + r
+    } else {
+        // cos(r) ≈ 1 + r²·C[0] + ... from cosq’s C[]
+        __float128 p = C[6];
+        for (s32 i = 5; i >= 0; --i)
+            p = __builtin_fmaf(p, r2, C[i]);
+        y = __builtin_fmaf(p, r2, 1.q);
+    }
 
     // Adjust sign for the quadrant
     return negate ? -y : y;
