@@ -268,7 +268,7 @@ namespace TritonhawkPlus
             if (sample_count_y > 1)
                 spos_y = 2._q * ((f128(py) / f128(sample_count_y - 1)) - 0.5_q);
 
-            if ((circle_x == false) && (circle_y = false))
+            if ((circle_x == false) && (circle_y == false))
             {
                 grid->at(index).x = spos_x * 0.5_q;
                 grid->at(index).y = spos_y * 0.5_q;
