@@ -46,15 +46,15 @@ namespace TritonhawkPlus
                 "-" "\n"
                 "-     Enabled threads for multi-threaded: %i" "\n"
                 "-     Number of drawables to process in image: %i" "\n"
-                "-       Old image_size (all layers): %i x %i pixels, %i total pixels" "\n"
-                "-       New image_size (all layers): %i x %i pixels, %i total pixels" "\n"
+                "-       Old image_size (all layers): %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "-       New image_size (all layers): %I64u x %I64u pixels, %I64u total pixels" "\n"
                 "-     Seamless tiling X: %s, Seamless tiling Y: %s" "\n"
                 "-     Sample size adjustment level: %%%3.5lf" "\n"
-                "-       Sample grid size: %i x %i, total samples: %i" "\n"
+                "-       Sample grid size: %I64u x %I64u, total samples: %I64u" "\n"
                 "-       Sample grid scale: %%%3.2lf x %%%3.2lf" "\n"
-                "-     Default Chunk size: %i kilosamples (%i samples)" "\n"
-                "-       Actual Chunk size: %i pixels / %i samples" "\n"
-                "-       Default number of chunks to process: %i (%i total samples)" "\n"
+                "-     Default Chunk size: %I64u kilosamples (%I64u samples)" "\n"
+                "-       Actual Chunk size: %I64u pixels / %I64u samples" "\n"
+                "-       Default number of chunks to process: %I64u (%I64u total samples)" "\n"
             ),
             process_name.c_str(),
             number_threads,
@@ -65,7 +65,7 @@ namespace TritonhawkPlus
             (f64)sample_count_adjustment * 100.0,
             sample_count_x, sample_count_y, sample_count_xy,
             sample_grid_width_percent, sample_grid_height_percent,
-            chunk_size_default / 1024, chunk_size_default,
+            u64(chunk_size_default / 1024), chunk_size_default,
             chunk_size_pixels, chunk_size_samples,
             number_chunks, total_samples
         );
@@ -96,6 +96,44 @@ namespace TritonhawkPlus
         sample_grid_offset_x = 0.5_q;
         sample_grid_offset_y = 0.5_q;
 
+        sampling_complexity_x = 0;
+        sampling_complexity_y = 0;
+        if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Square) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Circle))
+        {
+            sampling_complexity_x = 0;
+            sampling_complexity_y = 0;
+        }
+        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_1) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_1))
+        {
+            sampling_complexity_x = 1;
+            sampling_complexity_y = 1;
+        }
+        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_2) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_2))
+        {
+            sampling_complexity_x = 2;
+            sampling_complexity_y = 2;
+        }
+        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_3) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_3))
+        {
+            sampling_complexity_x = 3;
+            sampling_complexity_y = 3;
+        }
+        if ((output_size_x < input_size_x) || (sample_interpolation_x < 0.005_q))
+            sampling_complexity_x = 0;
+        if ((output_size_y < input_size_y) || (sample_interpolation_y < 0.005_q))
+            sampling_complexity_y = 0;
+
+        int samples_add_x = 0;
+        int samples_add_y = 0;
+        if (sampling_complexity_x == 0) samples_add_x = 0;
+        if (sampling_complexity_x == 1) samples_add_x = 2;
+        if (sampling_complexity_x == 2) samples_add_x = 4;
+        if (sampling_complexity_x == 3) samples_add_x = 6;
+        if (sampling_complexity_y == 0) samples_add_y = 0;
+        if (sampling_complexity_y == 1) samples_add_y = 2;
+        if (sampling_complexity_y == 2) samples_add_y = 4;
+        if (sampling_complexity_y == 3) samples_add_y = 6;
+
         // Shrinking
         if (input_size_x > output_size_x)
         {
@@ -109,11 +147,11 @@ namespace TritonhawkPlus
         // Growing
         else if (input_size_x < output_size_x)
         {
-            if (grid_scale_x > 1.00001_q)
+            if ((grid_scale_x > 1.00001_q) || (sampling_complexity_x > 0))
             {
                 f128 scale_factor = (grid_scale_x) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-                sample_count_x = 3 + additional_samples;
+                sample_count_x = 3 + additional_samples + samples_add_x;
                 sample_grid_scale_x = grid_scale_x - 1.0_q;
             }
             else
@@ -127,11 +165,11 @@ namespace TritonhawkPlus
         // No change
         else
         {
-            if (grid_scale_x > 1.00001_q)
+            if ((grid_scale_x > 1.00001_q) || (sampling_complexity_x > 0))
             {
                 f128 scale_factor = (grid_scale_x) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-                sample_count_x = 3 + additional_samples;
+                sample_count_x = 3 + additional_samples + samples_add_x;
                 sample_grid_scale_x = grid_scale_x - 1.0_q;
             }
             else
@@ -156,11 +194,11 @@ namespace TritonhawkPlus
         // Growing
         else if (input_size_y < output_size_y)
         {
-            if (grid_scale_y > 1.00001_q)
+            if ((grid_scale_y > 1.00001_q) || (sampling_complexity_y > 0))
             {
                 f128 scale_factor = (grid_scale_y) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-                sample_count_y = 3 + additional_samples;
+                sample_count_y = 3 + additional_samples + samples_add_y;
                 sample_grid_scale_y = grid_scale_y - 1.0_q;
             }
             else
@@ -174,11 +212,11 @@ namespace TritonhawkPlus
         // No change
         else
         {
-            if (grid_scale_y > 1.00001_q)
+            if ((grid_scale_y > 1.00001_q) || (sampling_complexity_y > 0))
             {
                 f128 scale_factor = (grid_scale_y) * 0.5_q;
                 int additional_samples = int(scale_factor) * 2;
-                sample_count_y = 3 + additional_samples;
+                sample_count_y = 3 + additional_samples + samples_add_y;
                 sample_grid_scale_y = grid_scale_y - 1.0_q;
             }
             else
@@ -199,6 +237,82 @@ namespace TritonhawkPlus
         }
 
         sample_count_xy = sample_count_x * sample_count_y;
+    }
+
+    void ThpParams::GetSampleGridVectors(vector<SampleGridElement> *grid)
+    {
+        grid->clear();
+        grid->resize(sample_count_xy, SampleGridElement());
+
+        bool circle_x = false;
+        bool circle_y = false;
+        if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Circle) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_1) ||
+            (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_2) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_3))
+        {
+            circle_x = true;
+            circle_y = true;
+        }
+        if (output_size_x < input_size_x) circle_x = false;
+        if (output_size_y < input_size_y) circle_y = false;
+
+        for (int index = 0; index < sample_count_xy; index++)
+        {
+            int px = index % sample_count_x;
+            int py = index / sample_count_x;
+
+            f128 spos_x = 0._q;
+            f128 spos_y = 0._q;
+
+            if (sample_count_x > 1)
+                spos_x = 2._q * ((f128(px) / f128(sample_count_x - 1)) - 0.5_q);
+            if (sample_count_y > 1)
+                spos_y = 2._q * ((f128(py) / f128(sample_count_y - 1)) - 0.5_q);
+
+            if ((circle_x == false) && (circle_y = false))
+            {
+                grid->at(index).x = spos_x * 0.5_q;
+                grid->at(index).y = spos_y * 0.5_q;
+            }
+            else
+            {
+                f128 hyp = sqrtq((spos_x * spos_x) + (spos_y * spos_y));
+                f128 position_ellipse_x = 0._q;
+                f128 position_ellipse_y = 0._q;
+                if (hyp > 0._q)
+                {
+                    if (fabsq(spos_x) > 0._q)
+                    {
+                        position_ellipse_x = ((cosq(((hyp - spos_x) / fabsq(spos_x)) * SMP_GRID_ELLIPSE_COS_FACTOR) * M_SQRT2_m1q) + 1._q) * spos_x;
+                    }
+                    if (fabsq(spos_y) > 0._q)
+                    {
+                        position_ellipse_y = ((cosq(((hyp - spos_y) / fabsq(spos_y)) * SMP_GRID_ELLIPSE_COS_FACTOR) * M_SQRT2_m1q) + 1._q) * spos_y;
+                    }
+                }
+
+                grid->at(index).x = (circle_x == false) ? spos_x * 0.5_q : position_ellipse_x * 0.5_q;
+                grid->at(index).y = (circle_y == false) ? spos_y * 0.5_q : position_ellipse_y * 0.5_q;
+            }
+
+            if ((sampling_complexity_x == 0) && (sampling_complexity_y == 0))
+                grid->at(index).weight = 1.0_q;
+            else
+            {
+                // f128 gx = (grid->at(index).x * 2.0_q) * (f128(sample_count_x) / f128(sample_count_x + 1));
+                // f128 gy = (grid->at(index).y * 2.0_q) * (f128(sample_count_y) / f128(sample_count_y + 1));
+                f128 gx = grid->at(index).x * 2.0_q;
+                f128 gy = grid->at(index).y * 2.0_q;
+                f128 hyp = sqrtq((gx * gx) + (gy * gy));
+                f128 weight_factor = clamp01q(hyp / M_SQRT2q);
+                f128 sample_weight = cosq(weight_factor * M_PI_2q) + 0.5_q;
+                grid->at(index).weight = sample_weight;
+            }
+
+            grid->at(index).x *= sample_grid_scale_x;
+            grid->at(index).y *= sample_grid_scale_y;
+            grid->at(index).x += sample_grid_offset_x;
+            grid->at(index).y += sample_grid_offset_y;
+        }
     }
 
     void ThpParams::CalcNumberOfChunks()

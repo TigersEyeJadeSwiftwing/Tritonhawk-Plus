@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -17,6 +19,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 
 namespace TritonhawkPlus {};
 namespace quadmath {};
+namespace intmath {};
 
 namespace TritonhawkPlus
 {
@@ -31,6 +34,16 @@ namespace TritonhawkPlus
     #ifdef __cplusplus
         extern "C" {
     #endif
+        using s8 = int8_t;
+        using u8 = uint8_t;
+        using s16 = int16_t;
+        using u16 = uint16_t;
+        using s32 = int32_t;
+        using u32 = uint32_t;
+        using s64 = int64_t;
+        using u64 = uint64_t;
+
+        using f16 = _Float16;
         using f32 = float;
         using f64 = double;
     #ifdef __cplusplus
@@ -78,6 +91,7 @@ namespace TritonhawkPlus
 
 #include <libgimp/stdplugins-intl.h>
 
+#include "lib_int_math.hpp"
 #include "quadmath-modded.hpp"
 #include <string>
 #include <algorithm>
@@ -94,6 +108,7 @@ namespace TritonhawkPlus
 using namespace TritonhawkPlus;
 using namespace std;
 using namespace quadmath;
+using namespace intmath;
 
 /*
 namespace TritonhawkPlus

@@ -22,21 +22,31 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-// expq:  high-precision exponential
+// expq() :  high-precision exponential
 
 static inline __attribute__((always_inline, hot))
 __float128 expq(__float128 x)
 {
-    __float128 kf = x * 1.442695040888963407359924681001892137q;
+    inline static constexpr __float128 COEFF_0 = 1.q;
+    // inline static constexpr __float128 COEFF_1 = 1.q; // r^1 / 1!
+    inline static constexpr __float128 COEFF_2 = 0.5q; // r^2 / 2!
+    inline static constexpr __float128 COEFF_3 = 1.0q / 6.0q; // r^3 / 3!
+    inline static constexpr __float128 COEFF_4 = 1.0q / 24.0q; // r^4 / 4!
+    inline static constexpr __float128 COEFF_5 = 1.0q / 120.0q; // r^5 / 5!
+    inline static constexpr __float128 COEFF_6 = 1.0q / 720.0q; // r^6 / 6!
+
+    __float128 kf = x * M_LOG2Eq; // M_LOG2Eq = log_2 e
     long n = (long) std::nearbyint(kf);
-    __float128 r = x - __float128(n) * 0.693147180559945309417232121458176568q;
-    __float128 r2 = r*r;
-    __float128 Q = __float128(1)
-            + r
-            + r2*(__float128(0.5q))
-            + r2*r*(__float128(1.0q/6.0q))
-            + r2*r2*(__float128(1.0q/24.0q))
-            + r2*r2*r*(__float128(1.0q/120.0q));
+    __float128 r = x - __float128(n) * M_LN2q; // M_LN2q = log_e 2
+    __float128 r2 = r * r,
+               r4 = r2 * r2;
+    __float128 Q = COEFF_0
+                   + r
+                   + COEFF_2 * r2
+                   + COEFF_3 * r2 * r
+                   + COEFF_4 * r4
+                   + COEFF_5 * r4 * r
+                   + COEFF_6 * r4 * r2; // Additional term for better accuracy
 
     return std::ldexp(Q, n);
 }

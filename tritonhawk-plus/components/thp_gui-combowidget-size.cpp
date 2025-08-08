@@ -85,14 +85,14 @@ namespace TritonhawkPlus
         ((ComboSizeWidget*)(user_data))->SetButtonClicked(name);
     };
 
-    ComboSizeWidget::ComboSizeWidget(GtkWidget* dialog_in, ThpParams* params_in, ThpLog* log_in)
+    ComboSizeWidget::ComboSizeWidget(GtkWidget* Program_Dialog_in, ThpParams* Params_in, ThpLog* Log_in)
     {
-        if (!dialog_in) return;
-        dialog = dialog_in;
-        if (params_in) Params = params_in;
-        if (log_in) Log = log_in;
+        if (!Program_Dialog_in) return;
+        Program_Dialog = Program_Dialog_in;
+        if (Params_in) Params = Params_in;
+        if (Log_in) Log = Log_in;
 
-        gint master_width = (gint) 450;
+        gint master_width = (gint) 660;
         gint cell_height = (gint) 40;
         gint cell_height_half = (gint) 20;
         gint box_padding = (gint) 4;
@@ -110,11 +110,11 @@ namespace TritonhawkPlus
 
         // Master Box
         Gui_Box_Master = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
-        gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_Master), 0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_Master), 5);
         gtk_widget_set_halign(GTK_WIDGET(Gui_Box_Master), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_Box_Master), GTK_ALIGN_START);
         gtk_widget_set_size_request(Gui_Box_Master, master_width, 160);
-        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (dialog))), Gui_Box_Master);
+        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Box_Master);
         gtk_widget_show(Gui_Box_Master);
 
         // First Row Box
@@ -511,7 +511,7 @@ namespace TritonhawkPlus
         gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_3), (GtkWidget*)Gui_Box_V_Sample_Interpolation_SpinButtons, FALSE, FALSE, 0);
         gtk_widget_show(Gui_Box_V_Sample_Interpolation_SpinButtons);
         // Spin Button that determines the sample interpolation, X
-        Gui_Sample_Interpolation_X_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) 5.0000, (gdouble) 0.10);
+        Gui_Sample_Interpolation_X_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) 16.00, (gdouble) 0.01);
         gtk_widget_set_size_request(Gui_Sample_Interpolation_X_SpinButton, cell_r2_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_Sample_Interpolation_X_SpinButton), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_Sample_Interpolation_X_SpinButton), GTK_ALIGN_START);
@@ -520,7 +520,7 @@ namespace TritonhawkPlus
         gtk_widget_show(Gui_Sample_Interpolation_X_SpinButton);
         gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)sample_interpolation_x);
         // Spin Button that determines the sample interpolation, Y
-        Gui_Sample_Interpolation_Y_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) 5.0000, (gdouble) 0.10);
+        Gui_Sample_Interpolation_Y_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) 16.00, (gdouble) 0.01);
         gtk_widget_set_size_request(Gui_Sample_Interpolation_Y_SpinButton, cell_r2_width, cell_height);
         gtk_widget_set_halign(GTK_WIDGET(Gui_Sample_Interpolation_Y_SpinButton), GTK_ALIGN_START);
         gtk_widget_set_valign(GTK_WIDGET(Gui_Sample_Interpolation_Y_SpinButton), GTK_ALIGN_START);
@@ -535,6 +535,73 @@ namespace TritonhawkPlus
         gtk_widget_set_valign(GTK_WIDGET(Gui_Sample_Interpolation_ChainButton), GTK_ALIGN_START);
         gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_3), (GtkWidget*)Gui_Sample_Interpolation_ChainButton, FALSE, FALSE, 0);
         gtk_widget_show(Gui_Sample_Interpolation_ChainButton);
+
+        // Row 3, Column 2 Box
+        Gui_Box_V_Sample_Interpolation_Quickset = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_V_Sample_Interpolation_Quickset), box_padding);
+        gtk_widget_set_size_request(Gui_Box_V_Sample_Interpolation_Quickset, cell_r2_width, row_2_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Box_V_Sample_Interpolation_Quickset), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Box_V_Sample_Interpolation_Quickset), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_3), (GtkWidget*)Gui_Box_V_Sample_Interpolation_Quickset, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Box_V_Sample_Interpolation_Quickset);
+        // Sample Interpolation Quickset Buttons, Row 3, Col 2, Cell Row 0
+        Gui_Box_H_Sample_Interpolation_Quickset_0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Sample_Interpolation_Quickset_0), 0);
+        gtk_widget_set_size_request(Gui_Box_H_Sample_Interpolation_Quickset_0, sample_grid_quickset_buttons_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Box_H_Sample_Interpolation_Quickset_0), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Box_H_Sample_Interpolation_Quickset_0), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Interpolation_Quickset), (GtkWidget*)Gui_Box_H_Sample_Interpolation_Quickset_0, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Box_H_Sample_Interpolation_Quickset_0);
+        // Sample Interpolation Button, "Nearest"
+        Gui_Button_Sample_Lerp_Quickset_Nearest = gtk_button_new_with_label("Nearest");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Nearest, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Nearest), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Nearest), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_0), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Nearest, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Nearest);
+        // Sample Interpolation Button, "Linear"
+        Gui_Button_Sample_Lerp_Quickset_Linear = gtk_button_new_with_label("Linear");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Linear, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Linear), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Linear), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_0), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Linear, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Linear);
+        // Sample Interpolation Button, "Quadratic"
+        Gui_Button_Sample_Lerp_Quickset_Quadratic = gtk_button_new_with_label("Quadratic");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Quadratic, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quadratic), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quadratic), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_0), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Quadratic, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Quadratic);
+        // Sample Interpolation Quickset Buttons, Row 3, Col 2, Cell Row 1
+        Gui_Box_H_Sample_Interpolation_Quickset_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Sample_Interpolation_Quickset_1), 0);
+        gtk_widget_set_size_request(Gui_Box_H_Sample_Interpolation_Quickset_1, sample_grid_quickset_buttons_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Box_H_Sample_Interpolation_Quickset_1), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Box_H_Sample_Interpolation_Quickset_1), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Interpolation_Quickset), (GtkWidget*)Gui_Box_H_Sample_Interpolation_Quickset_1, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Box_H_Sample_Interpolation_Quickset_1);
+        // Sample Interpolation Button, "Cubic"
+        Gui_Button_Sample_Lerp_Quickset_Cubic = gtk_button_new_with_label("Cubic");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Cubic, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Cubic), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Cubic), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_1), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Cubic, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Cubic);
+        // Sample Interpolation Button, "Quartic"
+        Gui_Button_Sample_Lerp_Quickset_Quartic = gtk_button_new_with_label("Quartic");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Quartic, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quartic), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quartic), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_1), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Quartic, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Quartic);
+        // Sample Interpolation Button, "Quintic"
+        Gui_Button_Sample_Lerp_Quickset_Quintic = gtk_button_new_with_label("Quintic");
+        gtk_widget_set_size_request(Gui_Button_Sample_Lerp_Quickset_Quintic, cell_quickset_button_width, cell_height);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quintic), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Button_Sample_Lerp_Quickset_Quintic), GTK_ALIGN_START);
+        gtk_box_pack_start(GTK_BOX(Gui_Box_H_Sample_Interpolation_Quickset_1), (GtkWidget*)Gui_Button_Sample_Lerp_Quickset_Quintic, FALSE, FALSE, 0);
+        gtk_widget_show(Gui_Button_Sample_Lerp_Quickset_Quintic);
 
         // Row 4 Box
         Gui_Box_H_Row_4 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
@@ -589,7 +656,7 @@ namespace TritonhawkPlus
         gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_5), (GtkWidget*)Gui_Button_Plugin_Reset, FALSE, FALSE, 0);
         gtk_widget_show(Gui_Button_Plugin_Reset);
 
-        gtk_widget_show(dialog);
+        gtk_widget_show(Program_Dialog);
 
         SyncDataFromParameters();
 
@@ -614,6 +681,12 @@ namespace TritonhawkPlus
         button_pointer_sample_grid_scale_325 = new int(14);
         button_pointer_sample_grid_scale_500 = new int(15);
         button_pointer_sample_grid_scale_1200 = new int(16);
+        button_pointer_sample_interpolation_nearest = new int(26);
+        button_pointer_sample_interpolation_linear = new int(26);
+        button_pointer_sample_interpolation_quadratic = new int(26);
+        button_pointer_sample_interpolation_cubic = new int(26);
+        button_pointer_sample_interpolation_quartic = new int(26);
+        button_pointer_sample_interpolation_quintic = new int(26);
         button_pointer_run_plugin = new int(21);
         button_pointer_cancel_plugin = new int(22);
         button_pointer_reset_plugin = new int(23);
@@ -646,6 +719,12 @@ namespace TritonhawkPlus
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_325), "button-name", button_pointer_sample_grid_scale_325);
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_500), "button-name", button_pointer_sample_grid_scale_500);
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_1200), "button-name", button_pointer_sample_grid_scale_1200);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Nearest), "button-name", button_pointer_sample_interpolation_nearest);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Linear), "button-name", button_pointer_sample_interpolation_linear);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Quadratic), "button-name", button_pointer_sample_interpolation_quadratic);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Cubic), "button-name", button_pointer_sample_interpolation_cubic);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Quartic), "button-name", button_pointer_sample_interpolation_quartic);
+        g_object_set_data(G_OBJECT(Gui_Button_Sample_Lerp_Quickset_Quintic), "button-name", button_pointer_sample_interpolation_quintic);
         g_object_set_data(G_OBJECT(Gui_Button_Seamless_X), "button-name", button_pointer_seamless_x);
         g_object_set_data(G_OBJECT(Gui_Button_Seamless_Y), "button-name", button_pointer_seamless_y);
         g_object_set_data(G_OBJECT(Gui_Button_Plugin_Run), "button-name", button_pointer_run_plugin);
@@ -668,6 +747,12 @@ namespace TritonhawkPlus
         g_signal_connect(Gui_Button_SampleGridScale_325, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_SampleGridScale_500, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_SampleGridScale_1200, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Nearest, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Linear, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Quadratic, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Cubic, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Quartic, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Sample_Lerp_Quickset_Quintic, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_Seamless_X, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_Seamless_Y, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_Plugin_Run, "clicked", G_CALLBACK(value_changed_button), self);
@@ -693,6 +778,12 @@ namespace TritonhawkPlus
         delete button_pointer_sample_grid_scale_325;
         delete button_pointer_sample_grid_scale_500;
         delete button_pointer_sample_grid_scale_1200;
+        delete button_pointer_sample_interpolation_nearest;
+        delete button_pointer_sample_interpolation_linear;
+        delete button_pointer_sample_interpolation_quadratic;
+        delete button_pointer_sample_interpolation_cubic;
+        delete button_pointer_sample_interpolation_quartic;
+        delete button_pointer_sample_interpolation_quintic;
         delete button_pointer_seamless_x;
         delete button_pointer_seamless_y;
         delete button_pointer_run_plugin;
@@ -1251,6 +1342,72 @@ namespace TritonhawkPlus
             sample_grid_scale_x = (gdouble) 12.0;
             sample_grid_scale_y = (gdouble) 12.0;
             sample_grid_scale_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_nearest)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 0.0;
+            sample_interpolation_y = (gdouble) 0.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_linear)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 1.0;
+            sample_interpolation_y = (gdouble) 1.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_quadratic)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 2.0;
+            sample_interpolation_y = (gdouble) 2.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_cubic)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 3.0;
+            sample_interpolation_y = (gdouble) 3.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_quartic)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 4.0;
+            sample_interpolation_y = (gdouble) 4.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
+
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_sample_interpolation_quintic)
+        {
+            ignore_auto_changes = true;
+
+            sample_interpolation_x = (gdouble) 5.0;
+            sample_interpolation_y = (gdouble) 5.0;
+            sample_interpolation_locked_ratio_xy = 1.0_q;
 
             UpdateGUI();
             ignore_auto_changes = false;

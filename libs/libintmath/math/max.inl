@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "fabsq.inl"
-#endif
-
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -20,27 +16,13 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 static inline __attribute__((always_inline, hot))
-__float128 ceilq(__float128 x) {
-    if (__builtin_isnanq(x) || __builtin_isinfq(x))
-        return x;                // Preserve NaN and ±Inf
+s64 max(s64 a, s64 b)
+{
+    return (a > b) ? a : b;
+}
 
-    inline static constexpr __float128 TWO_POW_113 = ((__float128)1) * ( (__float128)1 << 113 );
-
-    // For very large |x|, x is already integral
-    if (fabsq(x) >= TWO_POW_113)
-        return x;
-
-    __float128 y;
-    if (x >= 0.q) {
-        // Truncate toward zero yields floor for positive x
-        y = x + TWO_POW_113; // shift fractional bits out
-        y = y - TWO_POW_113;
-        // If there was any fractional part, bump up
-        return (y == x) ? y : (y + 1.q);
-    } else {
-        // For negative x, truncation toward zero = ceil
-        y = x - TWO_POW_113; // shift fractional bits out
-        y = y + TWO_POW_113;
-        return y;
-    }
+static inline __attribute__((always_inline, hot))
+u64 max(u64 a, u64 b)
+{
+    return (a > b) ? a : b;
 }

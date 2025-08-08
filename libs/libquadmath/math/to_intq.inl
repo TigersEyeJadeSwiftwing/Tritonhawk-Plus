@@ -4,6 +4,8 @@
     #include "truncq.inl"
 #endif
 
+#include <cstdint>
+
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -21,33 +23,33 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 
 /** \brief Returns an integer, from the 128-bit floating input value, truncated.
  *
- * \param a (__float128) The input value to be made into an int.
- * \return (int) The input value, converted into an int.
+ * \param a (__float128) The input value to be made into an int32_t.
+ * \return (int32_t) The input value, converted into an int32_t.
  *
  * Returns an integer, from the 128-bit floating input value, truncated.
  */
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 static inline __attribute__((always_inline, hot))
-int to_intq (__float128 a)
+int32_t to_intq (__float128 a)
 {
-    return int(truncq(a) + 0.1Q);
+    return int32_t(truncq(a) + 0.1Q);
 }
 #else
 static inline __attribute__((always_inline, hot))
-int to_intq (long double a)
+int32_t to_intq (long double a)
 {
-    return int(truncl(a) + 0.1L);
+    return int32_t(truncl(a) + 0.1L);
 }
 #endif
 
 static inline __attribute__((always_inline, hot))
-int to_intf (float a)
+int32_t to_intf (float a)
 {
-    return int(truncf(a) + 0.1f);
+    return int32_t(truncf(a) + 0.1f);
 }
 
 static inline __attribute__((always_inline, hot))
-int to_intd (double a)
+int32_t to_intd (double a)
 {
-    return int(trunc(a) + 0.1);
+    return int32_t(trunc(a) + 0.1);
 }

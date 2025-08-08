@@ -30,7 +30,7 @@ __float128 lnq(__float128 x)
     __float128 m = std::frexp(x, &e);  // x = m * 2^e, m in [0.5,1)
 
     // 2) Shift m into [sqrt(1/2), sqrt(2)] to improve polynomial accuracy
-    if (m < __float128(0.70710678118654752440084436210485q)) // sqrt(1/2)
+    if (m < M_SQRT1_2q) // M_SQRT1_2q = sqrt(1/2)
     {
         m *= 2;
         e -= 1;
@@ -39,15 +39,17 @@ __float128 lnq(__float128 x)
     // 3) Now m in [sqrt(1/2), sqrt(2)]. Let z = (m-1)/(m+1),
     //    then ln(m) = 2 * [ z + z^3/3 + z^5/5 + ... ]  (arctanh series)
     __float128 z = (m - 1) / (m + 1);
-    __float128 z2 = z*z, z4 = z2*z2;
+    __float128 z2 = z * z,
+               z4 = z2 * z2,
+               z6 = z4 * z2; // z^6 for higher accuracy
 
-    // A small odd polynomial P(z) ≈ arctanh(z) on |z| < 0.17
+    // 4) A small odd polynomial P(z) ≈ arctanh(z) on |z| < 0.17
     // We do only a few terms; you can raise order for more accuracy.
     __float128 P = z
-            + (z*z2)/3.q
-            + (z*z4)/5.q
-            + (z*z4*z2)/7.q;
+                   + (z * z2) / 3.q
+                   + (z * z4) / 5.q
+                   + (z * z6) / 7.q
+                   + (z * z6 * z2) / 9.q; // Additional term for improved accuracy
 
-    // static const __float128 ln2 = __float128(0.693147180559945309417232121458176568q);
-    return __float128(2.q * P + __float128(e) * 0.693147180559945309417232121458176568q);
+    return __float128(2.q * P + __float128(e) * M_LN2q); // M_LN2q = log_e 2
 }

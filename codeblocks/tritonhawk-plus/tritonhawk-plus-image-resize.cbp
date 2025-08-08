@@ -16,8 +16,8 @@
 					<Add option="-m64" />
 					<Add option="-O3" />
 					<Add option="-Wall" />
-					<Add option="-std=gnu17" />
-					<Add option="-std=gnu++17" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
 					<Add option="-march=x86-64-v2" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
@@ -62,11 +62,13 @@
 					<Add directory="../../tritonhawk-plus" />
 					<Add directory="../../libs/libquadmath" />
 					<Add directory="../../libs/libquadmath/math" />
+					<Add directory="../../libs/libintmath" />
+					<Add directory="../../libs/libintmath/math" />
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
-					<Add option="-std=gnu17" />
-					<Add option="-std=gnu++17" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
 					<Add option="-march=x86-64-v2" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
@@ -128,9 +130,14 @@
 		<Compiler>
 			<Add directory="../../tritonhawk-plus" />
 		</Compiler>
+		<Unit filename="../../libs/libintmath/lib_int_math.hpp" />
+		<Unit filename="../../libs/libintmath/math/clamp.inl" />
+		<Unit filename="../../libs/libintmath/math/max.inl" />
+		<Unit filename="../../libs/libintmath/math/min.inl" />
 		<Unit filename="../../libs/libquadmath/math/ceilq.inl" />
 		<Unit filename="../../libs/libquadmath/math/clampq.inl" />
 		<Unit filename="../../libs/libquadmath/math/copysignq.inl" />
+		<Unit filename="../../libs/libquadmath/math/cosq.inl" />
 		<Unit filename="../../libs/libquadmath/math/distwarpq.inl" />
 		<Unit filename="../../libs/libquadmath/math/expq.inl" />
 		<Unit filename="../../libs/libquadmath/math/fabsq.inl" />

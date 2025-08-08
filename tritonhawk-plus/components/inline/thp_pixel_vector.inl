@@ -16,38 +16,38 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 static inline __attribute__((always_inline, hot))
-int RGBA_red(int size_x, int x, int y)
+u64 RGBA_red(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 4);
 }
 static inline __attribute__((always_inline, hot))
-int RGBA_green(int size_x, int x, int y)
+u64 RGBA_green(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 4) + 1;
 }
 static inline __attribute__((always_inline, hot))
-int RGBA_blue(int size_x, int x, int y)
+u64 RGBA_blue(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 4) + 2;
 }
 static inline __attribute__((always_inline, hot))
-int RGBA_alpha(int size_x, int x, int y)
+u64 RGBA_alpha(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 4) + 3;
 }
 
 static inline __attribute__((always_inline, hot))
-int RGB_red(int size_x, int x, int y)
+u64 RGB_red(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 3);
 }
 static inline __attribute__((always_inline, hot))
-int RGB_green(int size_x, int x, int y)
+u64 RGB_green(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 3) + 1;
 }
 static inline __attribute__((always_inline, hot))
-int RGB_blue(int size_x, int x, int y)
+u64 RGB_blue(u64 size_x, u64 x, u64 y)
 {
     return (((y * size_x) + x) * 3) + 2;
 }

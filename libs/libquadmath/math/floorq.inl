@@ -1,64 +1,45 @@
 #pragma once
 
-/* s_floorl.c -- long double version of s_floor.c.
- * Conversion to IEEE quad long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "fabsq.inl"
+#endif
 
 /*
- * ====================================================
- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
- *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
- */
-
-/*
- * floorq(x)
- * Return x rounded toward -inf to integral value
- * Method:
- *	Bit twiddling.
- */
-
-#define NO_MATH_REDIRECT
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 static inline __attribute__((always_inline, hot))
-__float128 floorq(__float128 x)
-{
-    int64_t i0,i1,j0;
-    uint64_t i,j;
-    GET_FLT128_WORDS64(i0,i1,x);
-    j0 = ((i0>>48)&0x7fff)-0x3fff;
-    if(j0<48) {
-        if(j0<0) {
-        /* return 0*sign(x) if |x|<1 */
-        if(i0>=0) {i0=i1=0;}
-        else if(((i0&0x7fffffffffffffffLL)|i1)!=0)
-            { i0=0xbfff000000000000ULL;i1=0;}
-        } else {
-        i = (0x0000ffffffffffffULL)>>j0;
-        if(((i0&i)|i1)==0) return x; /* x is integral */
-        if(i0<0) i0 += (0x0001000000000000LL)>>j0;
-        i0 &= (~i); i1=0;
-        }
-    } else if (j0>111) {
-        if(j0==0x4000) return x+x;	/* inf or NaN */
-        else return x;		/* x is integral */
+__float128 floorq(__float128 x) {
+    if (__builtin_isnanq(x) || __builtin_isinfq(x))
+        return x;                // Preserve NaN and ±Inf
+
+    inline static constexpr __float128 TWO_POW_113 = ((__float128)1) * ( (__float128)1 << 113 );
+
+    // For very large |x|, x is already integral
+    if (fabsq(x) >= TWO_POW_113)
+        return x;
+
+    __float128 y;
+    if (x >= 0.q) {
+        y = x + TWO_POW_113; // shift fractional bits out
+        y = y - TWO_POW_113;
+        // y is truncated toward zero → same as floor for x ≥ 0
+        return y;
     } else {
-        i = -1ULL>>(j0-48);
-        if((i1&i)==0) return x;	/* x is integral */
-        if(i0<0) {
-        if(j0==48) i0+=1;
-        else {
-            j = i1+(1LL<<(112-j0));
-            if(j<i1) i0 +=1 ; 	/* got a carry */
-            i1=j;
-        }
-        }
-        i1 &= (~i);
+        // For negatives, truncation gives ceil. To get floor, subtract 1.
+        y = x - TWO_POW_113; // shift fractional bits out
+        y = y + TWO_POW_113;
+        return (y == x) ? y : (y - 1.q);
     }
-    SET_FLT128_WORDS64(x,i0,i1);
-    return x;
 }

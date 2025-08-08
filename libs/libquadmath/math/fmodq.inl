@@ -1,134 +1,111 @@
 #pragma once
 
-/* e_fmodl.c -- long double version of e_fmod.c.
- * Conversion to IEEE quad long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
 /*
- * ====================================================
- * Copyright (C) 1993, 2011 by Sun Microsystems, Inc. All rights reserved.
- *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
- */
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
-/*
- * fmodq(x,y)
- * Return x mod y in exact arithmetic
- * Method: shift and subtract
- */
-
-namespace quadmath_fmodq
+static inline __attribute__((always_inline, hot))
+__float128 fmodq(__float128 x, __float128 y)
 {
-    static const __float128 one = 1.0, Zero[] = {0.0, -0.0,};
+    inline static constexpr __float128 one = 1.q, zero[] = {0.q, -0.q};
+    int64_t hx, hy, sx;
+    uint64_t lx, ly;
 
-    static inline __attribute__((always_inline, hot))
-    __float128 fmodq (__float128 x, __float128 y)
+    GET_FLT128_WORDS64(hx, lx, x);
+    GET_FLT128_WORDS64(hy, ly, y);
+    sx = hx & 0x8000000000000000ULL; // sign of x
+
+    if ((hy | ly) == 0 || (hx >= 0x7fff000000000000LL) || ((hy | ((ly - ly) >> 63)) > 0x7fff000000000000LL))
+        return (x * y) / (x * y); // Handle special cases
+
+    if (hx <= hy)
+        return (hx < hy || lx < ly) ? x : zero[static_cast<uint64_t>(sx) >> 63]; // |x| < |y| or |x| = |y|
+
+    int64_t exp_diff = ((hx >> 48) - 0x3fff) - ((hy >> 48) - 0x3fff); // Determine the exponent difference
+
+    if (exp_diff >= 0)
     {
-        int64_t n,hx,hy,hz,ix,iy,sx,i;
-        uint64_t lx,ly,lz;
-
-        GET_FLT128_WORDS64(hx,lx,x);
-        GET_FLT128_WORDS64(hy,ly,y);
-        sx = hx&0x8000000000000000ULL;		/* sign of x */
-        hx ^=sx;				/* |x| */
-        hy &= 0x7fffffffffffffffLL;		/* |y| */
-
-        /* purge off exception values */
-        if((hy|ly)==0||(hx>=0x7fff000000000000LL)|| /* y=0,or x not finite */
-          ((hy|((ly|-ly)>>63))>0x7fff000000000000LL))	/* or y is NaN */
-            return (x*y)/(x*y);
-        if(hx<=hy) {
-            if((hx<hy)||(lx<ly)) return x;	/* |x|<|y| return x */
-            if(lx==ly)
-            return Zero[(uint64_t)sx>>63];	/* |x|=|y| return x*0*/
-        }
-
-        /* determine ix = ilogb(x) */
-        if(hx<0x0001000000000000LL) {	/* subnormal x */
-            if(hx==0) {
-            for (ix = -16431, i=lx; i>0; i<<=1) ix -=1;
-            } else {
-            for (ix = -16382, i=hx<<15; i>0; i<<=1) ix -=1;
-            }
-        } else ix = (hx>>48)-0x3fff;
-
-        /* determine iy = ilogb(y) */
-        if(hy<0x0001000000000000LL) {	/* subnormal y */
-            if(hy==0) {
-            for (iy = -16431, i=ly; i>0; i<<=1) iy -=1;
-            } else {
-            for (iy = -16382, i=hy<<15; i>0; i<<=1) iy -=1;
-            }
-        } else iy = (hy>>48)-0x3fff;
-
-        /* set up {hx,lx}, {hy,ly} and align y to x */
-        if(ix >= -16382)
-            hx = 0x0001000000000000LL|(0x0000ffffffffffffLL&hx);
-        else {		/* subnormal x, shift x to normal */
-            n = -16382-ix;
-            if(n<=63) {
-            hx = (hx<<n)|(lx>>(64-n));
-            lx <<= n;
-            } else {
-            hx = lx<<(n-64);
-            lx = 0;
-            }
-        }
-        if(iy >= -16382)
-            hy = 0x0001000000000000LL|(0x0000ffffffffffffLL&hy);
-        else {		/* subnormal y, shift y to normal */
-            n = -16382-iy;
-            if(n<=63) {
-            hy = (hy<<n)|(ly>>(64-n));
-            ly <<= n;
-            } else {
-            hy = ly<<(n-64);
-            ly = 0;
-            }
-        }
-
-        /* fix point fmod */
-        n = ix - iy;
-        while(n--) {
-            hz=hx-hy;lz=lx-ly; if(lx<ly) hz -= 1;
-            if(hz<0){hx = hx+hx+(lx>>63); lx = lx+lx;}
-            else {
-            if((hz|lz)==0)		/* return sign(x)*0 */
-                return Zero[(uint64_t)sx>>63];
-            hx = hz+hz+(lz>>63); lx = lz+lz;
-            }
-        }
-        hz=hx-hy;lz=lx-ly; if(lx<ly) hz -= 1;
-        if(hz>=0) {hx=hz;lx=lz;}
-
-        /* convert back to floating value and restore the sign */
-        if((hx|lx)==0)			/* return sign(x)*0 */
-            return Zero[(uint64_t)sx>>63];
-        while(hx<0x0001000000000000LL) {	/* normalize x */
-            hx = hx+hx+(lx>>63); lx = lx+lx;
-            iy -= 1;
-        }
-        if(iy>= -16382) {	/* normalize output */
-            hx = ((hx-0x0001000000000000LL)|((iy+16383)<<48));
-            SET_FLT128_WORDS64(x,hx|sx,lx);
-        } else {		/* subnormal output */
-            n = -16382 - iy;
-            if(n<=48) {
-            lx = (lx>>n)|((uint64_t)hx<<(64-n));
-            hx >>= n;
-            } else if (n<=63) {
-            lx = (hx<<(64-n))|(lx>>n); hx = sx;
-            } else {
-            lx = hx>>(n-64); hx = sx;
-            }
-            SET_FLT128_WORDS64(x,hx|sx,lx);
-            x *= one;		/* create necessary signal */
-        }
-        return x;		/* exact output */
+        hx = 0x0001000000000000LL | (0x0000ffffffffffffLL & hx); // Normalize x
     }
-};
+    else
+    {
+        int64_t shift = -exp_diff;
+        if (shift <= 63)
+        {
+            hx = (hx << shift) | (lx >> (64 - shift));
+            lx <<= shift;
+        }
+        else
+        {
+            hx = lx << (shift - 64);
+            lx = 0;
+        }
+    }
 
-using namespace quadmath_fmodq;
+    hy = 0x0001000000000000LL | (0x0000ffffffffffffLL & hy); // Normalize y
+
+    while (exp_diff--)
+    {
+        if (hx < hy || (hx == hy && lx < ly))
+        {
+            hx = hx + hx + (lx >> 63);
+            lx = lx + lx;
+        }
+        else
+        {
+            hx -= hy;
+            lx -= ly;
+        }
+    }
+
+    if ((hx | lx) == 0)
+        return zero[static_cast<uint64_t>(sx) >> 63]; // Return sign(x) * 0
+
+    while (hx < 0x0001000000000000LL)
+    {
+        hx = hx + hx + (lx >> 63);
+        lx = lx + lx;
+        exp_diff--;
+    }
+
+    if (exp_diff >= -16382)
+    {
+        hx = ((hx - 0x0001000000000000LL) | ((exp_diff + 16383) << 48)) | sx;
+        SET_FLT128_WORDS64(x, hx, lx);
+    }
+    else
+    {
+        int64_t shift = -16382 - exp_diff;
+        if (shift <= 48)
+        {
+            lx = (lx >> shift) | (static_cast<uint64_t>(hx) << (64 - shift));
+            hx >>= shift;
+        }
+        else if (shift <= 63)
+        {
+            lx = (hx << (64 - shift)) | (lx >> shift);
+            hx = sx;
+        }
+        else
+        {
+            lx = hx >> (shift - 64);
+            hx = sx;
+        }
+        SET_FLT128_WORDS64(x, hx | sx, lx);
+    }
+
+    x *= one;
+
+    return x;
+}

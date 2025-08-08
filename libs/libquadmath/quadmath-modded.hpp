@@ -64,19 +64,22 @@ namespace quadmath
        (floating constant exceeds range of ‘__float128’)  */
     /* #define HUGE_VALQ (__extension__ 0x1.0p32767Q) */
 
-    #define M_Eq		2.718281828459045235360287471352662498Q  /* e */
-    #define M_LOG2Eq	1.442695040888963407359924681001892137Q  /* log_2 e */
-    #define M_LOG10Eq	0.434294481903251827651128918916605082Q  /* log_10 e */
-    #define M_LN2q		0.693147180559945309417232121458176568Q  /* log_e 2 */
-    #define M_LN10q		2.302585092994045684017991454684364208Q  /* log_e 10 */
-    #define M_PIq		3.141592653589793238462643383279502884Q  /* pi */
-    #define M_PI_2q		1.570796326794896619231321691639751442Q  /* pi/2 */
-    #define M_PI_4q		0.785398163397448309615660845819875721Q  /* pi/4 */
-    #define M_1_PIq		0.318309886183790671537767526745028724Q  /* 1/pi */
-    #define M_2_PIq		0.636619772367581343075535053490057448Q  /* 2/pi */
-    #define M_2_SQRTPIq	1.128379167095512573896158903121545172Q  /* 2/sqrt(pi) */
-    #define M_SQRT2q	1.414213562373095048801688724209698079Q  /* sqrt(2) */
-    #define M_SQRT1_2q	0.707106781186547524400844362104849039Q  /* 1/sqrt(2) */
+    inline static constexpr __float128 M_Eq =		    2.718281828459045235360287471352662498q;  /* e */
+    inline static constexpr __float128 M_LOG2Eq =	    1.442695040888963407359924681001892137q;  /* log_2 e */
+    inline static constexpr __float128 M_LOG10Eq =	    0.434294481903251827651128918916605082q;  /* log_10 e */
+    inline static constexpr __float128 M_LN2q =		    0.693147180559945309417232121458176568q;  /* log_e 2 */
+    inline static constexpr __float128 M_LN10q =		2.302585092994045684017991454684364208q;  /* log_e 10 */
+    inline static constexpr __float128 M_PIq =		    3.141592653589793238462643383279502884q;  /* pi */
+    inline static constexpr __float128 M_PI_2q =		1.570796326794896619231321691639751442q;  /* pi/2 */
+    inline static constexpr __float128 M_PI_4q =		0.785398163397448309615660845819875721q;  /* pi/4 */
+    inline static constexpr __float128 M_1_PIq =		0.318309886183790671537767526745028724q;  /* 1/pi */
+    inline static constexpr __float128 M_2_PIq =		0.636619772367581343075535053490057448q;  /* 2/pi */
+    inline static constexpr __float128 M_2_SQRTPIq =	1.128379167095512573896158903121545172q;  /* 2/sqrt(pi) */
+    inline static constexpr __float128 M_SQRT2q =	    1.414213562373095048801688724209698079q;  /* sqrt(2) */
+    inline static constexpr __float128 M_SQRT1_2q =	    0.707106781186547524400844362104849039q;  /* 1/sqrt(2) */
+
+    inline static constexpr __float128 M_SQRT2_m1q = M_SQRT2q - 1.q;
+    inline static constexpr __float128 SMP_GRID_ELLIPSE_COS_FACTOR = M_PI_2q / M_SQRT2_m1q;
 
     #ifdef __cplusplus
     }
@@ -111,6 +114,7 @@ namespace quadmath
         #include "sqrtq.inl"
         #include "to_intq.inl"
         #include "truncq.inl"
+        #include "cosq.inl"
     #else
         inline constexpr auto &ceilq = ceill;
         inline constexpr auto &copysignq = copysignl;
@@ -130,6 +134,7 @@ namespace quadmath
         inline constexpr auto &scalbnq = scalbnl;
         inline constexpr auto &sqrtq = sqrtl;
         inline constexpr auto &truncq = truncl;
+        inline constexpr auto &cosq = cosl;
 
         #include "clampq.inl"
         #include "distwarpq.inl"

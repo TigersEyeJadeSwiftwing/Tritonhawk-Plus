@@ -107,13 +107,13 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         gimp_procedure_add_int_argument(
             procedure,
             "new-x", "New Width", "The width of the new, resized image.",
-            (gint)1, (gint)65536 * 16, (gint)256,
+            (gint)1, (gint)(65536 * 16), (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_int_argument(
             procedure,
             "new-y", "New Height", "The height of the new, resized image.",
-            (gint)1, (gint)65536 * 16, (gint)256,
+            (gint)1, (gint)(65536 * 16), (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(
@@ -197,8 +197,9 @@ static GimpValueArray* thpimageresize_run(
     gdouble sample_grid_y =         gdouble(100.0);
     gint chunk_size =               gint(128);
 
-    GtkWidget*              dialog;
-    GtkWidget*              gui_gtk_textlabel;
+    GtkWidget*              Program_Dialog;
+    GtkWidget*              Gui_Log_Box;
+    GtkWidget*              Gui_Log_Text;
     ComboSizeWidget*        Combo_Size_Widget;
 
     if (!image)
@@ -251,7 +252,7 @@ static GimpValueArray* thpimageresize_run(
         GdkGeometry         geometry;
 
         gimp_ui_init (PLUG_IN_BINARY);
-        dialog = gimp_dialog_new (
+        Program_Dialog = gimp_dialog_new (
             PLUG_IN_PROC,
             PLUG_IN_ROLE,
             NULL,
@@ -263,30 +264,38 @@ static GimpValueArray* thpimageresize_run(
 
         geometry.min_aspect = 0.125;
         geometry.max_aspect = 8.0;
-        geometry.base_width = (gint)400;
-        geometry.width_inc = (gint)400;
-        geometry.min_width = (gint)300;
+        geometry.base_width = (gint)660;
+        geometry.width_inc = (gint)660;
+        geometry.min_width = (gint)660;
         geometry.max_width = (gint)4096;
         geometry.base_height = (gint)750;
         geometry.height_inc = (gint)750;
         geometry.min_height = (gint)500;
         geometry.max_height = (gint)4096;
-        gtk_window_set_geometry_hints (GTK_WINDOW (dialog), NULL, &geometry, GDK_HINT_ASPECT);
-        Log->SetGuiDialog(dialog);
+        gtk_window_set_geometry_hints (GTK_WINDOW (Program_Dialog), NULL, &geometry, GDK_HINT_ASPECT);
+        Log->SetGuiDialog(Program_Dialog);
 
-        gui_gtk_textlabel = gtk_label_new (NULL);
-        gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), gui_gtk_textlabel);
-        gtk_widget_set_size_request (gui_gtk_textlabel, 450, 330);
-        gtk_widget_set_halign ( GTK_WIDGET(gui_gtk_textlabel), GTK_ALIGN_START );
-        gtk_widget_set_valign ( GTK_WIDGET(gui_gtk_textlabel), GTK_ALIGN_START );
-        gtk_widget_show (gui_gtk_textlabel);
-        gtk_widget_show (dialog);
-        Log->SetTextLabel(gui_gtk_textlabel);
+        Gui_Log_Box = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Log_Box), 5);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Log_Box), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Log_Box), GTK_ALIGN_START);
+        gtk_widget_set_size_request(Gui_Log_Box, 660, 340);
+        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Log_Box);
+        gtk_widget_show(Gui_Log_Box);
 
-        Combo_Size_Widget = new ComboSizeWidget(dialog, Params, Log);
+        Gui_Log_Text = gtk_label_new (NULL);
+        gtk_widget_set_size_request (Gui_Log_Text, 450, 330);
+        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text), GTK_ALIGN_START );
+        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text), GTK_ALIGN_START );
+        gtk_container_add (GTK_CONTAINER(Gui_Log_Box), Gui_Log_Text);
+        gtk_widget_show (Gui_Log_Text);
+        gtk_widget_show (Program_Dialog);
+        Log->SetTextLabel(Gui_Log_Text);
+
+        Combo_Size_Widget = new ComboSizeWidget(Program_Dialog, Params, Log);
         Combo_Size_Widget->SetOriginalSize((gint)Params->input_size_x, (gint)Params->input_size_y);
 
-        gtk_window_set_default_size(GTK_WINDOW (dialog), -1, -1);
+        gtk_window_set_default_size(GTK_WINDOW (Program_Dialog), -1, -1);
 
         Log->Log(false, g_strdup_printf( _("%s%s"), Params->info_string.c_str(), "-\n-\n-\n-\n-\n-\n-" ));
 
@@ -307,7 +316,7 @@ static GimpValueArray* thpimageresize_run(
     }
 
     if (run_mode == GIMP_RUN_INTERACTIVE)
-        gtk_widget_set_sensitive((GtkWidget*)dialog, (gboolean)FALSE);
+        gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)FALSE);
 
     Log->SetTimerStart();
 
@@ -411,7 +420,7 @@ static GimpValueArray* thpimageresize_run(
     "-\n-\n-\n-" ));
 
     if (run_mode == GIMP_RUN_INTERACTIVE)
-        gtk_widget_set_sensitive((GtkWidget*)dialog, (gboolean)TRUE);
+        gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
     delete Log;
     delete Params;

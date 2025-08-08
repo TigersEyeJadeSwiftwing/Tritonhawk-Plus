@@ -38,7 +38,7 @@ namespace TritonhawkPlus
     class ComboSizeWidget
     {
     public:
-        ComboSizeWidget(GtkWidget* dialog_in, ThpParams* params_in=NULL, ThpLog* log_in=NULL);
+        ComboSizeWidget(GtkWidget* Program_Dialog_in, ThpParams* Params_in=NULL, ThpLog* Log_in=NULL);
         ~ComboSizeWidget();
 
         void SetSizeX(gint val);
@@ -62,7 +62,7 @@ namespace TritonhawkPlus
         void SyncDataToParameters();
         void SyncDataFromParameters();
 
-        GtkWidget* dialog = NULL;
+        GtkWidget* Program_Dialog = NULL;
         ThpParams* Params = NULL;
         ThpLog*    Log = NULL;
 
@@ -119,6 +119,15 @@ namespace TritonhawkPlus
                     GtkWidget* Gui_Sample_Interpolation_X_SpinButton = NULL;
                     GtkWidget* Gui_Sample_Interpolation_Y_SpinButton = NULL;
                     GtkWidget* Gui_Sample_Interpolation_ChainButton = NULL;
+                GtkWidget* Gui_Box_V_Sample_Interpolation_Quickset = NULL;
+                    GtkWidget* Gui_Box_H_Sample_Interpolation_Quickset_0 = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Nearest = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Linear = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Quadratic = NULL;
+                    GtkWidget* Gui_Box_H_Sample_Interpolation_Quickset_1 = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Cubic = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Quartic = NULL;
+                        GtkWidget* Gui_Button_Sample_Lerp_Quickset_Quintic = NULL;
             GtkWidget* Gui_Box_H_Row_4 = NULL;
                 GtkWidget* Gui_Button_Seamless_X = NULL;
                 GtkWidget* Gui_Button_Seamless_Y = NULL;
@@ -143,6 +152,12 @@ namespace TritonhawkPlus
         int* button_pointer_sample_grid_scale_325 = NULL;
         int* button_pointer_sample_grid_scale_500 = NULL;
         int* button_pointer_sample_grid_scale_1200 = NULL;
+        int* button_pointer_sample_interpolation_nearest = NULL;
+        int* button_pointer_sample_interpolation_linear = NULL;
+        int* button_pointer_sample_interpolation_quadratic = NULL;
+        int* button_pointer_sample_interpolation_cubic = NULL;
+        int* button_pointer_sample_interpolation_quartic = NULL;
+        int* button_pointer_sample_interpolation_quintic = NULL;
         int* button_pointer_seamless_x = NULL;
         int* button_pointer_seamless_y = NULL;
         int* button_pointer_run_plugin = NULL;
