@@ -1,54 +1,22 @@
 #pragma once
 
-/* s_frexpl.c -- long double version of s_frexp.c.
- * Conversion to IEEE quad long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
-
 /*
- * ====================================================
- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
- *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
- */
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
-/*
- * for non-zero x
- *	x = frexpq(arg,&exp);
- * return a long double fp quantity x such that 0.5 <= |x| <1.0
- * and the corresponding binary exponent "exp". That is
- *	arg = x*2^exp.
- * If arg is inf, 0.0, or NaN, then frexpq(arg,&exp) returns arg
- * with *exp=0.
- */
-
-namespace quadmath_frexpq
+static inline __attribute__((always_inline, hot))
+__float128 frexpq(__float128 x, int *eptr)
 {
-    static const __float128
-    two114 = 2.0769187434139310514121985316880384E+34Q; /* 0x4071000000000000, 0 */
-
-    static inline __attribute__((always_inline, hot))
-    __float128 frexpq(__float128 x, int *eptr)
-    {
-        uint64_t hx, lx, ix;
-        GET_FLT128_WORDS64(hx,lx,x);
-        ix = 0x7fffffffffffffffULL&hx;
-        *eptr = 0;
-        if(ix>=0x7fff000000000000ULL||((ix|lx)==0)) return x + x;/* 0,inf,nan */
-        if (ix<0x0001000000000000ULL) {		/* subnormal */
-            x *= two114;
-            GET_FLT128_MSW64(hx,x);
-            ix = hx&0x7fffffffffffffffULL;
-            *eptr = -114;
-        }
-        *eptr += (ix>>48)-16382;
-        hx = (hx&0x8000ffffffffffffULL) | 0x3ffe000000000000ULL;
-        SET_FLT128_MSW64(x,hx);
-        return x;
-    }
+    return __builtin_frexpf128(x, eptr);
 }
-
-using namespace quadmath_frexpq;

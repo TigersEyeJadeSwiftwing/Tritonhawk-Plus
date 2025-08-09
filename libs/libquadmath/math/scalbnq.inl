@@ -1,69 +1,68 @@
 #pragma once
 
-#include "copysignq.inl"
-
-/* s_scalbnl.c -- long double version of s_scalbn.c.
- * Conversion to IEEE quad long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
-
-/* @(#)s_scalbn.c 5.1 93/09/24 */
 /*
- * ====================================================
- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
- *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
- */
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
-namespace quadmath_scalbnq
-{
-    #if defined(LIBM_SCCS) && !defined(lint)
-    static char rcsid[] = "$NetBSD: $";
-    #endif
+static inline __attribute__((always_inline, hot))
+__float128 scalbnq(__float128 x, int n) {
+    uint64_t hi, lo;
+    GET_FLT128_WORDS64(hi, lo, x);
 
-    /*
-     * scalbnq (long double x, int n)
-     * scalbnq(x,n) returns x* 2**n  computed by  exponent
-     * manipulation rather than by actually performing an
-     * exponentiation or a multiplication.
-     */
+    // Extract sign, exponent, and mantissa mask
+    uint64_t sign = hi & UINT64_C(0x8000000000000000);
+    int      exp  = int((hi >> 48) & 0x7FFF);
+    const int  BIAS = 0x3FFF;
 
-    static const __float128
-    two114 = 2.0769187434139310514121985316880384E+34Q, /* 0x4071000000000000, 0 */
-    twom114 = 4.8148248609680896326399448564623183E-35Q, /* 0x3F8D000000000000, 0 */
-    huge   = 1.0E+4900Q,
-    tiny   = 1.0E-4900Q;
-
-    static inline __attribute__((always_inline, hot))
-    __float128 scalbnq (__float128 x, int n)
-    {
-        int64_t k,hx,lx;
-        GET_FLT128_WORDS64(hx,lx,x);
-            k = (hx>>48)&0x7fff;		/* extract exponent */
-            if (k==0) {				/* 0 or subnormal x */
-                if ((lx|(hx&0x7fffffffffffffffULL))==0) return x; /* +-0 */
-            x *= two114;
-            GET_FLT128_MSW64(hx,x);
-            k = ((hx>>48)&0x7fff) - 114;
-        }
-            if (k==0x7fff) return x+x;		/* NaN or Inf */
-        if (n< -50000) return tiny*copysignq(tiny,x); /*underflow*/
-            if (n> 50000 || k+n > 0x7ffe)
-          return huge*copysignq(huge,x); /* overflow  */
-        /* Now k and n are bounded we know that k = k+n does not
-           overflow.  */
-            k = k+n;
-            if (k > 0) 				/* normal result */
-            {SET_FLT128_MSW64(x,(hx&0x8000ffffffffffffULL)|(k<<48)); return x;}
-            if (k <= -114)
-          return tiny*copysignq(tiny,x); 	/*underflow*/
-            k += 114;				/* subnormal result */
-        SET_FLT128_MSW64(x,(hx&0x8000ffffffffffffULL)|(k<<48));
-            return x*twom114;
+    // Handle zero, NaN, Inf
+    if (exp == 0) {
+        // Zero or subnormal: scale x by 2^114 to normalize, adjust exponent
+        if ((lo | (hi & UINT64_C(0x7FFFFFFFFFFF'FFFF))) == 0)
+            return x;  // zero
+        constexpr __float128 two114 = (__float128)0x1.0p114Q;
+        x *= two114;
+        GET_FLT128_WORDS64(hi, lo, x);
+        exp = int((hi >> 48) & 0x7FFF) - 114;
     }
-}
+    else if (exp == 0x7FFF) {
+        // NaN or Inf
+        return x + x;
+    }
 
-using namespace quadmath_scalbnq;
+    // Compute new exponent and check overflow/underflow bounds
+    int newe = exp + n;
+    if (newe > 0x7FFE) {
+        // overflow
+        constexpr __float128 huge = (__float128)1.0e+4900Q;
+        return copysignq(huge, x);
+    }
+    if (newe <= 0) {
+        // underflow to subnormal or zero
+        if (newe <= -114) {
+            constexpr __float128 tiny = (__float128)1.0e-4900Q;
+            return copysignq(tiny, x);
+        }
+        // extract subnormal: shift into mantissa
+        hi = sign | 0;        // zero out exponent, mantissa
+        lo = 0;
+        SET_FLT128_WORDS64(x, hi, lo);
+        constexpr __float128 twom114 = (__float128)0x1.0p-114Q;
+        return x * twom114 * __builtin_powi((__float128)2.0Q, newe + 114);
+    }
+
+    // Normal range: just reassemble sign | new exponent | mantissa
+    hi = sign | (uint64_t(newe) << 48) | (hi & UINT64_C(0x0000FFFFFFFF'FFFF));
+    SET_FLT128_WORDS64(x, hi, lo);
+    return x;
+}

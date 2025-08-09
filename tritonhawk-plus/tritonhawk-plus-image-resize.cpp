@@ -195,7 +195,7 @@ static GimpValueArray* thpimageresize_run(
     gboolean seamless_y =           gboolean(FALSE);
     gdouble sample_grid_x =         gdouble(100.0);
     gdouble sample_grid_y =         gdouble(100.0);
-    gint chunk_size =               gint(128);
+    gint chunk_size =               gint(80);
 
     GtkWidget*              Program_Dialog;
     GtkWidget*              Gui_Log_Box;

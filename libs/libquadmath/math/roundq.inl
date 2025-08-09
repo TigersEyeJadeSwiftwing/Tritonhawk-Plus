@@ -1,78 +1,66 @@
 #pragma once
 
-/* Round long double to integer away from zero.
-   Copyright (C) 1997-2018 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
-   Contributed by Ulrich Drepper <drepper@cygnus.com>, 1997 and
-		  Jakub Jelinek <jj@ultra.linux.cz>, 1999.
-
-   The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   The GNU C Library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
-
-#define NO_MATH_REDIRECT
+/*
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 static inline __attribute__((always_inline, hot))
-__float128 roundq (__float128 x)
-{
-  int32_t j0;
-  uint64_t i1, i0;
+__float128 roundq(__float128 x) {
+    uint64_t hi, lo;
+    GET_FLT128_WORDS64(hi, lo, x);
 
-  GET_FLT128_WORDS64 (i0, i1, x);
-  j0 = ((i0 >> 48) & 0x7fff) - 0x3fff;
-  if (j0 < 48)
-    {
-      if (j0 < 0)
-	{
-	  i0 &= 0x8000000000000000ULL;
-	  if (j0 == -1)
-	    i0 |= 0x3fff000000000000LL;
-	  i1 = 0;
-	}
-      else
-	{
-	  uint64_t i = 0x0000ffffffffffffLL >> j0;
-	  if (((i0 & i) | i1) == 0)
-	    /* X is integral.  */
-	    return x;
+    // Extract unbiased exponent j0 = exp - bias
+    int j0 = int((hi >> 48) & 0x7FFF) - 0x3FFF;
 
-	  i0 += 0x0000800000000000LL >> j0;
-	  i0 &= ~i;
-	  i1 = 0;
-	}
+    // |x| < 0.5 → round toward ±0 to zero
+    if (j0 < 0) {
+        hi &= 0x8000'0000'0000'0000ULL;         // keep sign
+        hi |= 0x3FFF'0000'0000'0000ULL;         // produce ±0.0…5
+        lo  = 0;
     }
-  else if (j0 > 111)
-    {
-      if (j0 == 0x4000)
-	/* Inf or NaN.  */
-	return x + x;
-      else
-	return x;
+    // |x| >= 2^112 or NaN/Inf → return x + x to preserve NaN
+    else if (j0 > 111) {
+        return ((uint16_t)(hi >> 48) == 0x7FFF)
+               ? x + x
+               : x;
     }
-  else
-    {
-      uint64_t i = -1ULL >> (j0 - 48);
-      if ((i1 & i) == 0)
-	/* X is integral.  */
-	return x;
+    else {
+        // Mask for fractional bits in high and low words
+        uint64_t frac_hi = (0x0000'FFFF'FFFF'FFFFULL >> j0);
+        uint64_t frac_lo = (j0 < 64)
+            ? ~0ULL >> (j0 + 16)
+            : 0xFFFF'FFFF'FFFF'FFFFULL;
 
-      uint64_t j = i1 + (1LL << (111 - j0));
-      if (j < i1)
-	i0 += 1;
-      i1 = j;
-      i1 &= ~i;
+        // If already integral, exit early
+        if (((hi & frac_hi) | (lo & frac_lo)) == 0)
+            return x;
+
+        // Add 0.5 ulp at the rounding position
+        if (j0 < 64) {
+            lo += (1ULL << (63 - j0));
+            if (lo < (1ULL << (63 - j0))) {
+                hi += 1;  // carry
+            }
+        } else {
+            hi += (1ULL << (112 - j0));
+        }
+
+        // Clear fractional bits
+        hi &= ~frac_hi;
+        lo &= ~frac_lo;
     }
 
-  SET_FLT128_WORDS64 (x, i0, i1);
-  return x;
+    SET_FLT128_WORDS64(x, hi, lo);
+    return x;
 }

@@ -135,7 +135,7 @@ namespace TritonhawkPlus
 
             if (pixel_start >= pixel_total) continue;
 
-            #pragma omp atomic
+            #pragma omp atomic update
             chunk_accum++;
 
             if (omp_get_thread_num() == 0)
@@ -197,6 +197,7 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
                 for (s32 s_y = 0; s_y < samples_y; s_y++)
                 {
+                    #pragma clang loop vectorize(enable)
                     for (s32 s_x = 0; s_x < samples_x; s_x++)
                     {
                         s32 s_index = s_x + (s_y * samples_x);
@@ -213,55 +214,6 @@ namespace TritonhawkPlus
 
                         f128 sample_position_x = sample_grid_center_x + smp_grid_x;
                         f128 sample_position_y = sample_grid_center_y + smp_grid_y;
-
-                        /*
-                        f128 sample_position_x = sample_grid_center_x;
-                        f128 sample_position_y = sample_grid_center_y;
-                        if (samples_total > 1)
-                        {
-                            // Rectangular sample grid
-                            if (sample_grid_shape == 0)
-                            {
-                                if (samples_x > 1)
-                                    sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5_q);
-                                if (samples_y > 1)
-                                    sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5_q);
-                            }
-                            // Ellipse sample grid
-                            else if (sample_grid_shape == 1)
-                            {
-                                f128 spos_x = 0._q;
-                                f128 spos_y = 0._q;
-
-                                if (samples_x > 1)
-                                    spos_x = 2._q * ((f128(s_x) / f128(samples_x - 1)) - 0.5_q);
-                                if (samples_y > 1)
-                                    spos_y = 2._q * ((f128(s_y) / f128(samples_y - 1)) - 0.5_q);
-
-                                f128 hyp = sqrtq((spos_x * spos_x) + (spos_y * spos_y));
-
-                                f128 position_ellipse_x = 0._q;
-                                f128 position_ellipse_y = 0._q;
-                                if (hyp > 0._q)
-                                {
-                                    if (fabsq(spos_x) > 0._q)
-                                    {
-                                        position_ellipse_x = ((cosq(((hyp - spos_x) / fabsq(spos_x)) * SMP_GRID_ELLIPSE_COS_FACTOR) * M_SQRT2_m1q) + 1.q) * spos_x * sample_grid_width * 0.5_q;
-                                    }
-                                    if (fabsq(spos_y) > 0._q)
-                                    {
-                                        position_ellipse_y = ((cosq(((hyp - spos_y) / fabsq(spos_y)) * SMP_GRID_ELLIPSE_COS_FACTOR) * M_SQRT2_m1q) + 1.q) * spos_y * sample_grid_height * 0.5_q;
-                                    }
-                                }
-
-                                f128 position_rect_x = spos_x * sample_grid_width * 0.5_q;
-                                f128 position_rect_y = spos_y * sample_grid_height * 0.5_q;
-
-                                sample_position_x = sample_grid_center_x + ((new_x >= old_x) ? position_ellipse_x : position_rect_x);
-                                sample_position_y = sample_grid_center_y + ((new_y >= old_y) ? position_ellipse_y : position_rect_y);
-                            }
-                        }
-                        */
 
                         s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
                         f128 lerp_x = 0.0_q, lerp_y = 0.0_q;

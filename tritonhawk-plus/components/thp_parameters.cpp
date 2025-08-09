@@ -255,10 +255,11 @@ namespace TritonhawkPlus
         if (output_size_x < input_size_x) circle_x = false;
         if (output_size_y < input_size_y) circle_y = false;
 
-        for (int index = 0; index < sample_count_xy; index++)
+        #pragma omp parallel for shared(grid) default(firstprivate)
+        for (u64 index = 0; index < sample_count_xy; index++)
         {
-            int px = index % sample_count_x;
-            int py = index / sample_count_x;
+            u64 px = index % sample_count_x;
+            u64 py = index / sample_count_x;
 
             f128 spos_x = 0._q;
             f128 spos_y = 0._q;
@@ -270,7 +271,9 @@ namespace TritonhawkPlus
 
             if ((circle_x == false) && (circle_y == false))
             {
+                #pragma omp atomic write
                 grid->at(index).x = spos_x * 0.5_q;
+                #pragma omp atomic write
                 grid->at(index).y = spos_y * 0.5_q;
             }
             else
@@ -290,27 +293,38 @@ namespace TritonhawkPlus
                     }
                 }
 
+                #pragma omp atomic write
                 grid->at(index).x = (circle_x == false) ? spos_x * 0.5_q : position_ellipse_x * 0.5_q;
+                #pragma omp atomic write
                 grid->at(index).y = (circle_y == false) ? spos_y * 0.5_q : position_ellipse_y * 0.5_q;
             }
 
             if ((sampling_complexity_x == 0) && (sampling_complexity_y == 0))
+            {
+                #pragma omp atomic write
                 grid->at(index).weight = 1.0_q;
+            }
             else
             {
-                // f128 gx = (grid->at(index).x * 2.0_q) * (f128(sample_count_x) / f128(sample_count_x + 1));
-                // f128 gy = (grid->at(index).y * 2.0_q) * (f128(sample_count_y) / f128(sample_count_y + 1));
-                f128 gx = grid->at(index).x * 2.0_q;
-                f128 gy = grid->at(index).y * 2.0_q;
-                f128 hyp = sqrtq((gx * gx) + (gy * gy));
+                f128 gx = 0.0_q, gy = 0.0_q;
+                #pragma omp atomic read
+                gx = grid->at(index).x;
+                #pragma omp atomic read
+                gy = grid->at(index).y;
+                f128 hyp = sqrtq((gx * gx * 4.0_q) + (gy * gy * 4.0_q));
                 f128 weight_factor = clamp01q(hyp / M_SQRT2q);
                 f128 sample_weight = cosq(weight_factor * M_PI_2q) + 0.5_q;
+                #pragma omp atomic write
                 grid->at(index).weight = sample_weight;
             }
 
+            #pragma omp atomic update
             grid->at(index).x *= sample_grid_scale_x;
+            #pragma omp atomic update
             grid->at(index).y *= sample_grid_scale_y;
+            #pragma omp atomic update
             grid->at(index).x += sample_grid_offset_x;
+            #pragma omp atomic update
             grid->at(index).y += sample_grid_offset_y;
         }
     }
@@ -320,11 +334,11 @@ namespace TritonhawkPlus
         sample_count_xy = max(sample_count_xy, 1);
         chunk_size_default = max(chunk_size_default, 1024);
         chunk_size_samples = chunk_size_default;
-        input_size_x = min(max(input_size_x, 1), max_image_dimension);
-        input_size_y = min(max(input_size_y, 1), max_image_dimension);
+        input_size_x = clamp(input_size_x, 1, max_image_dimension);
+        input_size_y = clamp(input_size_y, 1, max_image_dimension);
         input_size_xy = input_size_x * input_size_y;
-        output_size_x = min(max(output_size_x, 1), max_image_dimension);
-        output_size_y = min(max(output_size_y, 1), max_image_dimension);
+        output_size_x = clamp(output_size_x, 1, max_image_dimension);
+        output_size_y = clamp(output_size_y, 1, max_image_dimension);
         output_size_xy = output_size_x * output_size_y;
         image_ratio_x = f128(input_size_x) / f128(output_size_x);
         image_ratio_y = f128(input_size_y) / f128(output_size_y);

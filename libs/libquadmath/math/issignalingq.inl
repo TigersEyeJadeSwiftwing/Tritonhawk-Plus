@@ -1,43 +1,31 @@
 #pragma once
 
-/* Test for signaling NaN.
-   Copyright (C) 2013-2018 Free Software Foundation, Inc.
-   This file is part of the GNU C Library.
-
-   The GNU C Library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Lesser General Public
-   License as published by the Free Software Foundation; either
-   version 2.1 of the License, or (at your option) any later version.
-
-   The GNU C Library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
-
-   You should have received a copy of the GNU Lesser General Public
-   License along with the GNU C Library; if not, see
-   <http://www.gnu.org/licenses/>.  */
+/*
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 static inline __attribute__((always_inline, hot))
-int issignalingq (__float128 x)
-{
-  uint64_t hxi, lxi __attribute__ ((unused));
-  GET_FLT128_WORDS64 (hxi, lxi, x);
-#if HIGH_ORDER_BIT_IS_SET_FOR_SNAN
-  /* We only have to care about the high-order bit of x's significand, because
-     having it set (sNaN) already makes the significand different from that
-     used to designate infinity.  */
-  return ((hxi & UINT64_C (0x7fff800000000000))
-          == UINT64_C (0x7fff800000000000));
-#else
-  /* To keep the following comparison simple, toggle the quiet/signaling bit,
-     so that it is set for sNaNs.  This is inverse to IEEE 754-2008 (as well as
-     common practice for IEEE 754-1985).  */
-  hxi ^= UINT64_C (0x0000800000000000);
-  /* If lxi != 0, then set any suitable bit of the significand in hxi.  */
-  hxi |= (lxi | -lxi) >> 63;
-  /* We have to compare for greater (instead of greater or equal), because x's
-     significand being all-zero designates infinity not NaN.  */
-  return (hxi & UINT64_C (0x7fffffffffffffff)) > UINT64_C (0x7fff800000000000);
-#endif
+int issignalingq(__float128 x) {
+    uint64_t hi, lo;
+    GET_FLT128_WORDS64(hi, lo, x);
+
+    // Combine exponent and fraction fields into a single 64-bit payload
+    uint64_t payload = hi & UINT64_C(0x7FFFFFFFFFFF'FFFF);
+
+    // Check for exponent == 0x7FFF (all 1s) ⇒ NaN or ∞
+    //        payload >  0x7FFF800000000000 ⇒ NaN (not ∞)
+    //        quiet bit (bit 47) == 0     ⇒ signaling NaN
+    return (payload > UINT64_C(0x7FFF800000000000))
+        && ((payload & UINT64_C(0x0000800000000000)) == 0);
 }

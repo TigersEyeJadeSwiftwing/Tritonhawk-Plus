@@ -1,34 +1,22 @@
 #pragma once
 
-/* s_isnanl.c -- long double version of s_isnan.c.
- * Conversion to long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
-
 /*
- * ====================================================
- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
- *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
- */
-
-/*
- * isnanq(x) returns 1 is x is nan, else 0;
- * no branching!
- */
-
-// #include "quadmath-imp.h"
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
 
 static inline __attribute__((always_inline, hot))
 int isnanq(__float128 x)
 {
-    int64_t hx,lx;
-    GET_FLT128_WORDS64(hx,lx,x);
-    hx &= 0x7fffffffffffffffLL;
-    hx |= (uint64_t)(lx|(-lx))>>63;
-    hx = 0x7fff000000000000LL - hx;
-    return (int)((uint64_t)hx>>63);
+    return __builtin_isnan(x);
 }

@@ -154,7 +154,9 @@
 		<Unit filename="../../libs/libquadmath/math/powq.inl" />
 		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
 		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />
+		<Unit filename="../../libs/libquadmath/math/sinq.inl" />
 		<Unit filename="../../libs/libquadmath/math/sqrtq.inl" />
+		<Unit filename="../../libs/libquadmath/math/tanq.inl" />
 		<Unit filename="../../libs/libquadmath/math/to_intq.inl" />
 		<Unit filename="../../libs/libquadmath/math/truncq.inl" />
 		<Unit filename="../../libs/libquadmath/quadmath-config.hpp" />
