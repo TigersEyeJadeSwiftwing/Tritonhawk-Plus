@@ -797,20 +797,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
+        constexpr f128 V_MAX = 65537._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
         size_x = (gint) max((gint)val, (gint)1);
         f128 scale_x_f = f128(size_x) / f128(original_x);
-        scale_x = (gdouble) fmin(fmax((double)scale_x_f, 0.01), 99999.99);
+        scale_x_f = clampq(scale_x_f, V_MIN, V_MAX);
+        scale_x_f = rounddgq(scale_x_f, -5._q);
+        scale_x = gdouble(scale_x_f);
 
         if (chain_button_on == TRUE)
         {
-            f128 new_scale_val = f128(size_x) / locked_ratio_xy;
-            size_y = (gint) max((gint)new_scale_val, (gint)1);
-
-            f128 scl_y = f128(size_y) / f128(original_y);
-            scale_y = (gdouble)scl_y;
+            size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
+            f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
+            scale_y = (gdouble)rounddgq(n_scale, -5._q);
         } else
         {
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
         }
 
         ignore_auto_changes = true;
@@ -821,20 +824,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
+        constexpr f128 V_MAX = 65537._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
         size_y = (gint) max((gint)val, (gint)1);
         f128 scale_y_f = f128(size_y) / f128(original_y);
-        scale_y = (gdouble) fmin(fmax((double)scale_y_f, 0.01), 99999.99);
+        scale_y_f = clampq(scale_y_f, V_MIN, V_MAX);
+        scale_y_f = rounddgq(scale_y_f, -5._q);
+        scale_y = gdouble(scale_y_f);
 
         if (chain_button_on == TRUE)
         {
-            f128 new_scale_val = f128(size_y) * locked_ratio_xy;
-            size_x = (gint) max((gint)new_scale_val, (gint)1);
-
-            f128 scl_x = f128(size_x) / f128(original_x);
-            scale_x = (gdouble)scl_x;
+            size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
+            f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
+            scale_x = (gdouble)rounddgq(n_scale, -5._q);
         } else
         {
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
         }
 
         ignore_auto_changes = true;
@@ -845,20 +851,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        scale_x = (gdouble) fmin(fmax((double)val * 0.01, 0.0001), 99999.99);
-        f128 size_x_f = f128(original_x) * f128(scale_x);
+        constexpr f128 V_MAX = 65537._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
+        f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
+        value = rounddgq(value, -6._q);
+        scale_x = gdouble(value);
+        f128 size_x_f = f128(original_x) * value;
         size_x = (gint) max((gint)size_x_f, (gint)1);
 
         if (chain_button_on == TRUE)
         {
-            f128 new_scale_val = f128(size_x) / locked_ratio_xy;
-            size_y = (gint) max((gint)new_scale_val, (gint)1);
-
-            f128 scl_y = f128(size_y) / f128(original_y);
-            scale_y = (gdouble)scl_y;
+            size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
+            f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
+            scale_y = (gdouble)rounddgq(n_scale, -6._q);
         } else
         {
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
         }
 
         ignore_auto_changes = true;
@@ -869,20 +878,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        scale_y = (gdouble) fmin(fmax((double)val * 0.01, 0.0001), 99999.99);
-        f128 size_y_f = f128(original_y) * f128(scale_y);
+        constexpr f128 V_MAX = 65537._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
+        f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
+        value = rounddgq(value, -6._q);
+        scale_y = gdouble(value);
+        f128 size_y_f = f128(original_y) * value;
         size_y = (gint) max((gint)size_y_f, (gint)1);
 
         if (chain_button_on == TRUE)
         {
-            f128 new_scale_val = f128(size_y) * locked_ratio_xy;
-            size_x = (gint) max((gint)new_scale_val, (gint)1);
-
-            f128 scl_x = f128(size_x) / f128(original_x);
-            scale_x = (gdouble)scl_x;
+            size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
+            f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
+            scale_x = (gdouble)rounddgq(n_scale, -6._q);
         } else
         {
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
         }
 
         ignore_auto_changes = true;
@@ -893,15 +905,17 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        sample_grid_scale_x = gdouble (min(max(val, 0.01), 5000.0) * 0.01);
+        f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
+        value = rounddgq(value, -4._q);
+        sample_grid_scale_x = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
-            f128 sample_grid_scale_y_f = f128(sample_grid_scale_x / (f128)sample_grid_scale_locked_ratio_xy);
-            sample_grid_scale_y = (gdouble)sample_grid_scale_y_f;
+            f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_x) / f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
+            sample_grid_scale_y = (gdouble)rounddgq(sample_grid_scale_f, -4._q);
         } else
         {
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
+            sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
         }
 
         ignore_auto_changes = true;
@@ -912,15 +926,17 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        sample_grid_scale_y = gdouble (min(max(val, 0.01), 5000.0) * 0.01);
+        f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
+        value = rounddgq(value, -4._q);
+        sample_grid_scale_y = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
-            f128 sample_grid_scale_x_f = f128(sample_grid_scale_y * (f128)sample_grid_scale_locked_ratio_xy);
-            sample_grid_scale_x = (gdouble)sample_grid_scale_x_f;
+            f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_y) * f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
+            sample_grid_scale_x = (gdouble)rounddgq(sample_grid_scale_f, -4._q);
         } else
         {
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
+            sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
         }
 
         ignore_auto_changes = true;
@@ -931,15 +947,17 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        sample_interpolation_x = gdouble (min(max(val, 0.0), 50.0));
+        f128 value = clampq((f128)val, 0._q, 50._q);
+        value = rounddgq(value, -2._q);
+        sample_interpolation_x = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_y_f = f128(sample_interpolation_x / (f128)sample_interpolation_locked_ratio_xy);
-            sample_interpolation_y = (gdouble)sample_interpolation_y_f;
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
+            sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3._q);
         } else
         {
-            sample_interpolation_locked_ratio_xy = fmaxq(f128(sample_interpolation_x), 0.00001_q) / fmaxq(f128(sample_interpolation_y), 0.00001_q);
+            sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
         }
 
         ignore_auto_changes = true;
@@ -950,15 +968,17 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        sample_interpolation_y = gdouble (min(max(val, 0.0), 50.0));
+        f128 value = clampq((f128)val, 0._q, 50._q);
+        value = rounddgq(value, -2._q);
+        sample_interpolation_y = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_x_f = f128(sample_interpolation_y * (f128)sample_interpolation_locked_ratio_xy);
-            sample_interpolation_x = (gdouble)sample_interpolation_x_f;
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
+            sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3._q);
         } else
         {
-            sample_interpolation_locked_ratio_xy = fmaxq(f128(sample_interpolation_x), 0.00001_q) / fmaxq(f128(sample_interpolation_y), 0.00001_q);
+            sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
         }
 
         ignore_auto_changes = true;
@@ -970,7 +990,7 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         if ((chain_button_on == TRUE) && (val == FALSE))
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
 
         chain_button_on = (gboolean) val;
 
@@ -983,7 +1003,7 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         if ((chain_button_sample_grid_scale_on == TRUE) && (val == FALSE))
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
+            sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
 
         chain_button_sample_grid_scale_on = (gboolean) val;
 
@@ -996,7 +1016,7 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         if ((chain_button_sample_interpolation_on == TRUE) && (val == FALSE))
-            sample_interpolation_locked_ratio_xy = fmaxq(f128(sample_interpolation_x), 0.00001_q) / fmaxq(f128(sample_interpolation_y), 0.00001_q);
+            sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
 
         chain_button_sample_interpolation_on = (gboolean) val;
 
@@ -1014,7 +1034,7 @@ namespace TritonhawkPlus
         } else
         {
             chain_button_on = (gboolean) TRUE;
-            locked_ratio_xy = f128(size_x) / f128(size_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
         }
 
         ignore_auto_changes = true;
@@ -1026,12 +1046,12 @@ namespace TritonhawkPlus
         original_x = (gint) max((gint)val_x, (gint)1);
         original_y = (gint) max((gint)val_y, (gint)1);
 
-        original_ratio_xy = f128(original_x) / f128(original_y);
-        locked_ratio_xy = original_ratio_xy;
         size_x = original_x;
         size_y = original_y;
         scale_x = (gdouble) 1.0;
         scale_y = (gdouble) 1.0;
+        original_ratio_xy = SetRatio(original_x, original_y);
+        locked_ratio_xy = SetRatio(size_x, size_y);
 
         if (Gui_Text_Size_Original_X)
             gtk_label_set_text((GtkLabel*)Gui_Text_Size_Original_X, g_strdup_printf(_("Width: %i" "%s"), original_x, "") );
@@ -1129,10 +1149,10 @@ namespace TritonhawkPlus
             sample_interpolation_x = (gdouble) Params->sample_interpolation_x;
             sample_interpolation_y = (gdouble) Params->sample_interpolation_y;
 
-            original_ratio_xy = f128(original_x) / f128(original_y);
-            locked_ratio_xy = f128(size_x) / f128(size_y);
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
-            sample_interpolation_locked_ratio_xy = fmaxq(f128(sample_interpolation_x), 0.00001_q) / fmaxq(f128(sample_interpolation_y), 0.00001_q);
+            original_ratio_xy = SetRatio(original_x, original_y);
+            locked_ratio_xy = SetRatio(size_x, size_y);
+            sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
+            sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
 
             seamless_x = (Params->seamless_x == true) ? TRUE : FALSE;
             seamless_y = (Params->seamless_y == true) ? TRUE : FALSE;
@@ -1162,8 +1182,9 @@ namespace TritonhawkPlus
             sample_interpolation_x = (gdouble) 1.0;
             sample_interpolation_y = (gdouble) 1.0;
 
-            sample_grid_scale_locked_ratio_xy = f128(sample_grid_scale_x) / f128(sample_grid_scale_y);
-            sample_interpolation_locked_ratio_xy = fmaxq(f128(sample_interpolation_x), 0.00001_q) / fmaxq(f128(sample_interpolation_y), 0.00001_q);
+            locked_ratio_xy = SetRatio(size_x, size_y);
+            sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
+            sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1173,8 +1194,10 @@ namespace TritonhawkPlus
         {
             size_x *= 2;
             size_y *= 2;
-            scale_x *= 2.0;
-            scale_y *= 2.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1184,8 +1207,10 @@ namespace TritonhawkPlus
         {
             size_x *= 5;
             size_y *= 5;
-            scale_x *= 5.0;
-            scale_y *= 5.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1195,8 +1220,10 @@ namespace TritonhawkPlus
         {
             size_x *= 10;
             size_y *= 10;
-            scale_x *= 10.0;
-            scale_y *= 10.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1206,8 +1233,10 @@ namespace TritonhawkPlus
         {
             size_x /= 2;
             size_y /= 2;
-            scale_x /= 2.0;
-            scale_y /= 2.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1217,8 +1246,10 @@ namespace TritonhawkPlus
         {
             size_x /= 5;
             size_y /= 5;
-            scale_x /= 5.0;
-            scale_y /= 5.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1228,8 +1259,10 @@ namespace TritonhawkPlus
         {
             size_x /= 10;
             size_y /= 10;
-            scale_x /= 10.0;
-            scale_y /= 10.0;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
+            if (chain_button_on == FALSE)
+                locked_ratio_xy = SetRatio(size_x, size_y);
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1241,10 +1274,8 @@ namespace TritonhawkPlus
             gint old_size_y = size_y;
             size_x = old_size_y;
             size_y = old_size_x;
-            f128 scale_x_f = f128(size_x) / f128(original_x);
-            f128 scale_y_f = f128(size_y) / f128(original_y);
-            scale_x = (gdouble) scale_x_f;
-            scale_y = (gdouble) scale_y_f;
+            scale_x = f64((f128)size_x / (f128)original_x);
+            scale_y = f64((f128)size_y / (f128)original_y);
             locked_ratio_xy = f128(size_x) / f128(size_y);
 
             ignore_auto_changes = true;
@@ -1449,6 +1480,30 @@ namespace TritonhawkPlus
     int ComboSizeWidget::GetChoicesDoneResult()
     {
         return choices_done_result;
+    }
+    f128 ComboSizeWidget::SetRatio(gint vx, gint vy)
+    {
+        constexpr f128 V_MAX = 65536._q * 65536._q * 2._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
+        f128 v = clampq((f128)vx, V_MIN, V_MAX) / clampq((f128)vy, V_MIN, V_MAX);
+        return clampq(v, V_MIN, V_MAX);
+    }
+    f128 ComboSizeWidget::SetRatio(f64 vx, f64 vy)
+    {
+        constexpr f128 V_MAX = 65536._q * 65536._q * 2._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
+        f128 v = clampq((f128)vx, V_MIN, V_MAX) / clampq((f128)vy, V_MIN, V_MAX);
+        return clampq(v, V_MIN, V_MAX);
+    }
+    f128 ComboSizeWidget::SetRatio(f128 vx, f128 vy)
+    {
+        constexpr f128 V_MAX = 65536._q * 65536._q * 2._q;
+        constexpr f128 V_MIN = 1._q / V_MAX;
+
+        f128 v = clampq(vx, V_MIN, V_MAX) / clampq(vy, V_MIN, V_MAX);
+        return clampq(v, V_MIN, V_MAX);
     }
 
 }; // END namespace TritonhawkPlus

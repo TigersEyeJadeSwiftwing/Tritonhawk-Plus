@@ -16,7 +16,8 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 static inline __attribute__((always_inline, hot))
-__float128 roundq(__float128 x) {
+__float128 roundq(__float128 x)
+{
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);
 

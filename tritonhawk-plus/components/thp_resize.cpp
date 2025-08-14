@@ -78,11 +78,6 @@ namespace TritonhawkPlus
         vector<SampleGridElement> sample_data;
         params->GetSampleGridVectors(&sample_data);
 
-        /*
-        if ((new_x < old_x) && (new_y < old_y))
-            sample_grid_shape = 0;
-        */
-
         string process_text_base = g_strdup_printf (
             _(  "%s"
                 "-     Current drawable: %i / %i" "\n"
@@ -178,9 +173,6 @@ namespace TritonhawkPlus
                 s64 p1_y = pixel_index / new_x;
                 f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x);
                 f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y);
-                // sample_grid_center_x += sample_grid_offset_x;
-                // sample_grid_center_y += sample_grid_offset_y;
-                // f128 sample_count = fmaxq(f128(samples_total), 1.0_q);
                 f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_a = 0.0_q, s_accum_weight = 0.0_q;
 
                 #pragma omp parallel for collapse(2) \
@@ -197,7 +189,7 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
                 for (s32 s_y = 0; s_y < samples_y; s_y++)
                 {
-                    #pragma clang loop vectorize(enable)
+                    // #pragma clang loop vectorize(enable)
                     for (s32 s_x = 0; s_x < samples_x; s_x++)
                     {
                         s32 s_index = s_x + (s_y * samples_x);

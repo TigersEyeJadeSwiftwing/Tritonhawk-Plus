@@ -89,7 +89,7 @@ namespace TritonhawkPlus
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include <libgimp/stdplugins-intl.h>
+#include "config_h/clang64/stdplugins-intl.h"
 
 #include "lib_int_math.hpp"
 #include "quadmath-modded.hpp"

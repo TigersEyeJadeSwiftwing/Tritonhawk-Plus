@@ -107,13 +107,13 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
         gimp_procedure_add_int_argument(
             procedure,
             "new-x", "New Width", "The width of the new, resized image.",
-            (gint)1, (gint)(65536 * 16), (gint)256,
+            (gint)1, (gint)(65536), (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_int_argument(
             procedure,
             "new-y", "New Height", "The height of the new, resized image.",
-            (gint)1, (gint)(65536 * 16), (gint)256,
+            (gint)1, (gint)(65536), (gint)256,
             G_PARAM_READWRITE
         );
         gimp_procedure_add_double_argument(

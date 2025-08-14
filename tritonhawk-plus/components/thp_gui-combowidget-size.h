@@ -9,8 +9,6 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include <libgimp/stdplugins-intl.h>
-
 #include "components/thp_types.h"
 #include "components/thp_parameters.h"
 #include "components/thp_log.h"
@@ -61,6 +59,9 @@ namespace TritonhawkPlus
         void UpdateGUI();
         void SyncDataToParameters();
         void SyncDataFromParameters();
+        f128 SetRatio(gint vx, gint vy);
+        f128 SetRatio(f64 vx, f64 vy);
+        f128 SetRatio(f128 vx, f128 vy);
 
         GtkWidget* Program_Dialog = NULL;
         ThpParams* Params = NULL;

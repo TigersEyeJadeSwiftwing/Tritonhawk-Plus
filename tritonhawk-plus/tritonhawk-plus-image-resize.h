@@ -9,8 +9,6 @@
 #include <libgimp/gimp.h>
 #include <libgimp/gimpui.h>
 
-#include <libgimp/stdplugins-intl.h>
-
 #include <omp.h>
 #include "components/thp_types.h"
 #include <string>

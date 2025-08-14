@@ -125,6 +125,7 @@ namespace quadmath
         #include "sinq.inl"
         #include "cosq.inl"
         #include "tanq.inl"
+        #include "rounddgq.inl"
     #else
         inline constexpr auto &ceilq = ceill;
         inline constexpr auto &copysignq = copysignl;
@@ -152,6 +153,7 @@ namespace quadmath
         #include "distwarpq.inl"
         #include "lerp.inl"
         #include "to_intq.inl"
+        #include "rounddgq.inl"
     #endif
 
 };
