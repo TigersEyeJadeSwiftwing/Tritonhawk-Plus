@@ -2,7 +2,7 @@
 
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
     #include "lnq.inl"
-    #include "exp.inl"
+    #include "expq.inl"
 #endif
 
 /*
