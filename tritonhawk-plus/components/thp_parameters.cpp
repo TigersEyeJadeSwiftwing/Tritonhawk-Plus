@@ -29,32 +29,51 @@ using namespace quadmath;
 
 namespace TritonhawkPlus
 {
+    void ThpParams::Reset()
+    {
+        seamless_x = false;
+        seamless_y = false;
+        sample_count_adjustment = 1.0_q;
+        sample_grid_height_percent = 100.0;
+        sample_grid_width_percent = 100.0;
+        sample_interpolation_x = 3.0_q;
+        sample_interpolation_y = 3.0_q;
+        sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
+        sample_grid_weighting = 0._q;
+        chunk_size_kilo = 128uL;
+        chunk_size_default = 1024uL * chunk_size_kilo;
+        output_size_x = input_size_x;
+        output_size_y = input_size_y;
+
+        CalcAll();
+    }
     void ThpParams::CalcAll()
     {
         CalcThreads();
         CalcNumberOfChunks();
         CalcSampleGrid();
+        CalcNumberOfChunks();
         CalcInfoString();
     }
     void ThpParams::CalcInfoString()
     {
         info_string = (string) g_strdup_printf (
             _(
-                "----------" "----------" "----------" "----------" "----------" "----------" "----------" "----------" "----------" "----------" "----------" "----------" "\n"
-                "----- Tritonhawk Plus GIMP Plug-in: %s" "\n"
-                "-       High Quality, Multi-threaded, using OpenMP technology.  Uses 128-bit floating-point math for processing." "\n"
-                "-" "\n"
-                "-     Enabled threads for multi-threaded: %i" "\n"
-                "-     Number of drawables to process in image: %i" "\n"
-                "-       Old image_size (all layers): %I64u x %I64u pixels, %I64u total pixels" "\n"
-                "-       New image_size (all layers): %I64u x %I64u pixels, %I64u total pixels" "\n"
-                "-     Seamless tiling X: %s, Seamless tiling Y: %s" "\n"
-                "-     Sample size adjustment level: %%%3.5lf" "\n"
-                "-       Sample grid size: %I64u x %I64u, total samples: %I64u" "\n"
-                "-       Sample grid scale: %%%3.2lf x %%%3.2lf" "\n"
-                "-     Default Chunk size: %I64u kilosamples (%I64u samples)" "\n"
-                "-       Actual Chunk size: %I64u pixels / %I64u samples" "\n"
-                "-       Default number of chunks to process: %I64u (%I64u total samples)" "\n"
+                "Tritonhawk Plus GIMP Plug-in: %s" "\n"
+                "   High Quality, Multi-threaded, using OpenMP technology." "\n"
+                "   Uses 128-bit floating-point math for processing." "\n"
+                "\n"
+                "Enabled threads for multi-threaded: %i" "\n"
+                "Number of drawables to process in image: %i" "\n"
+                "   Old image size: %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "   New image size: %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "Seamless tiling X: %s, Seamless tiling Y: %s" "\n"
+                "Sample size adjustment level: %%%9.2lf" "\n"
+                "   Sample grid size: %I64u x %I64u, total samples: %I64u" "\n"
+                "   Sample grid scale: %%%9.5lf x %%%9.5lf" "\n"
+                "Default Chunk size: %I64u pixels (%I64u samples)" "\n"
+                "   Actual Chunk size: %I64u pixels (%I64u samples)" "\n"
+                "   Number of chunks to process: %I64u (%I64u samples)" "\n"
             ),
             process_name.c_str(),
             number_threads,
@@ -62,10 +81,10 @@ namespace TritonhawkPlus
             input_size_x, input_size_y, input_size_xy,
             output_size_x, output_size_y, output_size_xy,
             seamless_x ? "Enabled" : "Inactive", seamless_y ? "Enabled" : "Inactive",
-            (f64)sample_count_adjustment * 100.0,
+            f64(sample_count_adjustment * 100._q),
             sample_count_x, sample_count_y, sample_count_xy,
-            sample_grid_width_percent, sample_grid_height_percent,
-            u64(chunk_size_default / 1024), chunk_size_default,
+            f64(sample_grid_scale_x * 100._q), f64(sample_grid_scale_y * 100._q),
+            chunk_size_default, u64(chunk_size_default * sample_count_xy),
             chunk_size_pixels, chunk_size_samples,
             number_chunks, total_samples
         );
@@ -91,73 +110,65 @@ namespace TritonhawkPlus
         sample_count_xy = 1;
         f128 grid_scale_x = f128(sample_grid_width_percent) * 0.01_q;
         f128 grid_scale_y = f128(sample_grid_height_percent) * 0.01_q;
-        sample_grid_scale_x = 0.0_q;
-        sample_grid_scale_y = 0.0_q;
+        sample_grid_scale_x = 1.0_q;
+        sample_grid_scale_y = 1.0_q;
         sample_grid_offset_x = 0.5_q;
         sample_grid_offset_y = 0.5_q;
 
-        sampling_complexity_x = 0;
-        sampling_complexity_y = 0;
-        if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Square) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Circle))
+        if (sample_grid_shape == SAMPLE_GRID_SHAPE_Square)
         {
-            sampling_complexity_x = 0;
-            sampling_complexity_y = 0;
+            sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
+            sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
         }
-        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_1) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_1))
+        else if (sample_grid_shape == SAMPLE_GRID_SHAPE_Circle)
         {
-            sampling_complexity_x = 1;
-            sampling_complexity_y = 1;
+            sample_grid_shape_x = SAMPLE_GRID_SHAPE_Circle;
+            sample_grid_shape_y = SAMPLE_GRID_SHAPE_Circle;
         }
-        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_2) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_2))
+        else if (sample_grid_shape == SAMPLE_GRID_SHAPE_Auto)
         {
-            sampling_complexity_x = 2;
-            sampling_complexity_y = 2;
-        }
-        else if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Square_3) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_3))
-        {
-            sampling_complexity_x = 3;
-            sampling_complexity_y = 3;
-        }
-        if ((output_size_x < input_size_x) || (sample_interpolation_x < 0.005_q))
-            sampling_complexity_x = 0;
-        if ((output_size_y < input_size_y) || (sample_interpolation_y < 0.005_q))
-            sampling_complexity_y = 0;
+            sample_grid_shape_x = SAMPLE_GRID_SHAPE_Circle;
+            sample_grid_shape_y = SAMPLE_GRID_SHAPE_Circle;
 
-        int samples_add_x = 0;
-        int samples_add_y = 0;
-        if (sampling_complexity_x == 0) samples_add_x = 0;
-        if (sampling_complexity_x == 1) samples_add_x = 2;
-        if (sampling_complexity_x == 2) samples_add_x = 4;
-        if (sampling_complexity_x == 3) samples_add_x = 6;
-        if (sampling_complexity_y == 0) samples_add_y = 0;
-        if (sampling_complexity_y == 1) samples_add_y = 2;
-        if (sampling_complexity_y == 2) samples_add_y = 4;
-        if (sampling_complexity_y == 3) samples_add_y = 6;
+            if (input_size_x > output_size_x)
+                sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
+            if (input_size_y > output_size_y)
+                sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
+        }
+        else
+        {
+            sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
+            sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
+        }
+
+        f128 shape_scale_factor_x = (sample_grid_shape_x == SAMPLE_GRID_SHAPE_Circle) ? M_SQRT2q : 1._q;
+        f128 shape_scale_factor_y = (sample_grid_shape_y == SAMPLE_GRID_SHAPE_Circle) ? M_SQRT2q : 1._q;
 
         // Shrinking
         if (input_size_x > output_size_x)
         {
-            f128 scale_factor = (grid_scale_x * image_ratio_x) / 2.0_q;
-            int additional_samples = int(scale_factor) * 2;
-            sample_count_x = 3 + additional_samples;
-            sample_grid_scale_x = grid_scale_x * image_ratio_x;
+
+            f128 scale_factor = f128 (grid_scale_x * image_ratio_x * shape_scale_factor_x) / 2.0_q;
+            u64 additional_samples = u64 (scale_factor) * 2u;
+            sample_count_x = 3u + additional_samples;
+            sample_grid_scale_x = grid_scale_x * image_ratio_x * shape_scale_factor_x;
 
             sample_grid_offset_x = 0.5_q * image_ratio_x;
         }
         // Growing
         else if (input_size_x < output_size_x)
         {
-            if ((grid_scale_x > 1.00001_q) || (sampling_complexity_x > 0))
+            if ((grid_scale_x > 1.00001_q) || (sample_grid_shape_x != SAMPLE_GRID_SHAPE_Square))
             {
-                f128 scale_factor = (grid_scale_x) * 0.5_q;
-                int additional_samples = int(scale_factor) * 2;
-                sample_count_x = 3 + additional_samples + samples_add_x;
-                sample_grid_scale_x = grid_scale_x - 1.0_q;
+                f128 scale_factor = f128 (grid_scale_x * shape_scale_factor_x) * 0.5_q;
+                u64 additional_samples = u64 (scale_factor) * 2u;
+                sample_count_x = 3u + additional_samples;
+                sample_grid_scale_x = (grid_scale_x * shape_scale_factor_x) - 1.0_q;
             }
             else
             {
-                sample_count_x = 1;
-                sample_grid_scale_x = 0.0_q;
+                sample_count_x = 1u;
+                sample_grid_scale_x = 1.0_q;
             }
 
             sample_grid_offset_x = 0.5_q * image_ratio_x;
@@ -165,17 +176,17 @@ namespace TritonhawkPlus
         // No change
         else
         {
-            if ((grid_scale_x > 1.00001_q) || (sampling_complexity_x > 0))
+            if ((grid_scale_x > 1.00001_q) || (sample_grid_shape_x != SAMPLE_GRID_SHAPE_Square))
             {
-                f128 scale_factor = (grid_scale_x) * 0.5_q;
-                int additional_samples = int(scale_factor) * 2;
-                sample_count_x = 3 + additional_samples + samples_add_x;
-                sample_grid_scale_x = grid_scale_x - 1.0_q;
+                f128 scale_factor = f128 (grid_scale_x * shape_scale_factor_x) * 0.5_q;
+                u64 additional_samples = u64 (scale_factor) * 2u;
+                sample_count_x = 3u + additional_samples;
+                sample_grid_scale_x = (grid_scale_x * shape_scale_factor_x) - 1.0_q;
             }
             else
             {
-                sample_count_x = 1;
-                sample_grid_scale_x = 0.0_q;
+                sample_count_x = 1u;
+                sample_grid_scale_x = 1.0_q;
             }
 
             sample_grid_offset_x = 0.5_q;
@@ -184,27 +195,27 @@ namespace TritonhawkPlus
         // Shrinking
         if (input_size_y > output_size_y)
         {
-            f128 scale_factor = (grid_scale_y * image_ratio_y) / 2.0_q;
-            int additional_samples = int(scale_factor) * 2;
-            sample_count_y = 3 + additional_samples;
-            sample_grid_scale_y = grid_scale_y * image_ratio_y;
+            f128 scale_factor = f128 (grid_scale_y * image_ratio_y * shape_scale_factor_y) / 2.0_q;
+            u64 additional_samples = u64 (scale_factor) * 2u;
+            sample_count_y = 3u + additional_samples;
+            sample_grid_scale_y = grid_scale_y * image_ratio_y * shape_scale_factor_y;
 
             sample_grid_offset_y = 0.5_q * image_ratio_y;
         }
         // Growing
         else if (input_size_y < output_size_y)
         {
-            if ((grid_scale_y > 1.00001_q) || (sampling_complexity_y > 0))
+            if ((grid_scale_y > 1.00001_q) || (sample_grid_shape_y != SAMPLE_GRID_SHAPE_Square))
             {
-                f128 scale_factor = (grid_scale_y) * 0.5_q;
-                int additional_samples = int(scale_factor) * 2;
-                sample_count_y = 3 + additional_samples + samples_add_y;
-                sample_grid_scale_y = grid_scale_y - 1.0_q;
+                f128 scale_factor = f128 (grid_scale_y * shape_scale_factor_y) * 0.5_q;
+                u64 additional_samples = u64 (scale_factor) * 2u;
+                sample_count_y = 3u + additional_samples;
+                sample_grid_scale_y = (grid_scale_y * shape_scale_factor_y) - 1.0_q;
             }
             else
             {
-                sample_count_y = 1;
-                sample_grid_scale_y = 0.0_q;
+                sample_count_y = 1u;
+                sample_grid_scale_y = 1.0_q;
             }
 
             sample_grid_offset_y = 0.5_q * image_ratio_y;
@@ -212,28 +223,28 @@ namespace TritonhawkPlus
         // No change
         else
         {
-            if ((grid_scale_y > 1.00001_q) || (sampling_complexity_y > 0))
+            if ((grid_scale_y > 1.00001_q) || (sample_grid_shape_y != SAMPLE_GRID_SHAPE_Square))
             {
-                f128 scale_factor = (grid_scale_y) * 0.5_q;
-                int additional_samples = int(scale_factor) * 2;
-                sample_count_y = 3 + additional_samples + samples_add_y;
-                sample_grid_scale_y = grid_scale_y - 1.0_q;
+                f128 scale_factor = f128 (grid_scale_y * shape_scale_factor_y) * 0.5_q;
+                u64 additional_samples = u64 (scale_factor) * 2u;
+                sample_count_y = 3u + additional_samples;
+                sample_grid_scale_y = (grid_scale_y * shape_scale_factor_y) - 1.0_q;
             }
             else
             {
-                sample_count_y = 1;
-                sample_grid_scale_y = 0.0_q;
+                sample_count_y = 1u;
+                sample_grid_scale_y = 1.0_q;
             }
 
             sample_grid_offset_y = 0.5_q;
         }
 
-        if (sample_count_adjustment > 1.0_q)
+        if (sample_count_adjustment > 1.0004_q)
         {
             f128 s_c_xf = fmaxq(f128(sample_count_x) * sample_count_adjustment, 1.00001_q);
             f128 s_c_yf = fmaxq(f128(sample_count_y) * sample_count_adjustment, 1.00001_q);
-            sample_count_x = to_intq(s_c_xf);
-            sample_count_y = to_intq(s_c_yf);
+            sample_count_x = (u64) to_intq(s_c_xf);
+            sample_count_y = (u64) to_intq(s_c_yf);
         }
 
         sample_count_xy = sample_count_x * sample_count_y;
@@ -244,19 +255,8 @@ namespace TritonhawkPlus
         grid->clear();
         grid->resize(sample_count_xy, SampleGridElement());
 
-        bool circle_x = false;
-        bool circle_y = false;
-        if ((sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Circle) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_1) ||
-            (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_2) || (sample_grid_shape == (int)SAMPLE_GRID_SHAPE_Weighted_Circle_3))
-        {
-            circle_x = true;
-            circle_y = true;
-        }
-        if (output_size_x < input_size_x) circle_x = false;
-        if (output_size_y < input_size_y) circle_y = false;
-
         #pragma omp parallel for shared(grid) default(firstprivate)
-        for (u64 index = 0; index < sample_count_xy; index++)
+        for (u64 index = 0u; index < sample_count_xy; index++)
         {
             u64 px = index % sample_count_x;
             u64 py = index / sample_count_x;
@@ -264,12 +264,12 @@ namespace TritonhawkPlus
             f128 spos_x = 0._q;
             f128 spos_y = 0._q;
 
-            if (sample_count_x > 1)
-                spos_x = 2._q * ((f128(px) / f128(sample_count_x - 1)) - 0.5_q);
-            if (sample_count_y > 1)
-                spos_y = 2._q * ((f128(py) / f128(sample_count_y - 1)) - 0.5_q);
+            if (sample_count_x > 1u)
+                spos_x = 2._q * ((f128(px) / f128(sample_count_x - 1u)) - 0.5_q);
+            if (sample_count_y > 1u)
+                spos_y = 2._q * ((f128(py) / f128(sample_count_y - 1u)) - 0.5_q);
 
-            if ((circle_x == false) && (circle_y == false))
+            if ((sample_grid_shape_x == SAMPLE_GRID_SHAPE_Square) && (sample_grid_shape_y == SAMPLE_GRID_SHAPE_Square))
             {
                 #pragma omp atomic write
                 grid->at(index).x = spos_x * 0.5_q;
@@ -294,12 +294,12 @@ namespace TritonhawkPlus
                 }
 
                 #pragma omp atomic write
-                grid->at(index).x = (circle_x == false) ? spos_x * 0.5_q : position_ellipse_x * 0.5_q;
+                grid->at(index).x = (sample_grid_shape_x == SAMPLE_GRID_SHAPE_Square) ? spos_x * 0.5_q : position_ellipse_x * 0.5_q;
                 #pragma omp atomic write
-                grid->at(index).y = (circle_y == false) ? spos_y * 0.5_q : position_ellipse_y * 0.5_q;
+                grid->at(index).y = (sample_grid_shape_y == SAMPLE_GRID_SHAPE_Square) ? spos_y * 0.5_q : position_ellipse_y * 0.5_q;
             }
 
-            if ((sampling_complexity_x == 0) && (sampling_complexity_y == 0))
+            if ((sample_grid_weighting < 0.000005_q) || (sample_count_xy < 2u))
             {
                 #pragma omp atomic write
                 grid->at(index).weight = 1.0_q;
@@ -307,13 +307,17 @@ namespace TritonhawkPlus
             else
             {
                 f128 gx = 0.0_q, gy = 0.0_q;
+
                 #pragma omp atomic read
                 gx = grid->at(index).x;
                 #pragma omp atomic read
                 gy = grid->at(index).y;
+
                 f128 hyp = sqrtq((gx * gx * 4.0_q) + (gy * gy * 4.0_q));
                 f128 weight_factor = clamp01q(hyp / M_SQRT2q);
-                f128 sample_weight = cosq(weight_factor * M_PI_2q) + 0.5_q;
+                f128 sample_weight_base = cosq(weight_factor * M_PI_2q);
+                f128 sample_weight = lerpq(1._q, sample_weight_base, sample_grid_weighting);
+
                 #pragma omp atomic write
                 grid->at(index).weight = sample_weight;
             }
@@ -331,34 +335,34 @@ namespace TritonhawkPlus
 
     void ThpParams::CalcNumberOfChunks()
     {
-        sample_count_xy = max(sample_count_xy, 1);
-        chunk_size_default = max(chunk_size_default, 1024);
+        sample_count_xy = max(sample_count_xy, 1uL);
+        chunk_size_default = max(1024uL * chunk_size_kilo, 1024uL);
         chunk_size_samples = chunk_size_default;
-        input_size_x = clamp(input_size_x, 1, max_image_dimension);
-        input_size_y = clamp(input_size_y, 1, max_image_dimension);
+        input_size_x = clamp(input_size_x, 1uL, max_image_dimension);
+        input_size_y = clamp(input_size_y, 1uL, max_image_dimension);
         input_size_xy = input_size_x * input_size_y;
-        output_size_x = clamp(output_size_x, 1, max_image_dimension);
-        output_size_y = clamp(output_size_y, 1, max_image_dimension);
+        output_size_x = clamp(output_size_x, 1uL, max_image_dimension);
+        output_size_y = clamp(output_size_y, 1uL, max_image_dimension);
         output_size_xy = output_size_x * output_size_y;
         image_ratio_x = f128(input_size_x) / f128(output_size_x);
         image_ratio_y = f128(input_size_y) / f128(output_size_y);
         image_ratio_xy = f128(input_size_xy) / f128(output_size_xy);
 
         total_samples = output_size_xy * sample_count_xy;
-        chunk_size_pixels = max(chunk_size_samples / sample_count_xy, 1) + 1;
-        number_chunks = (output_size_xy / chunk_size_pixels) + 1;
+        chunk_size_pixels = max(chunk_size_samples / sample_count_xy, 1uL) + 1uL;
+        number_chunks = (output_size_xy / chunk_size_pixels) + 1uL;
         if (number_chunks < number_threads)
         {
             f128 chunk_size_ratio = f128(number_threads) / f128(number_chunks);
             f128 chunk_size_pixels_f = f128(chunk_size_pixels) / chunk_size_ratio;
-            chunk_size_pixels = int(chunk_size_pixels_f) + 1;
-            number_chunks = (output_size_xy / chunk_size_pixels) + 1;
+            chunk_size_pixels = int(chunk_size_pixels_f) + 1uL;
+            number_chunks = (output_size_xy / chunk_size_pixels) + 1uL;
         }
         if ((number_chunks * chunk_size_pixels) < output_size_xy)
         {
             int pixels_diff = output_size_xy - (number_chunks * chunk_size_pixels);
             int chunks_diff = pixels_diff / chunk_size_pixels;
-            number_chunks += chunks_diff + 1;
+            number_chunks += chunks_diff + 1uL;
         }
 
         progress_increment = (progress_end - progress_start) / f64(number_chunks);

@@ -16,7 +16,43 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 static inline __attribute__((always_inline, hot))
+s8 clamp(s8 v, s8 lo, s8 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
+s16 clamp(s16 v, s16 lo, s16 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
+s32 clamp(s32 v, s32 lo, s32 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
 s64 clamp(s64 v, s64 lo, s64 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
+u8 clamp(u8 v, u8 lo, u8 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
+u16 clamp(u16 v, u16 lo, u16 hi)
+{
+    return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
+}
+
+static inline __attribute__((always_inline, hot))
+u32 clamp(u32 v, u32 lo, u32 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }

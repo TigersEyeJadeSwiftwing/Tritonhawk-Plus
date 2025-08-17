@@ -47,7 +47,7 @@ namespace TritonhawkPlus
         u64 new_y = (u64)gimp_drawable_get_height (draw_1);
         u64 old_total = old_x * old_y;
         u64 new_total = new_x * new_y;
-        if ((old_total < 1) || (new_total < 1)) return;
+        if ((old_total < 1u) || (new_total < 1u)) return;
 
         params->input_size_x = old_x;
         params->input_size_y = old_y;
@@ -57,7 +57,7 @@ namespace TritonhawkPlus
         params->output_size_xy = new_total;
         params->CalcAll();
 
-        int draw_index = params->draw_index;
+        s32 draw_index = params->draw_index;
         bool seamless_x = params->seamless_x;
         bool seamless_y = params->seamless_y;
         u64 chunk_size = params->chunk_size_pixels;
@@ -73,7 +73,6 @@ namespace TritonhawkPlus
         f128 sample_grid_offset_y = params->sample_grid_offset_y;
         f128 sample_interpolation_x = params->sample_interpolation_x;
         f128 sample_interpolation_y = params->sample_interpolation_y;
-        int sample_grid_shape = params->sample_grid_shape;
 
         vector<SampleGridElement> sample_data;
         params->GetSampleGridVectors(&sample_data);
@@ -92,23 +91,28 @@ namespace TritonhawkPlus
             progress_steps, chunk_size
         );
 
-        vector<f64> old_pixelarray(old_total * 4, 0.0);
-        vector<f64> new_pixelarray(new_total * 4, 0.0);
+        vector<f64> old_pixelarray(old_total * 4u, 0.0);
+        vector<f64> new_pixelarray(new_total * 4u, 0.0);
 
         // Read source drawable
         {
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)old_x, (guint)old_y);
             const Babl* format = babl_format_with_space("RGBA double", NULL);
-            double* pxl = new double[old_total * 4];
+            double* pxl = new double[old_total * 4u];
             GeglBuffer* buff = gimp_drawable_get_buffer(draw_0);
             gegl_buffer_get(buff, rect, 1.0, format, pxl, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-            old_pixelarray.assign(pxl, pxl + (old_total * 4));
+            old_pixelarray.assign(pxl, pxl + (old_total * 4u));
             g_clear_object(&buff);
             delete[] pxl;
             delete rect;
         }
 
-        u64 chunk_accum = 0;
+        s32 oxs = s32(old_x);
+        s32 oys = s32(old_y);
+        f128 oxf = f128(old_x);
+        f128 oyf = f128(old_y);
+
+        u64 chunk_accum = 0u;
 
         // Process Chunks
         #pragma omp parallel for \
@@ -116,13 +120,13 @@ namespace TritonhawkPlus
                 chunk_accum, process_text_base, old_pixelarray, new_pixelarray, Log \
             ) \
             firstprivate( \
-                new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, \
-                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, sample_grid_shape,\
+                new_x, new_y, new_total, old_total, chunk_size, \
+                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height,\
                 sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                 progress_steps, progress_start, progress_end, progress_increment, \
                 seamless_x, seamless_y \
             )
-        for (u64 chunk_index = 0; chunk_index <= progress_steps; chunk_index++)
+        for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
         {
             u64 pixel_start = chunk_index * chunk_size;
             u64 pixel_end = min(pixel_start + chunk_size, new_total);
@@ -135,7 +139,7 @@ namespace TritonhawkPlus
 
             if (omp_get_thread_num() == 0)
             {
-                u64 progress_chunks = 0;
+                u64 progress_chunks = 0u;
                 #pragma omp atomic read
                 progress_chunks = chunk_accum;
                 f64 progress_current = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
@@ -144,14 +148,14 @@ namespace TritonhawkPlus
                     _(  "%s"
                         "-     Processing pixels: %I64u - %I64u of %I64u" "\n"
                         "-       Chunks completed so far: %I64u / %I64u" "\n"
-                        "-       Total progress (all drawables): %%%3.4lf"
+                        "-       Total progress (all drawables): %%%3.5lf"
                     ),
                     process_text_base.c_str(),
                     pixel_start, pixel_end, pixel_total,
                     progress_chunks, progress_steps,
                     progress_current)
                 );
-                Log->SetStringProgressBar( g_strdup_printf( _("Processing chunk %I64u of %I64u... %%%3.4lf complete..."), progress_chunks, progress_steps, progress_current ) );
+                Log->SetStringProgressBar( g_strdup_printf( _("Processing chunk %I64u of %I64u... %%%3.5lf complete..."), progress_chunks, progress_steps, progress_current ) );
                 Log->progress_bar_fraction = progress_current;
                 Log->AutoLog(true);
             }
@@ -161,18 +165,18 @@ namespace TritonhawkPlus
                     old_pixelarray, new_pixelarray \
                 ) \
                 firstprivate( \
-                    new_x, new_y, old_x, old_y, \
-                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, sample_grid_shape, \
+                    new_x, new_y, oxs, oys, oxf, oyf, \
+                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                     sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
-            for (s64 pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
+            for (u64 pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
             {
-                s64 p1_x = pixel_index % new_x;
-                s64 p1_y = pixel_index / new_x;
-                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x);
-                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y);
+                u64 p1_x = pixel_index % new_x;
+                u64 p1_y = pixel_index / new_x;
+                f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
+                f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
                 f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_a = 0.0_q, s_accum_weight = 0.0_q;
 
                 #pragma omp parallel for collapse(2) \
@@ -180,22 +184,21 @@ namespace TritonhawkPlus
                         old_pixelarray, sample_data \
                     ) \
                     firstprivate( \
-                        old_x, old_y, \
-                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, sample_grid_shape, \
+                        oxs, oys, oxf, oyf, \
+                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \
                     ) \
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
-                for (s32 s_y = 0; s_y < samples_y; s_y++)
+                for (u64 s_y = 0u; s_y < samples_y; s_y++)
                 {
-                    // #pragma clang loop vectorize(enable)
-                    for (s32 s_x = 0; s_x < samples_x; s_x++)
+                    for (u64 s_x = 0u; s_x < samples_x; s_x++)
                     {
-                        s32 s_index = s_x + (s_y * samples_x);
-                        f128 smp_grid_x = 0.0_q;
-                        f128 smp_grid_y = 0.0_q;
-                        f128 smp_weight = 1.0_q;
+                        u64 s_index = s_x + (s_y * samples_x);
+                        f128 smp_grid_x = 0.0_q,
+                             smp_grid_y = 0.0_q,
+                             smp_weight = 1.0_q;
 
                         #pragma omp atomic read
                         smp_grid_x = sample_data.at(s_index).x;
@@ -209,8 +212,6 @@ namespace TritonhawkPlus
 
                         s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
                         f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
-                        f128 oxf = f128(old_x);
-                        f128 oyf = f128(old_y);
 
                         if (sample_interpolation_x < 0.00001_q)
                         {
@@ -226,18 +227,18 @@ namespace TritonhawkPlus
                             f128 offcenter = fmodq(sample_position_x, 1.0_q);
                             if (offcenter < 0.5_q)
                             {
-                                pos_x1 = (old_x + pos_x0 - 1) % old_x;
+                                pos_x1 = (oxs + pos_x0 - 1) % oxs;
                                 lerp_x = 0.5_q - offcenter;
                             }
                             else
                             {
-                                pos_x1 = (old_x + pos_x0 + 1) % old_x;
+                                pos_x1 = (oxs + pos_x0 + 1) % oxs;
                                 lerp_x = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0_q), oxf);
+                            sample_position_x = clampq(sample_position_x, 0._q, oxf);
                             if (sample_position_x < 0.5_q)
                             {
                                 pos_x0 = 0;
@@ -246,8 +247,8 @@ namespace TritonhawkPlus
                             }
                             else if (sample_position_x > oxf - 0.5_q)
                             {
-                                pos_x0 = old_x - 1;
-                                pos_x1 = old_x - 1;
+                                pos_x0 = oxs - 1;
+                                pos_x1 = oxs - 1;
                                 lerp_x = 0.0_q;
                             }
                             else
@@ -257,12 +258,12 @@ namespace TritonhawkPlus
 
                                 if (offcenter < 0.5_q)
                                 {
-                                    pos_x1 = min(max(pos_x0 - 1, 0), old_x - 1);
+                                    pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
                                     lerp_x = 0.5_q - offcenter;
                                 }
                                 else
                                 {
-                                    pos_x1 = min(max(pos_x0 + 1, 0), old_x - 1);
+                                    pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
                                     lerp_x = offcenter - 0.5_q;
                                 }
                             }
@@ -282,18 +283,18 @@ namespace TritonhawkPlus
                             f128 offcenter = fmodq(sample_position_y, 1.0_q);
                             if (offcenter < 0.5_q)
                             {
-                                pos_y1 = (old_y + pos_y0 - 1) % old_y;
+                                pos_y1 = (oys + pos_y0 - 1) % oys;
                                 lerp_y = 0.5_q - offcenter;
                             }
                             else
                             {
-                                pos_y1 = (old_y + pos_y0 + 1) % old_y;
+                                pos_y1 = (oys + pos_y0 + 1) % oys;
                                 lerp_y = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0_q), oyf);
+                            sample_position_y = clampq(sample_position_y, 0._q, oyf);
                             if (sample_position_y < 0.5_q)
                             {
                                 pos_y0 = 0;
@@ -302,8 +303,8 @@ namespace TritonhawkPlus
                             }
                             else if (sample_position_y > oyf - 0.5_q)
                             {
-                                pos_y0 = old_y - 1;
-                                pos_y1 = old_y - 1;
+                                pos_y0 = oys - 1;
+                                pos_y1 = oys - 1;
                                 lerp_y = 0.0_q;
                             }
                             else
@@ -313,20 +314,20 @@ namespace TritonhawkPlus
 
                                 if (offcenter < 0.5_q)
                                 {
-                                    pos_y1 = min(max(pos_y0 - 1, 0), old_y - 1);
+                                    pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
                                     lerp_y = 0.5_q - offcenter;
                                 }
                                 else
                                 {
-                                    pos_y1 = min(max(pos_y0 + 1, 0), old_y - 1);
+                                    pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
                                     lerp_y = offcenter - 0.5_q;
                                 }
                             }
                         }
 
-                        if ((sample_interpolation_x > 1.0_q) && (pos_x0 != pos_x1))
+                        if ((sample_interpolation_x > 1.0004_q) && (pos_x0 != pos_x1))
                             lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                        if ((sample_interpolation_y > 1.0_q) && (pos_y0 != pos_y1))
+                        if ((sample_interpolation_y > 1.0004_q) && (pos_y0 != pos_y1))
                             lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                         if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
@@ -535,13 +536,6 @@ namespace TritonhawkPlus
                     new_pixelarray[index_a] = f64(s_accum_a);
                 }
 
-                /*
-                new_pixelarray[RGBA_red(new_x, p1_x, p1_y)] = f64(s_accum_r);
-                new_pixelarray[RGBA_green(new_x, p1_x, p1_y)] = f64(s_accum_g);
-                new_pixelarray[RGBA_blue(new_x, p1_x, p1_y)] = f64(s_accum_b);
-                new_pixelarray[RGBA_alpha(new_x, p1_x, p1_y)] = f64(s_accum_a);
-                */
-
             } // END OpenMP-enabled for (pixel_index = pixel_start - pixel_end)
 
         } // END OpenMP-enabled for (int chunk_index = 0; chunk_index <= progress_steps; chunk_index++)
@@ -550,7 +544,7 @@ namespace TritonhawkPlus
         {
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)new_x, (guint)new_y);
             const Babl* format = babl_format_with_space("RGBA double", NULL);
-            double* pxl = new double[new_total * 4];
+            double* pxl = new double[new_total * 4u];
             std::copy(new_pixelarray.begin(), new_pixelarray.end(), pxl);
             GeglBuffer* buff = gimp_drawable_get_buffer(draw_1);
             gegl_buffer_set(buff, rect, 0, format, pxl, GEGL_AUTO_ROWSTRIDE);
@@ -564,16 +558,16 @@ namespace TritonhawkPlus
     void Thp_Resize_drawable_RGB(ThpParams* params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!params)) return;
-        const int progress_steps = params->number_chunks;
+        u64 progress_steps = params->number_chunks;
         if (progress_steps < 1) return;
 
-        const int old_x = (int)gimp_drawable_get_width (draw_0);
-        const int old_y = (int)gimp_drawable_get_height (draw_0);
-        const int new_x = (int)gimp_drawable_get_width (draw_1);
-        const int new_y = (int)gimp_drawable_get_height (draw_1);
-        const int old_total = old_x * old_y;
-        const int new_total = new_x * new_y;
-        if ((old_total < 1) || (new_total < 1)) return;
+        u64 old_x = (u64)gimp_drawable_get_width (draw_0);
+        u64 old_y = (u64)gimp_drawable_get_height (draw_0);
+        u64 new_x = (u64)gimp_drawable_get_width (draw_1);
+        u64 new_y = (u64)gimp_drawable_get_height (draw_1);
+        u64 old_total = old_x * old_y;
+        u64 new_total = new_x * new_y;
+        if ((old_total < 1u) || (new_total < 1u)) return;
 
         params->input_size_x = old_x;
         params->input_size_y = old_y;
@@ -583,29 +577,32 @@ namespace TritonhawkPlus
         params->output_size_xy = new_total;
         params->CalcAll();
 
-        const int draw_index = params->draw_index;
-        const bool seamless_x = params->seamless_x;
-        const bool seamless_y = params->seamless_y;
-        const int chunk_size = params->chunk_size_pixels;
-        const f64 progress_start = params->progress_start;
-        const f64 progress_end = params->progress_end;
-        const f64 progress_increment = params->progress_increment;
-        const int samples_x = params->sample_count_x;
-        const int samples_y = params->sample_count_y;
-        const int samples_total = params->sample_count_xy;
-        const f128 sample_grid_width = params->sample_grid_scale_x;
-        const f128 sample_grid_height = params->sample_grid_scale_y;
-        const f128 sample_grid_offset_x = params->sample_grid_offset_x;
-        const f128 sample_grid_offset_y = params->sample_grid_offset_y;
-        const f128 sample_interpolation_x = params->sample_interpolation_x;
-        const f128 sample_interpolation_y = params->sample_interpolation_y;
+        s32 draw_index = params->draw_index;
+        bool seamless_x = params->seamless_x;
+        bool seamless_y = params->seamless_y;
+        u64 chunk_size = params->chunk_size_pixels;
+        f64 progress_start = params->progress_start;
+        f64 progress_end = params->progress_end;
+        f64 progress_increment = params->progress_increment;
+        u64 samples_x = params->sample_count_x;
+        u64 samples_y = params->sample_count_y;
+        u64 samples_total = params->sample_count_xy;
+        f128 sample_grid_width = params->sample_grid_scale_x;
+        f128 sample_grid_height = params->sample_grid_scale_y;
+        f128 sample_grid_offset_x = params->sample_grid_offset_x;
+        f128 sample_grid_offset_y = params->sample_grid_offset_y;
+        f128 sample_interpolation_x = params->sample_interpolation_x;
+        f128 sample_interpolation_y = params->sample_interpolation_y;
+
+        vector<SampleGridElement> sample_data;
+        params->GetSampleGridVectors(&sample_data);
 
         string process_text_base = g_strdup_printf (
             _(  "%s"
                 "-     Current drawable: %i / %i" "\n"
-                "-       Current old image drawable size: %i x %i pixels, %i total pixels" "\n"
-                "-       Current new image drawable size: %i x %i pixels, %i total pixels" "\n"
-                "-       Number of chunks: %i, Chunk size: %i pixels" "\n"
+                "-       Current old image drawable size: %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "-       Current new image drawable size: %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "-       Number of chunks: %I64u, Chunk size: %I64u pixels" "\n"
             ),
             params->info_string.c_str(),
             draw_index + 1, params->draw_count,
@@ -614,23 +611,28 @@ namespace TritonhawkPlus
             progress_steps, chunk_size
         );
 
-        vector<f64> old_pixelarray(old_total * 3, 0.0);
-        vector<f64> new_pixelarray(new_total * 3, 0.0);
+        vector<f64> old_pixelarray(old_total * 3u, 0.0);
+        vector<f64> new_pixelarray(new_total * 3u, 0.0);
 
         // Read source drawable
         {
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)old_x, (guint)old_y);
             const Babl* format = babl_format_with_space("RGB double", NULL);
-            double* pxl = new double[old_total * 3];
+            double* pxl = new double[old_total * 3u];
             GeglBuffer* buff = gimp_drawable_get_buffer(draw_0);
             gegl_buffer_get(buff, rect, 1.0, format, pxl, GEGL_AUTO_ROWSTRIDE, GEGL_ABYSS_NONE);
-            old_pixelarray.assign(pxl, pxl + (old_total * 3));
+            old_pixelarray.assign(pxl, pxl + (old_total * 3u));
             g_clear_object(&buff);
             delete[] pxl;
             delete rect;
         }
 
-        int chunk_accum = 0;
+        s32 oxs = s32(old_x);
+        s32 oys = s32(old_y);
+        f128 oxf = f128(old_x);
+        f128 oyf = f128(old_y);
+
+        int chunk_accum = 0u;
 
         // Process Chunks
         #pragma omp parallel for \
@@ -638,42 +640,42 @@ namespace TritonhawkPlus
                 chunk_accum, process_text_base, old_pixelarray, new_pixelarray, Log \
             ) \
             firstprivate( \
-                new_x, new_y, new_total, old_x, old_y, old_total, chunk_size, \
+                new_x, new_y, new_total, old_total, chunk_size, \
                 samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                 sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                 progress_steps, progress_start, progress_end, progress_increment, \
                 seamless_x, seamless_y \
             )
-        for (int chunk_index = 0; chunk_index <= progress_steps; chunk_index++)
+        for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
         {
-            int pixel_start = chunk_index * chunk_size;
-            int pixel_end = min(pixel_start + chunk_size, new_total);
-            int pixel_total = new_total;
+            u64 pixel_start = chunk_index * chunk_size;
+            u64 pixel_end = min(pixel_start + chunk_size, new_total);
+            u64 pixel_total = new_total;
 
             if (pixel_start >= pixel_total) continue;
 
-            #pragma omp atomic
-            chunk_accum += 1;
+            #pragma omp atomic update
+            chunk_accum++;
 
             if (omp_get_thread_num() == 0)
             {
-                int progress_chunks = 0;
+                u64 progress_chunks = 0u;
                 #pragma omp atomic read
                 progress_chunks = chunk_accum;
                 f64 progress_current = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
 
                 Log->SetString(g_strdup_printf (
                     _(  "%s"
-                        "-     Processing pixels: %i - %i of %i" "\n"
-                        "-       Chunks completed so far: %i / %i" "\n"
-                        "-       Total progress (all drawables): %%%3.2lf"
+                        "-     Processing pixels: %I64u - %I64u of %I64u" "\n"
+                        "-       Chunks completed so far: %I64u / %I64u" "\n"
+                        "-       Total progress (all drawables): %%%3.5lf"
                     ),
                     process_text_base.c_str(),
-                    pixel_start, pixel_end, new_total,
+                    pixel_start, pixel_end, pixel_total,
                     progress_chunks, progress_steps,
                     progress_current)
                 );
-                Log->SetStringProgressBar( g_strdup_printf( _("Processing chunk %i of %i... %%%3.2lf complete..."), progress_chunks, progress_steps, progress_current ) );
+                Log->SetStringProgressBar( g_strdup_printf( _("Processing chunk %I64u of %I64u... %%%3.5lf complete..."), progress_chunks, progress_steps, progress_current ) );
                 Log->progress_bar_fraction = progress_current;
                 Log->AutoLog(true);
             }
@@ -683,50 +685,53 @@ namespace TritonhawkPlus
                     old_pixelarray, new_pixelarray \
                 ) \
                 firstprivate( \
-                    new_x, new_y, old_x, old_y, \
+                    new_x, new_y, oxs, oys, oxf, oyf, \
                     samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                     sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
-            for (int pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
+            for (u64 pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
             {
-                int p1_x = pixel_index % new_x;
-                int p1_y = pixel_index / new_x;
-                f128 sample_grid_center_x = f128(old_x) * f128(p1_x) / f128(new_x);
-                f128 sample_grid_center_y = f128(old_y) * f128(p1_y) / f128(new_y);
-                sample_grid_center_x += sample_grid_offset_x;
-                sample_grid_center_y += sample_grid_offset_y;
-                f128 sample_count = fmaxq(f128(samples_total), 1.0_q);
-                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q;
+                u64 p1_x = pixel_index % new_x;
+                u64 p1_y = pixel_index / new_x;
+                f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
+                f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
+                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_weight = 0.0_q;
 
                 #pragma omp parallel for collapse(2) \
                     shared( \
-                        old_pixelarray \
+                        old_pixelarray, sample_data \
                     ) \
                     firstprivate( \
-                        old_x, old_y, \
-                        samples_x, samples_y, sample_grid_width, sample_grid_height, \
+                        oxs, oys, oxf, oyf, \
+                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \
                     ) \
-                    reduction(+:s_accum_r, s_accum_g, s_accum_b)
-                for (int s_y = 0; s_y < samples_y; s_y++)
+                    reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_weight)
+                for (u64 s_y = 0u; s_y < samples_y; s_y++)
                 {
-                    for (int s_x = 0; s_x < samples_x; s_x++)
+                    for (u64 s_x = 0u; s_x < samples_x; s_x++)
                     {
-                        f128 sample_position_x = sample_grid_center_x;
-                        f128 sample_position_y = sample_grid_center_y;
-                        if (samples_x > 1)
-                            sample_position_x += (sample_grid_width * f128(s_x) / f128(samples_x - 1)) - (sample_grid_width * 0.5_q);
-                        if (samples_y > 1)
-                            sample_position_y += (sample_grid_height * f128(s_y) / f128(samples_y - 1)) - (sample_grid_height * 0.5_q);
+                        u64 s_index = s_x + (s_y * samples_x);
+                        f128 smp_grid_x = 0.0_q,
+                             smp_grid_y = 0.0_q,
+                             smp_weight = 1.0_q;
 
-                        int pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
+                        #pragma omp atomic read
+                        smp_grid_x = sample_data.at(s_index).x;
+                        #pragma omp atomic read
+                        smp_grid_y = sample_data.at(s_index).y;
+                        #pragma omp atomic read
+                        smp_weight = sample_data.at(s_index).weight;
+
+                        f128 sample_position_x = sample_grid_center_x + smp_grid_x;
+                        f128 sample_position_y = sample_grid_center_y + smp_grid_y;
+
+                        s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
                         f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
-                        f128 oxf = f128(old_x);
-                        f128 oyf = f128(old_y);
 
                         if (sample_interpolation_x < 0.00001_q)
                         {
@@ -742,18 +747,18 @@ namespace TritonhawkPlus
                             f128 offcenter = fmodq(sample_position_x, 1.0_q);
                             if (offcenter < 0.5_q)
                             {
-                                pos_x1 = (old_x + pos_x0 - 1) % old_x;
+                                pos_x1 = (oxs + pos_x0 - 1) % oxs;
                                 lerp_x = 0.5_q - offcenter;
                             }
                             else
                             {
-                                pos_x1 = (old_x + pos_x0 + 1) % old_x;
+                                pos_x1 = (oxs + pos_x0 + 1) % oxs;
                                 lerp_x = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_x = fminq(fmaxq(sample_position_x, 0.0_q), oxf);
+                            sample_position_x = clampq(sample_position_x, 0._q, oxf);
                             if (sample_position_x < 0.5_q)
                             {
                                 pos_x0 = 0;
@@ -762,8 +767,8 @@ namespace TritonhawkPlus
                             }
                             else if (sample_position_x > oxf - 0.5_q)
                             {
-                                pos_x0 = old_x - 1;
-                                pos_x1 = old_x - 1;
+                                pos_x0 = oxs - 1;
+                                pos_x1 = oxs - 1;
                                 lerp_x = 0.0_q;
                             }
                             else
@@ -773,12 +778,12 @@ namespace TritonhawkPlus
 
                                 if (offcenter < 0.5_q)
                                 {
-                                    pos_x1 = min(max(pos_x0 - 1, 0), old_x - 1);
+                                    pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
                                     lerp_x = 0.5_q - offcenter;
                                 }
                                 else
                                 {
-                                    pos_x1 = min(max(pos_x0 + 1, 0), old_x - 1);
+                                    pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
                                     lerp_x = offcenter - 0.5_q;
                                 }
                             }
@@ -798,18 +803,18 @@ namespace TritonhawkPlus
                             f128 offcenter = fmodq(sample_position_y, 1.0_q);
                             if (offcenter < 0.5_q)
                             {
-                                pos_y1 = (old_y + pos_y0 - 1) % old_y;
+                                pos_y1 = (oys + pos_y0 - 1) % oys;
                                 lerp_y = 0.5_q - offcenter;
                             }
                             else
                             {
-                                pos_y1 = (old_y + pos_y0 + 1) % old_y;
+                                pos_y1 = (oys + pos_y0 + 1) % oys;
                                 lerp_y = offcenter - 0.5_q;
                             }
                         }
                         else
                         {
-                            sample_position_y = fminq(fmaxq(sample_position_y, 0.0_q), oyf);
+                            sample_position_y = clampq(sample_position_y, 0._q, oyf);
                             if (sample_position_y < 0.5_q)
                             {
                                 pos_y0 = 0;
@@ -818,8 +823,8 @@ namespace TritonhawkPlus
                             }
                             else if (sample_position_y > oyf - 0.5_q)
                             {
-                                pos_y0 = old_y - 1;
-                                pos_y1 = old_y - 1;
+                                pos_y0 = oys - 1;
+                                pos_y1 = oys - 1;
                                 lerp_y = 0.0_q;
                             }
                             else
@@ -829,65 +834,190 @@ namespace TritonhawkPlus
 
                                 if (offcenter < 0.5_q)
                                 {
-                                    pos_y1 = min(max(pos_y0 - 1, 0), old_y - 1);
+                                    pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
                                     lerp_y = 0.5_q - offcenter;
                                 }
                                 else
                                 {
-                                    pos_y1 = min(max(pos_y0 + 1, 0), old_y - 1);
+                                    pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
                                     lerp_y = offcenter - 0.5_q;
                                 }
                             }
                         }
 
-                        if ((sample_interpolation_x > 1.0_q) && (pos_x0 != pos_x1))
+                        if ((sample_interpolation_x > 1.0004_q) && (pos_x0 != pos_x1))
                             lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                        if ((sample_interpolation_y > 1.0_q) && (pos_y0 != pos_y1))
+                        if ((sample_interpolation_y > 1.0004_q) && (pos_y0 != pos_y1))
                             lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                         if ((pos_x0 == pos_x1) && (pos_y0 == pos_y1))
                         {
-                            s_accum_r += f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y0)]);
-                            s_accum_g += f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y0)]);
-                            s_accum_b += f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y0)]);
+                            u64 index_r0 = RGB_red(old_x, pos_x0, pos_y0);
+                            u64 index_g0 = RGB_green(old_x, pos_x0, pos_y0);
+                            u64 index_b0 = RGB_blue(old_x, pos_x0, pos_y0);
+
+                            f64 col_r0 = 0.0, col_g0 = 0.0, col_b0 = 0.0;
+
+                            #pragma omp atomic read
+                            col_r0 = old_pixelarray[index_r0];
+                            #pragma omp atomic read
+                            col_g0 = old_pixelarray[index_g0];
+                            #pragma omp atomic read
+                            col_b0 = old_pixelarray[index_b0];
+
+                            s_accum_r += f128(col_r0) * smp_weight;
+                            s_accum_g += f128(col_g0) * smp_weight;
+                            s_accum_b += f128(col_b0) * smp_weight;
                         }
                         else if ((pos_x0 != pos_x1) && (pos_y0 == pos_y1))
                         {
-                            s_accum_r += lerpq(f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_red(old_x, pos_x1, pos_y0)]), lerp_x);
-                            s_accum_g += lerpq(f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_green(old_x, pos_x1, pos_y0)]), lerp_x);
-                            s_accum_b += lerpq(f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_blue(old_x, pos_x1, pos_y0)]), lerp_x);
+                            u64 index_r0 = RGB_red(old_x, pos_x0, pos_y0);
+                            u64 index_g0 = RGB_green(old_x, pos_x0, pos_y0);
+                            u64 index_b0 = RGB_blue(old_x, pos_x0, pos_y0);
+
+                            u64 index_r1 = RGB_red(old_x, pos_x1, pos_y1);
+                            u64 index_g1 = RGB_green(old_x, pos_x1, pos_y1);
+                            u64 index_b1 = RGB_blue(old_x, pos_x1, pos_y1);
+
+                            f64 col_r0 = 0.0, col_g0 = 0.0, col_b0 = 0.0;
+                            f64 col_r1 = 0.0, col_g1 = 0.0, col_b1 = 0.0;
+
+                            #pragma omp atomic read
+                            col_r0 = old_pixelarray[index_r0];
+                            #pragma omp atomic read
+                            col_g0 = old_pixelarray[index_g0];
+                            #pragma omp atomic read
+                            col_b0 = old_pixelarray[index_b0];
+
+                            #pragma omp atomic read
+                            col_r1 = old_pixelarray[index_r1];
+                            #pragma omp atomic read
+                            col_g1 = old_pixelarray[index_g1];
+                            #pragma omp atomic read
+                            col_b1 = old_pixelarray[index_b1];
+
+                            s_accum_r += lerpq(f128(col_r0), f128(col_r1), lerp_x) * smp_weight;
+                            s_accum_g += lerpq(f128(col_g0), f128(col_g1), lerp_x) * smp_weight;
+                            s_accum_b += lerpq(f128(col_b0), f128(col_b1), lerp_x) * smp_weight;
                         }
                         else if ((pos_x0 == pos_x1) && (pos_y0 != pos_y1))
                         {
-                            s_accum_r += lerpq(f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y1)]), lerp_y);
-                            s_accum_g += lerpq(f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y1)]), lerp_y);
-                            s_accum_b += lerpq(f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y1)]), lerp_y);
+                            u64 index_r0 = RGB_red(old_x, pos_x0, pos_y0);
+                            u64 index_g0 = RGB_green(old_x, pos_x0, pos_y0);
+                            u64 index_b0 = RGB_blue(old_x, pos_x0, pos_y0);
+
+                            u64 index_r1 = RGB_red(old_x, pos_x1, pos_y1);
+                            u64 index_g1 = RGB_green(old_x, pos_x1, pos_y1);
+                            u64 index_b1 = RGB_blue(old_x, pos_x1, pos_y1);
+
+                            f64 col_r0 = 0.0, col_g0 = 0.0, col_b0 = 0.0;
+                            f64 col_r1 = 0.0, col_g1 = 0.0, col_b1 = 0.0;
+
+                            #pragma omp atomic read
+                            col_r0 = old_pixelarray[index_r0];
+                            #pragma omp atomic read
+                            col_g0 = old_pixelarray[index_g0];
+                            #pragma omp atomic read
+                            col_b0 = old_pixelarray[index_b0];
+
+                            #pragma omp atomic read
+                            col_r1 = old_pixelarray[index_r1];
+                            #pragma omp atomic read
+                            col_g1 = old_pixelarray[index_g1];
+                            #pragma omp atomic read
+                            col_b1 = old_pixelarray[index_b1];
+
+                            s_accum_r += lerpq(f128(col_r0), f128(col_r1), lerp_y) * smp_weight;
+                            s_accum_g += lerpq(f128(col_g0), f128(col_g1), lerp_y) * smp_weight;
+                            s_accum_b += lerpq(f128(col_b0), f128(col_b1), lerp_y) * smp_weight;
                         }
                         else
                         {
-                            f128 mix_r0 = lerpq(f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_red(old_x, pos_x1, pos_y0)]), lerp_x);
-                            f128 mix_g0 = lerpq(f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_green(old_x, pos_x1, pos_y0)]), lerp_x);
-                            f128 mix_b0 = lerpq(f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y0)]), f128(old_pixelarray[RGB_blue(old_x, pos_x1, pos_y0)]), lerp_x);
+                            u64 index_r00 = RGB_red(old_x, pos_x0, pos_y0);
+                            u64 index_g00 = RGB_green(old_x, pos_x0, pos_y0);
+                            u64 index_b00 = RGB_blue(old_x, pos_x0, pos_y0);
 
-                            f128 mix_r1 = lerpq(f128(old_pixelarray[RGB_red(old_x, pos_x0, pos_y1)]), f128(old_pixelarray[RGB_red(old_x, pos_x1, pos_y1)]), lerp_x);
-                            f128 mix_g1 = lerpq(f128(old_pixelarray[RGB_green(old_x, pos_x0, pos_y1)]), f128(old_pixelarray[RGB_green(old_x, pos_x1, pos_y1)]), lerp_x);
-                            f128 mix_b1 = lerpq(f128(old_pixelarray[RGB_blue(old_x, pos_x0, pos_y1)]), f128(old_pixelarray[RGB_blue(old_x, pos_x1, pos_y1)]), lerp_x);
+                            u64 index_r10 = RGB_red(old_x, pos_x1, pos_y0);
+                            u64 index_g10 = RGB_green(old_x, pos_x1, pos_y0);
+                            u64 index_b10 = RGB_blue(old_x, pos_x1, pos_y0);
 
-                            s_accum_r += lerpq( mix_r0, mix_r1, lerp_y );
-                            s_accum_g += lerpq( mix_g0, mix_g1, lerp_y );
-                            s_accum_b += lerpq( mix_b0, mix_b1, lerp_y );
+                            u64 index_r01 = RGB_red(old_x, pos_x0, pos_y1);
+                            u64 index_g01 = RGB_green(old_x, pos_x0, pos_y1);
+                            u64 index_b01 = RGB_blue(old_x, pos_x0, pos_y1);
+
+                            u64 index_r11 = RGB_red(old_x, pos_x1, pos_y1);
+                            u64 index_g11 = RGB_green(old_x, pos_x1, pos_y1);
+                            u64 index_b11 = RGB_blue(old_x, pos_x1, pos_y1);
+
+                            f64 col_r00 = 0.0, col_g00 = 0.0, col_b00 = 0.0;
+                            f64 col_r10 = 0.0, col_g10 = 0.0, col_b10 = 0.0;
+                            f64 col_r01 = 0.0, col_g01 = 0.0, col_b01 = 0.0;
+                            f64 col_r11 = 0.0, col_g11 = 0.0, col_b11 = 0.0;
+
+                            #pragma omp atomic read
+                            col_r00 = old_pixelarray[index_r00];
+                            #pragma omp atomic read
+                            col_g00 = old_pixelarray[index_g00];
+                            #pragma omp atomic read
+                            col_b00 = old_pixelarray[index_b00];
+
+                            #pragma omp atomic read
+                            col_r10 = old_pixelarray[index_r10];
+                            #pragma omp atomic read
+                            col_g10 = old_pixelarray[index_g10];
+                            #pragma omp atomic read
+                            col_b10 = old_pixelarray[index_b10];
+
+                            #pragma omp atomic read
+                            col_r01 = old_pixelarray[index_r01];
+                            #pragma omp atomic read
+                            col_g01 = old_pixelarray[index_g01];
+                            #pragma omp atomic read
+                            col_b01 = old_pixelarray[index_b01];
+
+                            #pragma omp atomic read
+                            col_r11 = old_pixelarray[index_r11];
+                            #pragma omp atomic read
+                            col_g11 = old_pixelarray[index_g11];
+                            #pragma omp atomic read
+                            col_b11 = old_pixelarray[index_b11];
+
+                            f128 mix_r0 = lerpq(f128(col_r00), f128(col_r10), lerp_x);
+                            f128 mix_g0 = lerpq(f128(col_g00), f128(col_g10), lerp_x);
+                            f128 mix_b0 = lerpq(f128(col_b00), f128(col_b10), lerp_x);
+
+                            f128 mix_r1 = lerpq(f128(col_r01), f128(col_r11), lerp_x);
+                            f128 mix_g1 = lerpq(f128(col_g01), f128(col_g11), lerp_x);
+                            f128 mix_b1 = lerpq(f128(col_b01), f128(col_b11), lerp_x);
+
+                            s_accum_r += lerpq(mix_r0, mix_r1, lerp_y) * smp_weight;
+                            s_accum_g += lerpq(mix_g0, mix_g1, lerp_y) * smp_weight;
+                            s_accum_b += lerpq(mix_b0, mix_b1, lerp_y) * smp_weight;
                         }
 
+                        s_accum_weight += smp_weight;
                     }
                 } // END nested OpenMP-enabled for(s_y = 0 - samples_y), for(s_x = 0 - samples_x)
 
-                s_accum_r /= sample_count;
-                s_accum_g /= sample_count;
-                s_accum_b /= sample_count;
+                if (s_accum_weight > 0.0_q)
+                {
+                    s_accum_r /= s_accum_weight;
+                    s_accum_g /= s_accum_weight;
+                    s_accum_b /= s_accum_weight;
+                }
 
-                new_pixelarray[RGB_red(new_x, p1_x, p1_y)] = f64(s_accum_r);
-                new_pixelarray[RGB_green(new_x, p1_x, p1_y)] = f64(s_accum_g);
-                new_pixelarray[RGB_blue(new_x, p1_x, p1_y)] = f64(s_accum_b);
+                {
+                    u64 index_r = RGB_red(new_x, p1_x, p1_y);
+                    u64 index_g = RGB_green(new_x, p1_x, p1_y);
+                    u64 index_b = RGB_blue(new_x, p1_x, p1_y);
+
+                    #pragma omp atomic write
+                    new_pixelarray[index_r] = f64(s_accum_r);
+                    #pragma omp atomic write
+                    new_pixelarray[index_g] = f64(s_accum_g);
+                    #pragma omp atomic write
+                    new_pixelarray[index_b] = f64(s_accum_b);
+                }
 
             } // END OpenMP-enabled for (pixel_index = pixel_start - pixel_end)
 
@@ -897,7 +1027,7 @@ namespace TritonhawkPlus
         {
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)new_x, (guint)new_y);
             const Babl* format = babl_format_with_space("RGB double", NULL);
-            double* pxl = new double[new_total * 3];
+            double* pxl = new double[new_total * 3u];
             std::copy(new_pixelarray.begin(), new_pixelarray.end(), pxl);
             GeglBuffer* buff = gimp_drawable_get_buffer(draw_1);
             gegl_buffer_set(buff, rect, 0, format, pxl, GEGL_AUTO_ROWSTRIDE);

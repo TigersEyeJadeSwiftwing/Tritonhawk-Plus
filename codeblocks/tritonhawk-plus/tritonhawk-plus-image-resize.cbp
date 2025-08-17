@@ -152,6 +152,7 @@
 		<Unit filename="../../libs/libquadmath/math/lerp.inl" />
 		<Unit filename="../../libs/libquadmath/math/lnq.inl" />
 		<Unit filename="../../libs/libquadmath/math/powq.inl" />
+		<Unit filename="../../libs/libquadmath/math/rounddgq.inl" />
 		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
 		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />
 		<Unit filename="../../libs/libquadmath/math/sinq.inl" />

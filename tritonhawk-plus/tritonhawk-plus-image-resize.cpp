@@ -195,7 +195,7 @@ static GimpValueArray* thpimageresize_run(
     gboolean seamless_y =           gboolean(FALSE);
     gdouble sample_grid_x =         gdouble(100.0);
     gdouble sample_grid_y =         gdouble(100.0);
-    gint chunk_size =               gint(80);
+    gint chunk_size =               gint(128);
 
     GtkWidget*              Program_Dialog;
     GtkWidget*              Gui_Log_Box;
@@ -222,29 +222,30 @@ static GimpValueArray* thpimageresize_run(
     old_size_x = gimp_image_get_width(image);
     old_size_y = gimp_image_get_height(image);
 
-    int drawable_count = 0;
+    s32 drawable_count = 0;
     GList* layer_list_check = gimp_image_list_layers(image);
-    drawable_count = (int) g_list_length(layer_list_check);
+    drawable_count = (s32) g_list_length(layer_list_check);
     g_list_free(layer_list_check);
 
     GList* layer_list_image = NULL;
     GList* layer_list_image_copy = NULL;
     GimpImage* image_copy = NULL;
 
-    Params->hardware_max_threads = (int)max_threads;
-    Params->preferences_max_threads = (int)pref_threads;
-    Params->number_threads = (int)enabled_threads;
-    Params->draw_count = (int)drawable_count;
-    Params->draw_index = (int)0;
-    Params->input_size_x = (int)old_size_x;
-    Params->input_size_y = (int)old_size_y;
-    Params->output_size_x = (int)new_size_x;
-    Params->output_size_y = (int)new_size_y;
+    Params->hardware_max_threads = (s16)max_threads;
+    Params->preferences_max_threads = (s16)pref_threads;
+    Params->number_threads = (s16)enabled_threads;
+    Params->draw_count = (s32)drawable_count;
+    Params->draw_index = (s32)0;
+    Params->input_size_x = (u64)old_size_x;
+    Params->input_size_y = (u64)old_size_y;
+    Params->output_size_x = (u64)new_size_x;
+    Params->output_size_y = (u64)new_size_y;
     Params->seamless_x = (bool)seamless_x;
     Params->seamless_y = (bool)seamless_y;
     Params->sample_grid_width_percent = (f64)sample_grid_x;
     Params->sample_grid_height_percent = (f64)sample_grid_y;
-    Params->chunk_size_default = (int)chunk_size * 1024;
+    Params->chunk_size_default = (u64)chunk_size * 1024uL;
+    Params->chunk_size_kilo = (u64)chunk_size;
     Params->CalcAll();
 
     if (run_mode == GIMP_RUN_INTERACTIVE)

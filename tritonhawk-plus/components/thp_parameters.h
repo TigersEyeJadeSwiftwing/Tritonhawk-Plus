@@ -33,16 +33,11 @@ using namespace TritonhawkPlus;
 
 namespace TritonhawkPlus
 {
-    enum SAMPLE_GRID_SHAPE
+    enum SAMPLE_GRID_SHAPE : u8
     {
-        SAMPLE_GRID_SHAPE_Square = 0,
-        SAMPLE_GRID_SHAPE_Weighted_Square_1,
-        SAMPLE_GRID_SHAPE_Weighted_Square_2,
-        SAMPLE_GRID_SHAPE_Weighted_Square_3,
+        SAMPLE_GRID_SHAPE_Square,
         SAMPLE_GRID_SHAPE_Circle,
-        SAMPLE_GRID_SHAPE_Weighted_Circle_1,
-        SAMPLE_GRID_SHAPE_Weighted_Circle_2,
-        SAMPLE_GRID_SHAPE_Weighted_Circle_3,
+        SAMPLE_GRID_SHAPE_Auto,
         SAMPLE_GRID_SHAPE_MAX_COUNT
     };
 
@@ -77,20 +72,20 @@ namespace TritonhawkPlus
     public:
         string process_name = "";
         string info_string = "";
-        int hardware_max_threads = 16;
-        int preferences_max_threads = 16;
-        int number_threads = 16;
-        int draw_index = 0;
-        int draw_count = 0;
+        s16 hardware_max_threads = 16;
+        s16 preferences_max_threads = 16;
+        s16 number_threads = 16;
+        s32 draw_index = 0;
+        s32 draw_count = 0;
         bool seamless_x = false;
         bool seamless_y = false;
         f128 sample_count_adjustment = 1.0_q;
         f64 sample_grid_height_percent = 100.0;
         f64 sample_grid_width_percent = 100.0;
-        u64 sample_count_x = 1;
-        u64 sample_count_y = 1;
-        u64 sample_count_xy = 1;
-        u64 total_samples = 1;
+        u64 sample_count_x = 1u;
+        u64 sample_count_y = 1u;
+        u64 sample_count_xy = 1u;
+        u64 total_samples = 1u;
         f128 image_ratio_x = 1.0_q;
         f128 image_ratio_y = 1.0_q;
         f128 image_ratio_xy = 1.0_q;
@@ -98,27 +93,36 @@ namespace TritonhawkPlus
         f128 sample_grid_scale_y = 1.0_q;
         f128 sample_grid_offset_x = 0.0_q;
         f128 sample_grid_offset_y = 0.0_q;
-        f128 sample_interpolation_x = 1.0_q;
-        f128 sample_interpolation_y = 1.0_q;
-        int sample_grid_shape = (int)SAMPLE_GRID_SHAPE_Weighted_Circle_1;
-        int sampling_complexity_x = 0;
-        int sampling_complexity_y = 0;
-        u64 chunk_size_default = 8192;
-        u64 chunk_size_samples = 1;
-        u64 chunk_size_pixels = 1;
-        u64 number_chunks = 1;
-        u64 input_size_x = 0;
-        u64 input_size_y = 0;
-        u64 input_size_xy = 0;
-        u64 output_size_x = 0;
-        u64 output_size_y = 0;
-        u64 output_size_xy = 0;
+        f128 sample_interpolation_x = 3.0_q;
+        f128 sample_interpolation_y = 3.0_q;
+        SAMPLE_GRID_SHAPE sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
+        SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
+        SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
+        f128 sample_grid_weighting = 0._q;
+        u64 chunk_size_kilo = 128uL;
+        u64 chunk_size_default = 1024uL * 128uL;
+        u64 chunk_size_samples = 1u;
+        u64 chunk_size_pixels = 1u;
+        u64 number_chunks = 1u;
+        u64 input_size_x = 256uL;
+        u64 input_size_y = 256uL;
+        u64 input_size_xy = 256uL * 256uL;
+        u64 output_size_x = 256uL;
+        u64 output_size_y = 256uL;
+        u64 output_size_xy = 256uL * 256uL;
         f64 progress_start = 0.0;
         f64 progress_end = 1.0;
         f64 progress_increment = 0.0;
 
-        u64 max_image_dimension = 65536u;
+        u64 max_image_dimension = 65536uL;
+        f64 max_sample_grid_dimension_percent = 5000.0;
+        f64 max_sample_count_modifier = 5000.0;
+        f64 max_sample_interpolation = 100.0;
+        u64 min_chunk_size = 32uL;
+        u64 max_chunk_size = 65536uL;
+        u64 increment_chunk_size = 32uL;
 
+        void Reset();
         void CalcAll();
         void CalcInfoString();
         void CalcThreads();
