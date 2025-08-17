@@ -40,7 +40,7 @@ namespace TritonhawkPlus
         sample_interpolation_y = 3.0_q;
         sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         sample_grid_weighting = 0._q;
-        chunk_size_kilo = 128uL;
+        chunk_size_kilo = 256uL;
         chunk_size_default = 1024uL * chunk_size_kilo;
         output_size_x = input_size_x;
         output_size_y = input_size_y;

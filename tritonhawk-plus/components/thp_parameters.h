@@ -99,7 +99,7 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
         f128 sample_grid_weighting = 0._q;
-        u64 chunk_size_kilo = 128uL;
+        u64 chunk_size_kilo = 256uL;
         u64 chunk_size_default = 1024uL * 128uL;
         u64 chunk_size_samples = 1u;
         u64 chunk_size_pixels = 1u;
@@ -113,6 +113,8 @@ namespace TritonhawkPlus
         f64 progress_start = 0.0;
         f64 progress_end = 1.0;
         f64 progress_increment = 0.0;
+
+        bool gui_enabled = false;
 
         u64 max_image_dimension = 65536uL;
         f64 max_sample_grid_dimension_percent = 5000.0;

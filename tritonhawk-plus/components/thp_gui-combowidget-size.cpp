@@ -117,9 +117,9 @@ namespace TritonhawkPlus
         if (Log_in)
             Log = Log_in;
 
-        gint master_width = (gint) 801;
-        gint box_padding = (gint) 3;
-        gint cell_height = (gint) 32;
+        gint master_width = (gint) 820;
+        gint box_padding = (gint) 2;
+        gint cell_height = (gint) 36;
         gint cell_height_large = gint (cell_height + box_padding + box_padding);
         gint cell_height_half = gint (cell_height / 2);
         gint chain_button_width = (gint) 36;
@@ -127,7 +127,8 @@ namespace TritonhawkPlus
         gint cell_r0_width = gint ((master_width - ((box_padding * 2) + chain_button_width)) / 3);
         gint row_0_height = gint ((cell_height * 2) + cell_height_half);
         // Row 1, image size/scale quickset buttons
-        gint cell_r1_width = gint ((master_width - (box_padding * 2)) / 12);
+        gint cell_r1_width = gint ((master_width - (box_padding * 2)) / 11);
+        gint cell_r1_width_half = gint (cell_r1_width / 2);
         gint row_1_height = cell_height;
         // Row 2, sample grid scale controls
         gint cell_r2_width = gint (160 - (box_padding * 2));
@@ -291,9 +292,9 @@ namespace TritonhawkPlus
             ShowWidget(Gui_Button_flip_xy);
 
             // Row 1 Spacer 1
-            Gui_Box_H_Row_1_Spacer_1 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+            Gui_Box_H_Row_1_Spacer_1 = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
             gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Row_1_Spacer_1), 0);
-            gtk_widget_set_size_request(Gui_Box_H_Row_1_Spacer_1, cell_r1_width, cell_height);
+            gtk_widget_set_size_request(Gui_Box_H_Row_1_Spacer_1, cell_r1_width_half, cell_height_half);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1), (GtkWidget*)Gui_Box_H_Row_1_Spacer_1, FALSE, FALSE, 0);
             ShowWidget(Gui_Box_H_Row_1_Spacer_1);
 
@@ -319,9 +320,9 @@ namespace TritonhawkPlus
             ShowWidget(Gui_Button_m10);
 
             // Row 1 Spacer 2
-            Gui_Box_H_Row_1_Spacer_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+            Gui_Box_H_Row_1_Spacer_2 = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
             gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Row_1_Spacer_2), 0);
-            gtk_widget_set_size_request(Gui_Box_H_Row_1_Spacer_2, cell_r1_width, cell_height);
+            gtk_widget_set_size_request(Gui_Box_H_Row_1_Spacer_2, cell_r1_width_half, cell_height_half);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1), (GtkWidget*)Gui_Box_H_Row_1_Spacer_2, FALSE, FALSE, 0);
             ShowWidget(Gui_Box_H_Row_1_Spacer_2);
 
@@ -661,7 +662,7 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Chunk_Size_Label, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_6), (GtkWidget*)Gui_Chunk_Size_Label, FALSE, FALSE, 0);
             ShowWidget(Gui_Chunk_Size_Label);
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
             // Spin Button for kilopixels (chunk size)
             Gui_Chunk_Size_SpinButton = gimp_spin_button_new_with_range((gdouble) Params->min_chunk_size, (gdouble) Params->max_chunk_size, (gdouble) Params->increment_chunk_size);
             gtk_widget_set_size_request(Gui_Chunk_Size_SpinButton, row_4_col_width, cell_height);
@@ -1253,7 +1254,7 @@ namespace TritonhawkPlus
 
         if (Gui_Chunk_Size_Label)
         {
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
         }
         if (Gui_Chunk_Size_SpinButton)
         {
@@ -1264,7 +1265,7 @@ namespace TritonhawkPlus
 
         if (Log && Params)
         {
-            Log->LogGui(false, g_strdup_printf( _("%s%s"), Params->info_string.c_str(), "-\n-\n-\n-\n-\n-\n-" ));
+            Log->Log(false, Params->info_string);
         }
     }
     void ComboSizeWidget::SyncDataToParameters()

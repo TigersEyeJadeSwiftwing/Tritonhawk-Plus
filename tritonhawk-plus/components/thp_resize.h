@@ -29,6 +29,6 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 
 namespace TritonhawkPlus
 {
-    void Thp_Resize_drawable_RGBA(ThpParams* params, GimpDrawable* draw_0, GimpDrawable* draw_1);
-    void Thp_Resize_drawable_RGB(ThpParams* params, GimpDrawable* draw_0, GimpDrawable* draw_1);
+    void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1);
+    void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1);
 };

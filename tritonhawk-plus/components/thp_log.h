@@ -38,7 +38,8 @@ namespace TritonhawkPlus
     private:
         GtkWidget*                          gui_dialog;
         GtkWidget*                          gui_busy_box;
-        GtkWidget*                          gui_gtk_textlabel;
+        GtkWidget*                          gui_gtk_textlabel_0;
+        GtkWidget*                          gui_gtk_textlabel_1;
         GtkWidget*                          gui_progress_bar;
         GtkWidget*                          gui_text_widget;
         GtkTextBuffer*                      gui_text_buffer;
@@ -47,6 +48,7 @@ namespace TritonhawkPlus
         std::chrono::time_point<std::chrono::steady_clock> timer_time_point;
         std::chrono::time_point<std::chrono::steady_clock> timer_procedure_start;
         f64                                 time_loopbreaker;
+        f64                                 time_loopbreaker_fast;
 
         gboolean                            console_logging;
         gboolean                            error_console_logging;
@@ -78,13 +80,15 @@ namespace TritonhawkPlus
         void SetTimerStart                  ();
         f64 GetTimerElapsedMS               ();
 
+        void Run1                           (gchar* log_message);
+
         void SetConsoleLogging              (gboolean enable=TRUE);
         void SetErrorConsoleLogging         (gboolean enable=TRUE);
         void SetGuiLogging                  (gboolean enable=TRUE);
 
         void SetGuiDialog                   (GtkWidget* dialog_input);
         void SetBusyBox                     (GtkWidget* busy_box_input);
-        void SetTextLabel                   (GtkWidget* gtk_text_label_input);
+        void SetTextLabel                   (GtkWidget* gtk_text_label_input, u32 index = 0u);
         void SetGuiTextWidget               (GtkWidget* widget_input);
         void SetTextBuffer                  (GtkTextBuffer* text_buffer_input);
         void SetTextBufferWidget            (GtkWidget* scrolled_text_widget_input);

@@ -2,194 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="clang64" />
-	<File name="..\..\tritonhawk-plus\tritonhawk-plus-image-resize.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="192" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\tritonhawk-plus-image-resize.cpp" open="1" top="1" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="9514" topLine="197" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\config_h\clang64\compile-image-resize.txt" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2140" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_types.h" open="1" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="36" topLine="0" />
-		</Cursor>
-	</File>
 	<File name="..\..\tritonhawk-plus\components\thp_resize.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="192" topLine="0" />
+			<Cursor1 position="1239" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\tritonhawk-plus\components\thp_log.h" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="192" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_gui-combowidget-size.cpp" open="1" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="55317" topLine="732" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\quadmath-modded.hpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="4262" topLine="49" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\sqrtq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1062" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\fmaxq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1465" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\quadmath-imp.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8840" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\sinq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3464" topLine="30" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\rounddgq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="3155" topLine="24" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\powq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1062" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\inline\thp_pixel_vector.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="955" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\isnanq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1067" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\truncq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2065" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\scalbnq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1982" topLine="10" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\frexpq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1006" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\lnq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2167" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\fmodq.inl" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1175" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\isinfq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1033" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\floorq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1886" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_parameters.cpp" open="1" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1662" topLine="4" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\fabsq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1077" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\expq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="131" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_resize.cpp" open="1" top="0" tabpos="1" split="0" active="1" splitpos="1161" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1345" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\distwarpq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2177" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\lerp.inl" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="2982" topLine="21" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\copysignq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="750" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_gui-combowidget-size.h" open="1" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="8611" topLine="124" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\to_intq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="992" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\ceilq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1093" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\fminq.inl" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="955" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libquadmath\math\issignalingq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="953" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libintmath\math\min.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1008" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_log.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1049" topLine="0" />
-		</Cursor>
-	</File>
-	<File name="..\..\libs\libintmath\math\max.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="1160" topLine="0" />
+			<Cursor1 position="3602" topLine="29" />
 		</Cursor>
 	</File>
 	<File name="..\..\libs\libquadmath\math\clampq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -197,24 +17,94 @@
 			<Cursor1 position="2173" topLine="28" />
 		</Cursor>
 	</File>
-	<File name="..\..\tritonhawk-plus\components\thp_parameters.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\tritonhawk-plus\components\thp_log.cpp" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="3377" topLine="71" />
+			<Cursor1 position="2458" topLine="28" />
 		</Cursor>
 	</File>
-	<File name="..\..\libs\libquadmath\math\cosq.inl" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\tritonhawk-plus\tritonhawk-plus-image-resize.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="2767" topLine="24" />
+			<Cursor1 position="192" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\libs\libquadmath\math\tanq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\libs\libquadmath\math\ceilq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1490" topLine="0" />
+			<Cursor1 position="1093" topLine="0" />
 		</Cursor>
 	</File>
-	<File name="..\..\libs\libintmath\math\clamp.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+	<File name="..\..\tritonhawk-plus\components\thp_gui-combowidget-size.h" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
-			<Cursor1 position="1864" topLine="1" />
+			<Cursor1 position="8611" topLine="124" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\inline\thp_pixel_vector.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="955" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\tritonhawk-plus-image-resize.cpp" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="7430" topLine="141" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\expq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="131" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\quadmath-imp.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="8840" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\to_intq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="992" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\sqrtq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1062" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\thp_types.h" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="36" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\distwarpq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2177" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\scalbnq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1982" topLine="10" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\floorq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1886" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\isnanq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1067" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\thp_gui-combowidget-size.cpp" open="0" top="0" tabpos="5" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="5398" topLine="96" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\fmodq.inl" open="0" top="0" tabpos="9" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1175" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\frexpq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1006" topLine="0" />
 		</Cursor>
 	</File>
 	<File name="..\..\libs\libquadmath\math\roundq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
@@ -222,9 +112,119 @@
 			<Cursor1 position="1041" topLine="0" />
 		</Cursor>
 	</File>
+	<File name="..\..\libs\libquadmath\math\fminq.inl" open="0" top="0" tabpos="7" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="955" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\powq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1062" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\thp_parameters.cpp" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1659" topLine="19" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\fmaxq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1465" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\isinfq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1033" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\tanq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1490" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\lerp.inl" open="0" top="0" tabpos="4" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2982" topLine="21" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\fabsq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1077" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\rounddgq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3155" topLine="24" />
+		</Cursor>
+	</File>
 	<File name="..\..\libs\libintmath\lib_int_math.hpp" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="1126" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\truncq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2065" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\lnq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2167" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\copysignq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="750" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\issignalingq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="953" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\config_h\clang64\compile-image-resize.txt" open="0" top="0" tabpos="1" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2140" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\quadmath-modded.hpp" open="0" top="0" tabpos="3" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="4262" topLine="49" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libintmath\math\min.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1008" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\sinq.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3464" topLine="30" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libintmath\math\max.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1160" topLine="0" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\thp_parameters.h" open="0" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="3330" topLine="61" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libintmath\math\clamp.inl" open="0" top="0" tabpos="0" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1864" topLine="1" />
+		</Cursor>
+	</File>
+	<File name="..\..\tritonhawk-plus\components\thp_resize.cpp" open="0" top="0" tabpos="1" split="0" active="1" splitpos="1161" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="1374" topLine="28" />
+		</Cursor>
+	</File>
+	<File name="..\..\libs\libquadmath\math\cosq.inl" open="0" top="0" tabpos="6" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="2767" topLine="24" />
 		</Cursor>
 	</File>
 </CodeBlocks_layout_file>

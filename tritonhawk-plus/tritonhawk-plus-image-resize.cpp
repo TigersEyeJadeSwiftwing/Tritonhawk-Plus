@@ -195,11 +195,12 @@ static GimpValueArray* thpimageresize_run(
     gboolean seamless_y =           gboolean(FALSE);
     gdouble sample_grid_x =         gdouble(100.0);
     gdouble sample_grid_y =         gdouble(100.0);
-    gint chunk_size =               gint(128);
+    gint chunk_size =               gint(256);
 
     GtkWidget*              Program_Dialog;
-    GtkWidget*              Gui_Log_Box;
-    GtkWidget*              Gui_Log_Text;
+    GtkWidget*              Gui_Log_Box_0;
+    GtkWidget*              Gui_Log_Text_0;
+    GtkWidget*              Gui_Log_Text_1;
     ComboSizeWidget*        Combo_Size_Widget;
 
     if (!image)
@@ -274,31 +275,44 @@ static GimpValueArray* thpimageresize_run(
         geometry.min_height = (gint)500;
         geometry.max_height = (gint)4096;
         gtk_window_set_geometry_hints (GTK_WINDOW (Program_Dialog), NULL, &geometry, GDK_HINT_ASPECT);
+
         Log->SetGuiDialog(Program_Dialog);
 
-        Gui_Log_Box = gtk_box_new(GTK_ORIENTATION_VERTICAL, (gint)0);
-        gtk_container_set_border_width(GTK_CONTAINER (Gui_Log_Box), 5);
-        gtk_widget_set_halign(GTK_WIDGET(Gui_Log_Box), GTK_ALIGN_START);
-        gtk_widget_set_valign(GTK_WIDGET(Gui_Log_Box), GTK_ALIGN_START);
-        gtk_widget_set_size_request(Gui_Log_Box, 660, 340);
-        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Log_Box);
-        gtk_widget_show(Gui_Log_Box);
+        Gui_Log_Box_0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+        gtk_container_set_border_width(GTK_CONTAINER (Gui_Log_Box_0), 5);
+        gtk_widget_set_halign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
+        gtk_widget_set_valign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
+        gtk_widget_set_size_request(Gui_Log_Box_0, 800, 240);
+        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Log_Box_0);
+        gtk_widget_show(Gui_Log_Box_0);
 
-        Gui_Log_Text = gtk_label_new (NULL);
-        gtk_widget_set_size_request (Gui_Log_Text, 450, 330);
-        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text), GTK_ALIGN_START );
-        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text), GTK_ALIGN_START );
-        gtk_container_add (GTK_CONTAINER(Gui_Log_Box), Gui_Log_Text);
-        gtk_widget_show (Gui_Log_Text);
+        Gui_Log_Text_0 = gtk_label_new (NULL);
+        gtk_widget_set_size_request (Gui_Log_Text_0, 400, 240);
+        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
+        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
+        gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_0, FALSE, FALSE, 0);
+        gtk_widget_show (Gui_Log_Text_0);
+        Log->SetTextLabel(Gui_Log_Text_0);
+
+        Gui_Log_Text_1 = gtk_label_new (NULL);
+        gtk_widget_set_size_request (Gui_Log_Text_1, 400, 240);
+        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
+        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
+        gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_1, FALSE, FALSE, 0);
+        gtk_widget_show (Gui_Log_Text_1);
+        Log->SetTextLabel(Gui_Log_Text_1, 1);
+
         gtk_widget_show (Program_Dialog);
-        Log->SetTextLabel(Gui_Log_Text);
+
+        Params->gui_enabled = true;
 
         Combo_Size_Widget = new ComboSizeWidget(Program_Dialog, Params, Log);
         Combo_Size_Widget->SetOriginalSize((gint)Params->input_size_x, (gint)Params->input_size_y);
 
         gtk_window_set_default_size(GTK_WINDOW (Program_Dialog), -1, -1);
 
-        Log->Log(false, g_strdup_printf( _("%s%s"), Params->info_string.c_str(), "-\n-\n-\n-\n-\n-\n-" ));
+        // Log->Log(false, g_strdup_printf( _("%s%s"), Params->info_string.c_str(), "-\n-\n-\n-\n-\n-\n-" ));
+        Log->Log(false, Params->info_string);
 
         while (Combo_Size_Widget->GetChoicesDoneResult() == 0)
         {

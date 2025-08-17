@@ -26,10 +26,17 @@ namespace TritonhawkPlus
 {
     f64 ThpLog::GetTimeMS()
     {
+        /*
         std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
         auto diff = current_time - timer_time_point;
         timer_time_point = current_time;
         f64 time_ms = std::chrono::duration<double, std::milli>(diff).count();
+        return time_ms;
+        */
+
+        std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
+        f64 time_ms = std::chrono::duration<double, std::milli>(current_time - timer_time_point).count();
+        timer_time_point = current_time;
         return time_ms;
     }
     void ThpLog::SetTimerStart()
@@ -39,9 +46,8 @@ namespace TritonhawkPlus
     f64 ThpLog::GetTimerElapsedMS()
     {
         std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
-        auto diff = current_time - timer_procedure_start;
-        f64 time_ms = std::chrono::duration<double, std::milli>(diff).count();
-        return time_ms;
+        // auto diff = current_time - timer_procedure_start;
+        return std::chrono::duration<double, std::milli>(current_time - timer_procedure_start).count();
     }
 
     ThpLog::ThpLog()
@@ -52,6 +58,8 @@ namespace TritonhawkPlus
         gui_text_widget = NULL;
         gui_text_buffer = NULL;
         gui_scrolled_text_widget = NULL;
+        gui_gtk_textlabel_0 = NULL;
+        gui_gtk_textlabel_1 = NULL;
 
         console_logging = TRUE;
         error_console_logging = FALSE;
@@ -63,10 +71,27 @@ namespace TritonhawkPlus
         inside_multithread_critical = false;
         progress_bar_fraction = 0.0;
 
-        time_loopbreaker = 50.0;
+        time_loopbreaker = 95.0; // Should be long enough for updating text for non-time-critical stuff
+        time_loopbreaker_fast = 17.0; // Should be just long enough to update the GUI text, even for a slow ~60 Hz display monitor
         timer_time_point = clock_log::now();
     }
 
+    void ThpLog::Run1(gchar* log_message)
+    {
+        if (!gui_gtk_textlabel_1) return;
+
+        gtk_label_set_text((GtkLabel*)gui_gtk_textlabel_1, log_message);
+
+        f64 elapsed_time = 0.0;
+        GetTimeMS();
+        while ( gtk_events_pending() )
+        {
+            gtk_main_iteration();
+
+            elapsed_time += GetTimeMS();
+            if (elapsed_time >= time_loopbreaker_fast) break;
+        }
+    }
     void ThpLog::RunLogging(gchar* log_message)
     {
         if (console_logging)
@@ -94,9 +119,9 @@ namespace TritonhawkPlus
             {
                 gimp_busy_box_set_message((GimpBusyBox*)gui_busy_box, log_message);
             }
-            if (gui_gtk_textlabel)
+            if (gui_gtk_textlabel_0)
             {
-                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel, log_message);
+                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel_0, log_message);
             }
             if (gui_logging_progress_bar && gui_progress_bar)
             {
@@ -149,9 +174,9 @@ namespace TritonhawkPlus
             {
                 gimp_busy_box_set_message((GimpBusyBox*)gui_busy_box, log_message);
             }
-            if (gui_gtk_textlabel)
+            if (gui_gtk_textlabel_0)
             {
-                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel, log_message);
+                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel_0, log_message);
             }
             if (gui_logging_progress_bar && gui_progress_bar)
             {
@@ -201,9 +226,9 @@ namespace TritonhawkPlus
             {
                 gimp_busy_box_set_message((GimpBusyBox*)gui_busy_box, log_message);
             }
-            if (gui_gtk_textlabel)
+            if (gui_gtk_textlabel_0)
             {
-                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel, log_message);
+                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel_0, log_message);
             }
         }
 
@@ -271,9 +296,9 @@ namespace TritonhawkPlus
             {
                 gimp_busy_box_set_message((GimpBusyBox*)gui_busy_box, log_txt);
             }
-            if (gui_gtk_textlabel)
+            if (gui_gtk_textlabel_0)
             {
-                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel, log_txt);
+                gtk_label_set_text((GtkLabel*)gui_gtk_textlabel_0, log_txt);
             }
             if (gui_logging_progress_bar && gui_progress_bar)
             {
@@ -318,9 +343,12 @@ namespace TritonhawkPlus
     {
         gui_busy_box = busy_box_input;
     }
-    void ThpLog::SetTextLabel(GtkWidget* gtk_text_label_input)
+    void ThpLog::SetTextLabel(GtkWidget* gtk_text_label_input, u32 index)
     {
-        gui_gtk_textlabel = gtk_text_label_input;
+        if (index == 0u)
+            gui_gtk_textlabel_0 = gtk_text_label_input;
+        else if (index == 1u)
+            gui_gtk_textlabel_1 = gtk_text_label_input;
     }
     void ThpLog::SetGuiTextWidget(GtkWidget* widget_input)
     {
