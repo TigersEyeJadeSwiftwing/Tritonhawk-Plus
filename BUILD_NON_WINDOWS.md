@@ -8,7 +8,7 @@ https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
 
 
 
-\[Main readme file](./README.md)
+[Main readme file](./README.md)
 
 
 
