@@ -1,12 +1,5 @@
 #pragma once
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include <cmath>
-    #include <cstdint>
-    #include <cfenv>
-    #include <type_traits>
-#endif
-
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -22,21 +15,30 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-// expq() :  high-precision exponential
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+    #include "nearbyintq.inl"
+    #include "ldexpq.inl"
+#endif
 
-static inline __attribute__((always_inline, hot))
-__float128 expq(__float128 x)
+/** \brief Compute the exponential function of a binary128 value.
+ *
+ * \param t __float128 Exponent.
+ * \return __float128 Result of e^x.
+ */
+static HOT_INLINE __float128 expq(__float128 x)
 {
-    inline static constexpr __float128 COEFF_0 = 1.q;
-    // inline static constexpr __float128 COEFF_1 = 1.q; // r^1 / 1!
-    inline static constexpr __float128 COEFF_2 = 0.5q; // r^2 / 2!
-    inline static constexpr __float128 COEFF_3 = 1.0q / 6.0q; // r^3 / 3!
-    inline static constexpr __float128 COEFF_4 = 1.0q / 24.0q; // r^4 / 4!
-    inline static constexpr __float128 COEFF_5 = 1.0q / 120.0q; // r^5 / 5!
-    inline static constexpr __float128 COEFF_6 = 1.0q / 720.0q; // r^6 / 6!
+    static constexpr __float128 COEFF_0 = 1.q;
+    // static constexpr __float128 COEFF_1 = 1.q; // r^1 / 1!
+    static constexpr __float128 COEFF_2 = 0.5q; // r^2 / 2!
+    static constexpr __float128 COEFF_3 = 1.0q / 6.0q; // r^3 / 3!
+    static constexpr __float128 COEFF_4 = 1.0q / 24.0q; // r^4 / 4!
+    static constexpr __float128 COEFF_5 = 1.0q / 120.0q; // r^5 / 5!
+    static constexpr __float128 COEFF_6 = 1.0q / 720.0q; // r^6 / 6!
 
     __float128 kf = x * M_LOG2Eq; // M_LOG2Eq = log_2 e
-    long n = (long) std::nearbyint(kf);
+    s64 n = (s64) nearbyintq(kf);
     __float128 r = x - __float128(n) * M_LN2q; // M_LN2q = log_e 2
     __float128 r2 = r * r,
                r4 = r2 * r2;
@@ -48,5 +50,5 @@ __float128 expq(__float128 x)
                    + COEFF_5 * r4 * r
                    + COEFF_6 * r4 * r2; // Additional term for better accuracy
 
-    return std::ldexp(Q, n);
+    return ldexpq(Q, n);
 }

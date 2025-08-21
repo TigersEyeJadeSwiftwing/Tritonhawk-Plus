@@ -15,16 +15,23 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+#endif
+
 /** \brief Returns one of two input values, whichever is highest.
  *
- * \param a (__float128) One of two input values to compare to each other.
- * \param b (__float128) One of two input values to compare to each other.
- * \return (__float128) Either "a" or "b", whichever is higher.
+ * \param a __float128 One of two input values to compare to each other.
+ * \param b __float128 One of two input values to compare to each other.
+ * \return __float128 Either "a" or "b", whichever is higher.
  *
  * Returns one of two input values, whichever is highest.  128-bit float version.
  */
-static inline __attribute__((always_inline, hot))
-__float128 fmaxq (__float128 a, __float128 b)
+static HOT_INLINE __float128 fmaxq (__float128 a, __float128 b)
 {
+    if (isnanq(a) || isnanq(b)) return NANq;
+    if (isinfq(a) || isinfq(b)) return NANq;
+
     return (a > b) ? a : b;
 }

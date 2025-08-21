@@ -15,8 +15,46 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-int isnanq(__float128 x)
+#if __has_builtin(__builtin_isnanf128)
+    /** \brief Determines if a number is NAN.
+     *
+     * \param x (__float128) The number to check for being NAN.
+     * \return (int) 1 if true, 0 if false.
+     */
+    static HOT_INLINE int isnanq(__float128 x)
+    {
+        return __builtin_isnanf128(x);
+    }
+#elif __has_builtin(__builtin_isnanq)
+    /** \brief Determines if a number is NAN.
+     *
+     * \param x (__float128) The number to check for being NAN.
+     * \return (int) 1 if true, 0 if false.
+     */
+    static HOT_INLINE int isnanq(__float128 x)
+    {
+        return __builtin_isnanq(x);
+    }
+#elif __has_builtin(__builtin_isnan)
+    /** \brief Determines if a number is NAN.
+     *
+     * \param x (__float128) The number to check for being NAN.
+     * \return (int) 1 if true, 0 if false.
+     */
+    static HOT_INLINE int isnanq(__float128 x)
+    {
+        return __builtin_isnan(x);
+    }
+#else
+
+/** \brief Determines if a number is NAN.
+ *
+ * \param x (__float128) The number to check for being NAN.
+ * \return (int) 1 if true, 0 if false.
+ */
+static HOT_INLINE int isnanq(__float128 x)
 {
-    return __builtin_isnan(x);
+    return __builtin_isnanq(x);
 }
+
+#endif

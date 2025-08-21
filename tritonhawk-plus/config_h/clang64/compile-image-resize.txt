@@ -33,7 +33,7 @@ It lists all of the stuff that Codeblocks sends to the Clang++ command line.
 // flags passed to clang++ at the command line
 -std=gnu17
 -std=gnu++17
--march=x86-64-v2
+-march=x86-64-v3
 -mtune=generic
 -ftree-vectorize
 -funroll-loops

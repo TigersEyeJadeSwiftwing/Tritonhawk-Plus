@@ -1,7 +1,13 @@
 #pragma once
 
+#include <cfloat>
+
+#include <cstddef>
+#include <cmath>
 #include <cstdint>
 #include <type_traits>
+
+#include <omp.h>
 
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
@@ -18,6 +24,10 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef HOT_INLINE
+    #define HOT_INLINE inline __attribute__((always_inline, hot))
+#endif
+
 namespace TritonhawkPlus {};
 namespace quadmath {};
 namespace intmath {};
@@ -28,9 +38,15 @@ namespace TritonhawkPlus
     #if defined(__SIZEOF_LONG_DOUBLE__) && __SIZEOF_LONG_DOUBLE__ == 16
         #define THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
     #endif
-    #if defined(__SIZEOF_FLOAT128__) || defined(__FLT128_IS_LONG_DOUBLE__)
+    #if defined(__SIZEOF_FLOAT128__) && defined(__FLT128_IS_LONG_DOUBLE__)
         #define THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
     #endif
+
+    #if defined THP_FORCE_USE_FLOAT128
+        #undef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #elif defined THP_FORCE_USE_LONG_DOUBLE_128
+        #define THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #endif // defined
 
     #ifdef __cplusplus
         extern "C" {
@@ -61,9 +77,9 @@ namespace TritonhawkPlus
             }
         #endif
 
-        constexpr long double operator ""_q(long double x)
+        constexpr f128 operator ""_q(long double x)
         {
-            return static_cast<long double>(x);
+            return static_cast<f128>(x);
         };
     #else
         #ifdef __cplusplus
@@ -74,7 +90,10 @@ namespace TritonhawkPlus
             }
         #endif
 
-        constexpr __float128 operator ""_q(__float128 x)
+        const f128 test1 = 10.q;
+        const f128 test2 = test1 + 5.q;
+
+        constexpr __float128 operator ""_q(long double x)
         {
             return static_cast<__float128>(x);
         };

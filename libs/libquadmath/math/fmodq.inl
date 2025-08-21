@@ -15,97 +15,44 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 fmodq(__float128 x, __float128 y)
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+    #include "fabsq.inl"
+    #include "fmaq.inl"
+    #include "copysignq.inl"
+#endif
+
+/** \brief 128-bit modulus: remainder of x/y, with same sign as x and |r|<|y|.
+ *
+ * \param x __float128 Numerator.
+ * \param y __float128 Denominator.
+ * \return __float128 Remainder.
+ */
+static inline __float128 fmodq(__float128 x, __float128 y)
 {
-    inline static constexpr __float128 one = 1.q, zero[] = {0.q, -0.q};
-    int64_t hx, hy, sx;
-    uint64_t lx, ly;
+    // 1) Special cases
+    if (isnanq(x) || isnanq(y))     return NANq;
+    if (isinfq(x)  || y == 0.0q)     return NANq;  // fmod(inf, y)  or fmod(x,0) → NaN
 
-    GET_FLT128_WORDS64(hx, lx, x);
-    GET_FLT128_WORDS64(hy, ly, y);
-    sx = hx & 0x8000000000000000ULL; // sign of x
+    // 2) Compute truncated quotient n = trunc(x/y)
+    __float128 q = x / y;
+    int64_t   n = (int64_t)q;   // C++ cast truncates toward zero
 
-    if ((hy | ly) == 0 || (hx >= 0x7fff000000000000LL) || ((hy | ((ly - ly) >> 63)) > 0x7fff000000000000LL))
-        return (x * y) / (x * y); // Handle special cases
+    // 3) Compute remainder r = x – n*y in one rounding via fused-multiply-add
+    __float128 r = fmaq(-y, (__float128)n, x);
 
-    if (hx <= hy)
-        return (hx < hy || lx < ly) ? x : zero[static_cast<uint64_t>(sx) >> 63]; // |x| < |y| or |x| = |y|
-
-    int64_t exp_diff = ((hx >> 48) - 0x3fff) - ((hy >> 48) - 0x3fff); // Determine the exponent difference
-
-    if (exp_diff >= 0)
-    {
-        hx = 0x0001000000000000LL | (0x0000ffffffffffffLL & hx); // Normalize x
+    // 4) Correct any off-by-one due to rounding
+    //    Guarantee |r| < |y|    and    sign(r) == sign(x)
+    if (r > 0.0q) {
+        if (r >= fabsq(y))      // r == +y can happen if q was rounded down
+            r -= copysignq(y, x);
     }
-    else
-    {
-        int64_t shift = -exp_diff;
-        if (shift <= 63)
-        {
-            hx = (hx << shift) | (lx >> (64 - shift));
-            lx <<= shift;
-        }
-        else
-        {
-            hx = lx << (shift - 64);
-            lx = 0;
-        }
+    else if (r < 0.0q) {
+        if (r <= -fabsq(y))     // r == -y can happen if q was rounded up
+            r += copysignq(y, x);
     }
+    // if r==0, it already has the sign of x via fmaq and copysignq in the above
 
-    hy = 0x0001000000000000LL | (0x0000ffffffffffffLL & hy); // Normalize y
-
-    while (exp_diff--)
-    {
-        if (hx < hy || (hx == hy && lx < ly))
-        {
-            hx = hx + hx + (lx >> 63);
-            lx = lx + lx;
-        }
-        else
-        {
-            hx -= hy;
-            lx -= ly;
-        }
-    }
-
-    if ((hx | lx) == 0)
-        return zero[static_cast<uint64_t>(sx) >> 63]; // Return sign(x) * 0
-
-    while (hx < 0x0001000000000000LL)
-    {
-        hx = hx + hx + (lx >> 63);
-        lx = lx + lx;
-        exp_diff--;
-    }
-
-    if (exp_diff >= -16382)
-    {
-        hx = ((hx - 0x0001000000000000LL) | ((exp_diff + 16383) << 48)) | sx;
-        SET_FLT128_WORDS64(x, hx, lx);
-    }
-    else
-    {
-        int64_t shift = -16382 - exp_diff;
-        if (shift <= 48)
-        {
-            lx = (lx >> shift) | (static_cast<uint64_t>(hx) << (64 - shift));
-            hx >>= shift;
-        }
-        else if (shift <= 63)
-        {
-            lx = (hx << (64 - shift)) | (lx >> shift);
-            hx = sx;
-        }
-        else
-        {
-            lx = hx >> (shift - 64);
-            hx = sx;
-        }
-        SET_FLT128_WORDS64(x, hx | sx, lx);
-    }
-
-    x *= one;
-
-    return x;
+    return r;
 }

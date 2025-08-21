@@ -1,8 +1,5 @@
 #pragma once
 
-#include "sinq.inl"
-#include "cosq.inl"
-
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -18,8 +15,17 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 tanq(__float128 x)
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "sinq.inl"
+    #include "cosq.inl"
+#endif
+
+/** \brief 128-bit float tangent function.
+ *
+ * \param x __float128 Input value.
+ * \return __float128 Output value, tangent of input.
+ */
+static HOT_INLINE __float128 tanq(__float128 x)
 {
     // Handle NaN/Inf
     if (x != x || x == INFINITYq || x == INFINITYnq) return NANq;

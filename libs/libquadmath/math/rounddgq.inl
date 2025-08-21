@@ -23,9 +23,9 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x (__float128) The input value, can be any real floating-point number.
- * \param digits (__float128) Controls the power of ten to round to.
- * \return (__float128) The output value, rounded.
+ * \param x __float128 The input value, can be any real floating-point number.
+ * \param digits __float128 Controls the power of ten to round to.
+ * \return __float128 The output value, rounded.
  *
  * Returns a floating-point number that is rounded to the nearest specified power of ten, or
  * "number of digits".  For example, if the "digits" parameter is 2.0, then the input "x"
@@ -34,8 +34,7 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
  * of 12345.064 with a value of "-2.0" for "digits" will round the 12345.064 to the nearest
  * 0.01, or nearest hundredth, resulting in an output of 12345.06.
  */
-static inline __attribute__((always_inline, hot))
-__float128 rounddgq(__float128 x, __float128 digits)
+static HOT_INLINE __float128 rounddgq(__float128 x, __float128 digits)
 {
     __float128 multiplier = powq(10.q, digits);
     return roundq(x / multiplier) * multiplier;
@@ -43,14 +42,13 @@ __float128 rounddgq(__float128 x, __float128 digits)
 #else
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x (long double) The input value, can be any real floating-point number.
- * \param digits (long double) Controls the power of ten to round to.
- * \return (long double) The output value, rounded.
+ * \param x long double The input value, can be any real floating-point number.
+ * \param digits long double Controls the power of ten to round to.
+ * \return long double The output value, rounded.
  *
  * long double version.
  */
-static inline __attribute__((always_inline, hot))
-long double rounddgq(long double x, long double digits)
+static HOT_INLINE long double rounddgq(long double x, long double digits)
 {
     long double multiplier = powl(10.L, digits);
     return roundl(x / multiplier) * multiplier;
@@ -59,14 +57,13 @@ long double rounddgq(long double x, long double digits)
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x (double) The input value, can be any real floating-point number.
- * \param digits (double) Controls the power of ten to round to.
- * \return (double) The output value, rounded.
+ * \param x double The input value, can be any real floating-point number.
+ * \param digits double Controls the power of ten to round to.
+ * \return double The output value, rounded.
  *
  * double version.
  */
-static inline __attribute__((always_inline, hot))
-double rounddgd(double x, double digits)
+static HOT_INLINE double rounddg(double x, double digits)
 {
     double multiplier = pow(10.0, digits);
     return round(x / multiplier) * multiplier;
@@ -74,14 +71,13 @@ double rounddgd(double x, double digits)
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x (float) The input value, can be any real floating-point number.
- * \param digits (float) Controls the power of ten to round to.
- * \return (float) The output value, rounded.
+ * \param x float The input value, can be any real floating-point number.
+ * \param digits float Controls the power of ten to round to.
+ * \return float The output value, rounded.
  *
  * float version.
  */
-static inline __attribute__((always_inline, hot))
-float rounddgf(float x, float digits)
+static HOT_INLINE float rounddgf(float x, float digits)
 {
     float multiplier = powf(10.f, digits);
     return roundf(x / multiplier) * multiplier;

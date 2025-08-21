@@ -15,8 +15,43 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 fabsq(__float128 x)
+#if __has_builtin(__builtin_fabsf128)
+    /** \brief Returns the absolute value of a 128-bit floating point value.
+     *
+     * \param x __float128 The input value to get the absolute value of.
+     * \return __float128 The input value, but always positive (zero or greater).
+     */
+    static HOT_INLINE __float128 fabsq(__float128 x)
+    {
+        return __builtin_fabsf128(x);
+    }
+#elif __has_builtin(__builtin_fabsq)
+    /** \brief Returns the absolute value of a 128-bit floating point value.
+     *
+     * \param x __float128 The input value to get the absolute value of.
+     * \return __float128 The input value, but always positive (zero or greater).
+     */
+    static HOT_INLINE __float128 fabsq(__float128 x)
+    {
+        return __builtin_fabsq(x);
+    }
+#else
+
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+#endif
+
+/** \brief Returns the absolute value of a 128-bit floating point value.
+ *
+ * \param x __float128 The input value to get the absolute value of.
+ * \return __float128 The input value, but always positive (zero or greater).
+ */
+static HOT_INLINE __float128 fabsq(__float128 x)
 {
+    if (isnanq(x)) return x;
+
     return x >= 0.q ? x : -x;
 }
+
+#endif

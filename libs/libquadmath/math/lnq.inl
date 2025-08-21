@@ -1,12 +1,5 @@
 #pragma once
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include <cmath>
-    #include <cstdint>
-    #include <cfenv>
-    #include <type_traits>
-#endif
-
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -22,23 +15,38 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 lnq(__float128 x)
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+    #include "frexpq.inl"
+#endif
+
+/** \brief Compute the natural logarithm of a binary128 value.
+ *
+ * \param x __float128 Input value (must be > 0).
+ * \return __float128 Result of ln(x).
+ */
+static HOT_INLINE __float128 lnq(__float128 x)
 {
     // 1) Extract exponent e and mantissa m in [0.5,1)
-    int e = 0;
-    __float128 m = std::frexp(x, &e);  // x = m * 2^e, m in [0.5,1)
+    s64 e = 0;
+    __float128 m = frexpq(x, &e);  // x = m * 2^e, m in [0.5,1)
+
+    if (x == 0) return -INFINITYq;
+    if (x < 0) return NANq;
+    if (isinfq(x)) return INFINITYq;
+    if (isnanq(x)) return NANq;
 
     // 2) Shift m into [sqrt(1/2), sqrt(2)] to improve polynomial accuracy
     if (m < M_SQRT1_2q) // M_SQRT1_2q = sqrt(1/2)
     {
-        m *= 2;
+        m *= 2.q;
         e -= 1;
     }
 
     // 3) Now m in [sqrt(1/2), sqrt(2)]. Let z = (m-1)/(m+1),
     //    then ln(m) = 2 * [ z + z^3/3 + z^5/5 + ... ]  (arctanh series)
-    __float128 z = (m - 1) / (m + 1);
+    __float128 z = (m - 1.q) / (m + 1.q);
     __float128 z2 = z * z,
                z4 = z2 * z2,
                z6 = z4 * z2; // z^6 for higher accuracy
@@ -51,5 +59,5 @@ __float128 lnq(__float128 x)
                    + (z * z6) / 7.q
                    + (z * z6 * z2) / 9.q; // Additional term for improved accuracy
 
-    return __float128(2.q * P + __float128(e) * M_LN2q); // M_LN2q = log_e 2
+    return 2.q * P + __float128(e) * M_LN2q; // M_LN2q = ln(2) as __float128
 }

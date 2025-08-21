@@ -15,8 +15,13 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-int issignalingq(__float128 x) {
+/** \brief Check if a 128-bit float is a signaling NaN
+ *
+ * \param x __float128 value to be tested
+ * \return int 1 if \c x is a signaling NaN, 0 otherwise
+ */
+static HOT_INLINE int issignalingq(__float128 x)
+{
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);
 

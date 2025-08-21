@@ -1,0 +1,309 @@
+# depslib dependency file v1.0
+1755477518 source:d:\gimp plug-ins\tritonhawk-plus\components\thp_gui-combowidget-size.cpp
+	"components/thp_types.h"
+	"components/thp_gui-combowidget-size.h"
+	"components/thp_parameters.h"
+	"components/thp_log.h"
+
+1755695460 d:\gimp plug-ins\tritonhawk-plus\components\thp_types.h
+	<cfloat>
+	<cstddef>
+	<cmath>
+	<cstdint>
+	<type_traits>
+	<omp.h>
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	"config_h/clang64/stdplugins-intl.h"
+	"lib_int_math.hpp"
+	"quadmath-modded.hpp"
+	<string>
+	<algorithm>
+	<cmath>
+	<omp.h>
+
+1750704712 d:\gimp plug-ins\tritonhawk-plus\config_h\clang64\config.h
+
+1755201510 d:\gimp plug-ins\tritonhawk-plus\config_h\clang64\stdplugins-intl.h
+	<glib/gi18n.h>
+
+1754674832 d:\gimp plug-ins\libs\libintmath\lib_int_math.hpp
+	"min.inl"
+	"max.inl"
+	"clamp.inl"
+
+1754674602 d:\gimp plug-ins\libs\libintmath\math\min.inl
+
+1754674602 d:\gimp plug-ins\libs\libintmath\math\max.inl
+
+1755306193 d:\gimp plug-ins\libs\libintmath\math\clamp.inl
+
+1755702826 d:\gimp plug-ins\libs\libquadmath\quadmath-modded.hpp
+	<stdlib.h>
+	<cstdint>
+	<limits>
+	"fmaq.inl"
+	"quadmath-imp.hpp"
+	"copysignq.inl"
+	"sinq.inl"
+	"cosq.inl"
+	"tanq.inl"
+	"expq.inl"
+	"fabsq.inl"
+	"lnq.inl"
+	"powq.inl"
+	"sqrtq.inl"
+	"isnanq.inl"
+	"isinfq.inl"
+	"ldexpq.inl"
+	"frexpq.inl"
+	"scalbnq.inl"
+	"fminq.inl"
+	"fmaxq.inl"
+	"floorq.inl"
+	"ceilq.inl"
+	"roundq.inl"
+	"truncq.inl"
+	"fmodq.inl"
+	"modfq.inl"
+	"nearbyintq.inl"
+	"fmaq.inl"
+	"issignalingq.inl"
+	"rounddgq.inl"
+	"lerp.inl"
+	"clampq.inl"
+	"distwarpq.inl"
+	"to_intq.inl"
+	"quadmath-imp.hpp"
+	"fminq.inl"
+	"fmaxq.inl"
+	"powq.inl"
+	"sqrtq.inl"
+	"roundq.inl"
+	"truncq.inl"
+	"fmodq.inl"
+	"sinq.inl"
+	"cosq.inl"
+	"tanq.inl"
+	"clampq.inl"
+	"distwarpq.inl"
+	"lerp.inl"
+	"to_intq.inl"
+	"rounddgq.inl"
+
+1755658005 d:\gimp plug-ins\libs\libquadmath\math\fmaq.inl
+	<cstdint>
+	<limits>
+
+1752500404 d:\gimp plug-ins\libs\libquadmath\quadmath-imp.hpp
+	<errno.h>
+	<limits.h>
+	<stdbool.h>
+	<stdint.h>
+	<stdlib.h>
+	"quadmath-config.hpp"
+	<fenv.h>
+
+1752013560 d:\gimp plug-ins\libs\libquadmath\quadmath-config.hpp
+
+1755646490 d:\gimp plug-ins\libs\libquadmath\math\copysignq.inl
+
+1755703897 d:\gimp plug-ins\libs\libquadmath\math\sinq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"nearbyintq.inl"
+	"fmaq.inl"
+
+1755574768 d:\gimp plug-ins\libs\libquadmath\math\isnanq.inl
+
+1755574818 d:\gimp plug-ins\libs\libquadmath\math\isinfq.inl
+
+1755694878 d:\gimp plug-ins\libs\libquadmath\math\nearbyintq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"fabsq.inl"
+	"floorq.inl"
+	"fmodq.inl"
+	"roundq.inl"
+	"copysignq.inl"
+
+1755574469 d:\gimp plug-ins\libs\libquadmath\math\fabsq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755623952 d:\gimp plug-ins\libs\libquadmath\math\floorq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"fabsq.inl"
+
+1755621894 d:\gimp plug-ins\libs\libquadmath\math\fmodq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755619580 d:\gimp plug-ins\libs\libquadmath\math\roundq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755713177 d:\gimp plug-ins\libs\libquadmath\math\cosq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"nearbyintq.inl"
+	"fmaq.inl"
+
+1755703897 d:\gimp plug-ins\libs\libquadmath\math\tanq.inl
+	"sinq.inl"
+	"cosq.inl"
+
+1755623093 d:\gimp plug-ins\libs\libquadmath\math\expq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"nearbyintq.inl"
+	"ldexpq.inl"
+
+1755625576 d:\gimp plug-ins\libs\libquadmath\math\ldexpq.inl
+	<cmath>
+
+1755626952 d:\gimp plug-ins\libs\libquadmath\math\lnq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"frexpq.inl"
+
+1755627907 d:\gimp plug-ins\libs\libquadmath\math\frexpq.inl
+
+1755628350 d:\gimp plug-ins\libs\libquadmath\math\powq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"expq.inl"
+	"lnq.inl"
+	"modfq.inl"
+
+1755619371 d:\gimp plug-ins\libs\libquadmath\math\modfq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"floorq.inl"
+	"fabsq.inl"
+
+1755619580 d:\gimp plug-ins\libs\libquadmath\math\sqrtq.inl
+	"powq.inl"
+
+1755625577 d:\gimp plug-ins\libs\libquadmath\math\scalbnq.inl
+
+1755619580 d:\gimp plug-ins\libs\libquadmath\math\fminq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755619580 d:\gimp plug-ins\libs\libquadmath\math\fmaxq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755623993 d:\gimp plug-ins\libs\libquadmath\math\ceilq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+	"fabsq.inl"
+
+1755619579 d:\gimp plug-ins\libs\libquadmath\math\truncq.inl
+	"isnanq.inl"
+	"isinfq.inl"
+
+1755475915 d:\gimp plug-ins\libs\libquadmath\math\issignalingq.inl
+
+1755614888 d:\gimp plug-ins\libs\libquadmath\math\rounddgq.inl
+	"roundq.inl"
+	"powq.inl"
+
+1755614907 d:\gimp plug-ins\libs\libquadmath\math\lerp.inl
+	"isinfq.inl"
+	"isnanq.inl"
+	"powq.inl"
+
+1755614724 d:\gimp plug-ins\libs\libquadmath\math\clampq.inl
+
+1755533308 d:\gimp plug-ins\libs\libquadmath\math\distwarpq.inl
+
+1755622466 d:\gimp plug-ins\libs\libquadmath\math\to_intq.inl
+	<cstdint>
+	"truncq.inl"
+
+1755395607 d:\gimp plug-ins\tritonhawk-plus\components\thp_gui-combowidget-size.h
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	"components/thp_types.h"
+	"components/thp_parameters.h"
+	"components/thp_log.h"
+
+1755454389 d:\gimp plug-ins\tritonhawk-plus\components\thp_parameters.h
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	"components/thp_types.h"
+	<string>
+	<vector>
+
+1755440257 d:\gimp plug-ins\tritonhawk-plus\components\thp_log.h
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	"components/thp_types.h"
+	<chrono>
+	<string>
+
+1755438968 source:d:\gimp plug-ins\tritonhawk-plus\components\thp_log.cpp
+	"components/thp_types.h"
+	"components/thp_log.h"
+	<chrono>
+	<string>
+
+1755710788 source:d:\gimp plug-ins\tritonhawk-plus\components\thp_parameters.cpp
+	"components/thp_types.h"
+	"components/thp_parameters.h"
+	<omp.h>
+	<string>
+	<algorithm>
+	<cmath>
+	<vector>
+
+1755633965 source:d:\gimp plug-ins\tritonhawk-plus\components\thp_resize.cpp
+	"components/thp_types.h"
+	"components/thp_resize.h"
+	"components/thp_log.h"
+	"components/thp_parameters.h"
+	"components/inline/thp_pixel_vector.inl"
+	<omp.h>
+	<string>
+	<algorithm>
+	<cmath>
+	<vector>
+
+1755454388 d:\gimp plug-ins\tritonhawk-plus\components\thp_resize.h
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	"components/thp_types.h"
+	"components/thp_parameters.h"
+
+1754679378 d:\gimp plug-ins\tritonhawk-plus\components\inline\thp_pixel_vector.inl
+
+1755710782 source:d:\gimp plug-ins\tritonhawk-plus\tritonhawk-plus-image-resize.cpp
+	"components/thp_types.h"
+	"tritonhawk-plus-image-resize.h"
+	"components/thp_log.h"
+	"components/thp_resize.h"
+	"components/thp_parameters.h"
+	"components/thp_gui-combowidget-size.h"
+	<algorithm>
+	<iostream>
+	<omp.h>
+	<algorithm>
+	<cmath>
+	<string>
+
+1755201986 d:\gimp plug-ins\tritonhawk-plus\tritonhawk-plus-image-resize.h
+	"config_h/clang64/config.h"
+	<libgimp/gimp.h>
+	<libgimp/gimpui.h>
+	<omp.h>
+	"components/thp_types.h"
+	<string>
+

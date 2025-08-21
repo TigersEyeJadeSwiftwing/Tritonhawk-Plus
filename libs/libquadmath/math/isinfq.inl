@@ -15,8 +15,46 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-int isinfq (__float128 x)
+#if __has_builtin(__builtin_isinff128)
+    /** \brief Determines if a given floating-point number is a positive or negative infinity.
+     *
+     * \param x (__float128) The number to check for being infinity, positive or negative.
+     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
+     */
+    static HOT_INLINE int isinfq (__float128 x)
+    {
+        return __builtin_isinff128(x);
+    }
+#elif __has_builtin(__builtin_isinfq)
+    /** \brief Determines if a given floating-point number is a positive or negative infinity.
+     *
+     * \param x (__float128) The number to check for being infinity, positive or negative.
+     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
+     */
+    static HOT_INLINE int isinfq (__float128 x)
+    {
+        return __builtin_isinfq(x);
+    }
+#elif __has_builtin(__builtin_isinf)
+    /** \brief Determines if a given floating-point number is a positive or negative infinity.
+     *
+     * \param x (__float128) The number to check for being infinity, positive or negative.
+     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
+     */
+    static HOT_INLINE int isinfq (__float128 x)
+    {
+        return __builtin_isinf(x);
+    }
+#else
+
+/** \brief Determines if a given floating-point number is a positive or negative infinity.
+ *
+ * \param x (__float128) The number to check for being infinity, positive or negative.
+ * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
+ */
+static HOT_INLINE int isinfq (__float128 x)
 {
     return __builtin_isinf(x);
 }
+
+#endif

@@ -15,13 +15,14 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/** \brief Scales a by 2^exp for __float128 data types.
+/** \brief Multiply a binary128 value by 2 raised to an integer power.
  *
- * \param a __float128 The base value to scale.
- * \param exp s64 The exponent to which 2 is raised.
- * \return __float128 The result of a * 2^exp.
+ * \param a   __float128 The significand to scale.
+ * \param exp s64 The exponent of 2.
+ * \return __float128 The value a * 2^exp.
  */
-static HOT_INLINE __float128 scalbnq(__float128 a, s64 exp)
+/*
+static HOT_INLINE __float128 ldexpq(__float128 a, s64 exp)
 {
     if (isnanq(a) || isinfq(a))
         return a; // Preserve NaN and ±Inf
@@ -29,6 +30,49 @@ static HOT_INLINE __float128 scalbnq(__float128 a, s64 exp)
     // Handle the case where exp is zero
     if (exp == 0)
         return a; // a * 2^0 = a
+
+    // Calculate the scaling factor as __float128
+    static constexpr __float128 TWO_POW_64 = 18446744073709551616.0q; // 2^64
+    __float128 result;
+
+    if (exp > 0) {
+        // For positive exponents
+        if (exp >= 64) {
+            result = a * (TWO_POW_64 * (static_cast<__float128>(1) << (exp - 64))); // Scale by 2^64 and shift
+        } else {
+            result = a * (static_cast<__float128>(1) << exp); // Scale by 2^exp directly
+        }
+    } else {
+        // For negative exponents
+        if (exp <= -64) {
+            result = a / (TWO_POW_64 * (static_cast<__float128>(1) << (-exp - 64))); // Scale down by 2^64
+        } else {
+            result = a / (static_cast<__float128>(1) << -exp); // Scale down by 2^(-exp) directly
+        }
+    }
+
+    return result;
+}
+
+#include <cmath> // For isinfq and isnanq
+*/
+
+/** \brief Computes a * 2^exp for __float128 data types.
+ *
+ * \param a __float128 The base value to scale.
+ * \param exp s64 The exponent to which 2 is raised.
+ * \return __float128 The result of a * 2^exp.
+ */
+static HOT_INLINE __float128 ldexpq(__float128 a, s64 exp)
+{
+    if (isnanq(a) || isinfq(a)) {
+        return a; // Preserve NaN and ±Inf
+    }
+
+    // Handle the case where exp is zero
+    if (exp == 0) {
+        return a; // a * 2^0 = a
+    }
 
     // Calculate the scaling factor as __float128
     static constexpr __float128 TWO_POW_64 = 18446744073709551616.0q; // 2^64

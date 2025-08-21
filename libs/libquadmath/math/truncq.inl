@@ -15,8 +15,21 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 truncq(__float128 x) {
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+#endif
+
+/** \brief 128-bit float truncate function.
+ *
+ * \param x __float128 Input value.
+ * \return __float128 Output value, truncated.
+ */
+static HOT_INLINE __float128 truncq(__float128 x)
+{
+    if (isnanq(x) || isinfq(x))
+        return x;                // Preserve NaN and ±Inf
+
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);
 

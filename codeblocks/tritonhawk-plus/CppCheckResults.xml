@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<results version="2">
+    <cppcheck version="2.18.0" />
+    <errors>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" line="9" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" line="10" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;omp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;omp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" line="12" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_types.h" line="3" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_types.h" line="4" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_types.h" line="90" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_types.h" line="91" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;glib/gi18n.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;glib/gi18n.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/config_h/clang64/stdplugins-intl.h" line="28" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdlib.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdlib.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-modded.hpp" line="31" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;errno.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;errno.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="26" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;limits.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;limits.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="27" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdbool.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdbool.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="28" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdint.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdint.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="29" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdlib.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdlib.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="30" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;fenv.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;fenv.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="33" column="0" />
+        </error>
+        <error id="preprocessorErrorDirective" severity="error" msg='#error &quot;No way!&quot;' verbose='#error &quot;No way!&quot;'>
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="63" column="0" />
+        </error>
+        <error id="preprocessorErrorDirective" severity="error" msg='#error &quot;No way!&quot;' verbose='#error &quot;No way!&quot;' file0="../../tritonhawk-plus/tritonhawk-plus-image-resize.h">
+            <location file="../../libs/libquadmath/quadmath-imp.hpp" line="63" column="3" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;algorithm&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;algorithm&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" line="1" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_resize.h" line="9" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_resize.h" line="10" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_parameters.h" line="9" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_parameters.h" line="10" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_log.h" line="9" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_log.h" line="10" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimp.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_gui-combowidget-size.h" line="9" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;libgimp/gimpui.h&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../tritonhawk-plus/components/thp_gui-combowidget-size.h" line="10" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/to_intq.inl" line="7" column="0" />
+        </error>
+        <error id="badBitmaskCheck" severity="style" msg="Operator &apos;|&apos; with one operand equal to zero is redundant." verbose="Operator &apos;|&apos; with one operand equal to zero is redundant." cwe="571" file0="../../libs/libquadmath/math/scalbnq.inl">
+            <location file="../../libs/libquadmath/math/scalbnq.inl" line="57" column="19" />
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;BIAS&apos; is assigned a value that is never used." verbose="Variable &apos;BIAS&apos; is assigned a value that is never used." cwe="563" file0="../../libs/libquadmath/math/scalbnq.inl">
+            <location file="../../libs/libquadmath/math/scalbnq.inl" line="26" column="21" />
+            <symbol>BIAS</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;BIAS&apos; is assigned a value that is never used." verbose="Variable &apos;BIAS&apos; is assigned a value that is never used." cwe="563" file0="../../libs/libquadmath/math/scalbnq.inl">
+            <location file="../../libs/libquadmath/math/scalbnq.inl" line="26" column="16" />
+            <symbol>BIAS</symbol>
+        </error>
+        <error id="shiftTooManyBits" severity="warning" msg="Shifting 64-bit value by 111 bits is undefined behaviour. See condition at line 34." verbose="Shifting 64-bit value by 111 bits is undefined behaviour. See condition at line 34." cwe="758" file0="../../libs/libquadmath/math/roundq.inl">
+            <location file="../../libs/libquadmath/math/roundq.inl" line="41" column="51" info="Shift" />
+            <location file="../../libs/libquadmath/math/roundq.inl" line="34" column="17" info="Assuming that condition &apos;j0&gt;111&apos; is not redundant" />
+        </error>
+        <error id="shiftTooManyBits" severity="warning" msg="Shifting 64-bit value by 79 bits is undefined behaviour. See condition at line 42." verbose="Shifting 64-bit value by 79 bits is undefined behaviour. See condition at line 42." cwe="758" file0="../../libs/libquadmath/math/roundq.inl">
+            <location file="../../libs/libquadmath/math/roundq.inl" line="43" column="21" info="Shift" />
+            <location file="../../libs/libquadmath/math/roundq.inl" line="42" column="32" info="Assuming that condition &apos;j0&lt;64&apos; is not redundant" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cmath&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cmath&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/lnq.inl" line="4" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/lnq.inl" line="5" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cfenv&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cfenv&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/lnq.inl" line="6" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/lnq.inl" line="7" column="0" />
+        </error>
+        <error id="missingInclude" severity="information" msg='Include file: &quot;exp.inl&quot; not found.' verbose='Include file: &quot;exp.inl&quot; not found.'>
+            <location file="../../libs/libquadmath/math/powq.inl" line="5" column="0" />
+        </error>
+        <error id="missingInclude" severity="information" msg='Include file: &quot;exp.inl&quot; not found.' verbose='Include file: &quot;exp.inl&quot; not found.'>
+            <location file="../../libs/libquadmath/math/sqrtq.inl" line="5" column="0" />
+        </error>
+        <error id="normalCheckLevelMaxBranches" severity="information" msg="Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches." verbose="Limiting analysis of branches. Use --check-level=exhaustive to analyze all branches." file0="../../libs/libquadmath/math/fmodq.inl">
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="0" column="0" />
+        </error>
+        <error id="badBitmaskCheck" severity="style" msg="Operator &apos;|&apos; with one operand equal to zero is redundant." verbose="Operator &apos;|&apos; with one operand equal to zero is redundant." cwe="571" file0="../../libs/libquadmath/math/fmodq.inl">
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="29" column="64" />
+        </error>
+        <error id="duplicateExpression" severity="style" msg="Same expression on both sides of &apos;-&apos;." verbose="Finding the same expression on both sides of an operator is suspicious and might indicate a cut and paste or logic error. Please examine this code carefully to determine if it is correct." cwe="398" file0="../../libs/libquadmath/math/fmodq.inl">
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="29" column="71" />
+        </error>
+        <error id="shiftTooManyBitsSigned" severity="portability" msg="Shifting signed 64-bit value by 63 bits is implementation-defined behaviour. See condition at line 44." verbose="Shifting signed 64-bit value by 63 bits is implementation-defined behaviour. See condition at line 44." cwe="758" file0="../../libs/libquadmath/math/fmodq.inl">
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="46" column="22" info="Shift" />
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="44" column="19" info="Assuming that condition &apos;shift&lt;=63&apos; is not redundant" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cmath&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cmath&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/expq.inl" line="4" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdint&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/expq.inl" line="5" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cfenv&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cfenv&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/expq.inl" line="6" column="0" />
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;type_traits&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="../../libs/libquadmath/math/expq.inl" line="7" column="0" />
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;clamp&apos; is never used." verbose="The function &apos;clamp&apos; is never used." cwe="561">
+            <location file="../../libs/libintmath/math/clamp.inl" line="19" column="4" />
+            <symbol>clamp</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;max&apos; is never used." verbose="The function &apos;max&apos; is never used." cwe="561">
+            <location file="../../libs/libintmath/math/max.inl" line="19" column="5" />
+            <symbol>max</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;min&apos; is never used." verbose="The function &apos;min&apos; is never used." cwe="561">
+            <location file="../../libs/libintmath/math/min.inl" line="19" column="5" />
+            <symbol>min</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;ceilq&apos; is never used." verbose="The function &apos;ceilq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/ceilq.inl" line="23" column="12" />
+            <symbol>ceilq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;clampq&apos; is never used." verbose="The function &apos;clampq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/clampq.inl" line="31" column="12" />
+            <symbol>clampq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;clampf&apos; is never used." verbose="The function &apos;clampf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/clampq.inl" line="65" column="7" />
+            <symbol>clampf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;clampd&apos; is never used." verbose="The function &apos;clampd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/clampq.inl" line="77" column="8" />
+            <symbol>clampd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;floorq&apos; is never used." verbose="The function &apos;floorq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/floorq.inl" line="23" column="12" />
+            <symbol>floorq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;fmaxq&apos; is never used." verbose="The function &apos;fmaxq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/fmaxq.inl" line="27" column="12" />
+            <symbol>fmaxq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;fminq&apos; is never used." verbose="The function &apos;fminq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/fminq.inl" line="27" column="12" />
+            <symbol>fminq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;fmodq&apos; is never used." verbose="The function &apos;fmodq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/fmodq.inl" line="19" column="12" />
+            <symbol>fmodq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;frexpq&apos; is never used." verbose="The function &apos;frexpq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/frexpq.inl" line="19" column="12" />
+            <symbol>frexpq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;isinfq&apos; is never used." verbose="The function &apos;isinfq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/isinfq.inl" line="19" column="5" />
+            <symbol>isinfq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;isnanq&apos; is never used." verbose="The function &apos;isnanq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/isnanq.inl" line="19" column="5" />
+            <symbol>isnanq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;issignalingq&apos; is never used." verbose="The function &apos;issignalingq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/issignalingq.inl" line="19" column="5" />
+            <symbol>issignalingq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpq&apos; is never used." verbose="The function &apos;lerpq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="31" column="12" />
+            <symbol>lerpq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpexpq&apos; is never used." verbose="The function &apos;lerpexpq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="37" column="12" />
+            <symbol>lerpexpq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2expq&apos; is never used." verbose="The function &apos;lerp2expq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="43" column="12" />
+            <symbol>lerp2expq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpwarpq&apos; is never used." verbose="The function &apos;lerpwarpq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="56" column="12" />
+            <symbol>lerpwarpq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2warpq&apos; is never used." verbose="The function &apos;lerp2warpq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="63" column="12" />
+            <symbol>lerp2warpq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpf&apos; is never used." verbose="The function &apos;lerpf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="124" column="7" />
+            <symbol>lerpf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpexpf&apos; is never used." verbose="The function &apos;lerpexpf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="129" column="7" />
+            <symbol>lerpexpf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2expf&apos; is never used." verbose="The function &apos;lerp2expf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="135" column="7" />
+            <symbol>lerp2expf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpwarpf&apos; is never used." verbose="The function &apos;lerpwarpf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="148" column="7" />
+            <symbol>lerpwarpf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2warpf&apos; is never used." verbose="The function &apos;lerp2warpf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="155" column="7" />
+            <symbol>lerp2warpf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpd&apos; is never used." verbose="The function &apos;lerpd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="169" column="8" />
+            <symbol>lerpd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpexpd&apos; is never used." verbose="The function &apos;lerpexpd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="174" column="8" />
+            <symbol>lerpexpd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2expd&apos; is never used." verbose="The function &apos;lerp2expd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="180" column="8" />
+            <symbol>lerp2expd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerpwarpd&apos; is never used." verbose="The function &apos;lerpwarpd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="193" column="8" />
+            <symbol>lerpwarpd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;lerp2warpd&apos; is never used." verbose="The function &apos;lerp2warpd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/lerp.inl" line="200" column="8" />
+            <symbol>lerp2warpd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;rounddgq&apos; is never used." verbose="The function &apos;rounddgq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/rounddgq.inl" line="38" column="12" />
+            <symbol>rounddgq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;rounddgd&apos; is never used." verbose="The function &apos;rounddgd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/rounddgq.inl" line="69" column="8" />
+            <symbol>rounddgd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;rounddgf&apos; is never used." verbose="The function &apos;rounddgf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/rounddgq.inl" line="84" column="7" />
+            <symbol>rounddgf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;scalbnq&apos; is never used." verbose="The function &apos;scalbnq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/scalbnq.inl" line="19" column="12" />
+            <symbol>scalbnq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;sqrtq&apos; is never used." verbose="The function &apos;sqrtq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/sqrtq.inl" line="24" column="12" />
+            <symbol>sqrtq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;tanq&apos; is never used." verbose="The function &apos;tanq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/tanq.inl" line="22" column="12" />
+            <symbol>tanq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;to_intq&apos; is never used." verbose="The function &apos;to_intq&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/to_intq.inl" line="33" column="9" />
+            <symbol>to_intq</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;to_intf&apos; is never used." verbose="The function &apos;to_intf&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/to_intq.inl" line="46" column="9" />
+            <symbol>to_intf</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;to_intd&apos; is never used." verbose="The function &apos;to_intd&apos; is never used." cwe="561">
+            <location file="../../libs/libquadmath/math/to_intq.inl" line="52" column="9" />
+            <symbol>to_intd</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGBA_red&apos; is never used." verbose="The function &apos;RGBA_red&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="19" column="5" />
+            <symbol>RGBA_red</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGBA_green&apos; is never used." verbose="The function &apos;RGBA_green&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="24" column="5" />
+            <symbol>RGBA_green</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGBA_blue&apos; is never used." verbose="The function &apos;RGBA_blue&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="29" column="5" />
+            <symbol>RGBA_blue</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGBA_alpha&apos; is never used." verbose="The function &apos;RGBA_alpha&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="34" column="5" />
+            <symbol>RGBA_alpha</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGB_red&apos; is never used." verbose="The function &apos;RGB_red&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="40" column="5" />
+            <symbol>RGB_red</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGB_green&apos; is never used." verbose="The function &apos;RGB_green&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="45" column="5" />
+            <symbol>RGB_green</symbol>
+        </error>
+        <error id="unusedFunction" severity="style" msg="The function &apos;RGB_blue&apos; is never used." verbose="The function &apos;RGB_blue&apos; is never used." cwe="561">
+            <location file="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" line="50" column="5" />
+            <symbol>RGB_blue</symbol>
+        </error>
+        <error id="checkersReport" severity="information" msg="Active checkers: There was critical errors (use --checkers-report=&lt;filename&gt; to see details)" verbose="Active checkers: There was critical errors (use --checkers-report=&lt;filename&gt; to see details)" />
+    </errors>
+</results>

@@ -1,14 +1,9 @@
 #pragma once
 
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "truncq.inl"
-    #include "clampq.inl"
+    #include "isinfq.inl"
+    #include "isnanq.inl"
     #include "powq.inl"
-    #include "distwarpq.inl"
-    #include "fabsq.inl"
-#else
-    #include "clampq.inl"
-    #include "distwarpq.inl"
 #endif
 
 /*
@@ -27,185 +22,340 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-static inline __attribute__((always_inline, hot))
-__float128 lerpq(__float128 a, __float128 b, __float128 lerp_factor)
+/** \brief Lerp function, basic, linear version that calculates a blend of one floating point number and another.
+ *
+ * \param a __float128 Value to have all, none, or some of determine the output value.
+ * \param b __float128 Value to have all, none, or some of determine the output value.
+ * \param lerp_factor __float128 Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \return __float128 Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE __float128 lerpq(__float128 a, __float128 b, __float128 lerp_factor)
 {
-    __float128 lerp_fac = clamp01q(lerp_factor);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor)) return NANq;
+
+    if (lerp_factor == 0.q) return a;
+    if (lerp_factor == 1.q) return b;
+    if (lerp_factor == 0.5q) return (a + b) * 0.5q;
+
+    __float128 lerp_fac = (lerp_factor > 1.q) ? 1.q : (lerp_factor < 0.q) ? 0.q : lerp_factor;
+
     return (a * (1.0q - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-__float128 lerpexpq(__float128 a, __float128 b, __float128 lerp_factor, __float128 exponent)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a __float128 Value to have all, none, or some of determine the output value.
+ * \param b __float128 Value to have all, none, or some of determine the output value.
+ * \param lerp_factor __float128 Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent __float128 The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerp_factor inwards towards 0.5, while values below 1.0 pull the lerping blend factor out away from 0.5.
+ * \return __float128 Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE __float128 lerp_exp_inq(__float128 a, __float128 b, __float128 lerp_factor, __float128 exponent)
 {
-    __float128 lerp_fac = powq(clamp01q(lerp_factor), exponent);
-    return (a * (1.0q - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-__float128 lerp2expq(__float128 a, __float128 b, __float128 lerp_factor, __float128 exponent)
-{
-    __float128 clamped = clamp01q(lerp_factor);
-    __float128 factor0 = (clamped < 0.5q) ?
-        (0.5q - clamped) * 2.0q :
-        (clamped - 0.5q) * 2.0q ;
-    __float128 factor1 = powq(factor0, 1.0q / exponent);
-    __float128 lerp_fac = (clamped < 0.5q) ?
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NANq;
+
+    if (exponent <= 0.q) return (a + b) * 0.5q;
+
+    if (lerp_factor == 0.q) return a;
+    if (lerp_factor == 1.q) return b;
+    if (lerp_factor == 0.5q) return (a + b) * 0.5q;
+
+    __float128 clamped_factor = (lerp_factor > 1.q) ? 1.q : (lerp_factor < 0.q) ? 0.q : lerp_factor;
+
+    __float128 factor0 = (clamped_factor < 0.5q) ?
+        (0.5q - clamped_factor) * 2.0q :
+        (clamped_factor - 0.5q) * 2.0q ;
+    __float128 factor1 = powq(factor0, 1.q / exponent);
+    __float128 lerp_fac = (clamped_factor < 0.5q) ?
         0.5q - (factor1 * 0.5q) :
         0.5q + (factor1 * 0.5q) ;
     return (a * (1.0q - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-__float128 lerpwarpq(__float128 a, __float128 b, __float128 lerp_factor, __float128 dist_warp_factor)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a __float128 Value to have all, none, or some of determine the output value.
+ * \param b __float128 Value to have all, none, or some of determine the output value.
+ * \param lerp_factor __float128 Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent __float128 The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerping blend factor out away from 0.5, while values below 1.0 pull the lerp_factor inwards towards 0.5.
+ * \return __float128 Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE __float128 lerp_exp_outq(__float128 a, __float128 b, __float128 lerp_factor, __float128 exponent)
 {
-    __float128 clamped = clamp01q(lerp_factor);
-    __float128 lerp_fac = 1.0q - fabsq(distwarpq((1.0q - clamped) * dist_warp_factor));
-    return (a * (1.0q - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-__float128 lerp2warpq(__float128 a, __float128 b, __float128 lerp_factor, __float128 dist_warp_factor)
-{
-    __float128 clamped = clamp01q(lerp_factor);
-    __float128 factor0 = (clamped < 0.5q) ?
-        (0.5q - clamped) * 2.0q :
-        (clamped - 0.5q) * 2.0q ;
-    __float128 factor1 = distwarpq(factor0 * dist_warp_factor);
-    __float128 lerp_fac = (clamped < 0.5q) ?
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NANq;
+
+    if (lerp_factor == 0.q) return a;
+    if (lerp_factor == 1.q) return b;
+    if (lerp_factor == 0.5q) return (a + b) * 0.5q;
+
+    __float128 clamped_factor = (lerp_factor > 1.q) ? 1.q : (lerp_factor < 0.q) ? 0.q : lerp_factor;
+
+    if (exponent <= 0.q) return (clamped_factor < 0.5q) ? a : (clamped_factor < 0.5q) ? b : (a * (1.0q - clamped_factor)) + (b * clamped_factor);
+
+    __float128 factor0 = (clamped_factor < 0.5q) ?
+        (0.5q - clamped_factor) * 2.0q :
+        (clamped_factor - 0.5q) * 2.0q ;
+    __float128 factor1 = powq(factor0, exponent);
+    __float128 lerp_fac = (clamped_factor < 0.5q) ?
         0.5q - (factor1 * 0.5q) :
         0.5q + (factor1 * 0.5q) ;
+
     return (a * (1.0q - lerp_fac)) + (b * lerp_fac);
 }
+
 #else
-static inline __attribute__((always_inline, hot))
-long double lerpq(long double a, long double b, long double lerp_factor)
+/** \brief Lerp function, basic, linear version that calculates a blend of one floating point number and another.
+ *
+ * \param a long double Value to have all, none, or some of determine the output value.
+ * \param b long double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor long double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \return long double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE long double lerpq(long double a, long double b, long double lerp_factor)
 {
-    long double lerp_fac = clamp01q(lerp_factor);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor)) return NANq;
+
+    if (lerp_factor == 0.L) return a;
+    if (lerp_factor == 1.L) return b;
+    if (lerp_factor == 0.5L) return (a + b) * 0.5L;
+
+    long double lerp_fac = (lerp_factor > 1.L) ? 1.L : (lerp_factor < 0.L) ? 0.L : lerp_factor;
+
     return (a * (1.0L - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-long double lerpexpq(long double a, long double b, long double lerp_factor, long double exponent)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a long double Value to have all, none, or some of determine the output value.
+ * \param b long double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor long double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent long double The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerp_factor inwards towards 0.5, while values below 1.0 pull the lerping blend factor out away from 0.5.
+ * \return long double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE long double lerp_exp_inq(long double a, long double b, long double lerp_factor, long double exponent)
 {
-    long double lerp_fac = powq(clamp01q(lerp_factor), exponent);
-    return (a * (1.0L - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-long double lerp2expq(long double a, long double b, long double lerp_factor, long double exponent)
-{
-    long double clamped = clamp01q(lerp_factor);
-    long double factor0 = (clamped < 0.5L) ?
-        (0.5L - clamped) * 2.0L :
-        (clamped - 0.5L) * 2.0L ;
-    long double factor1 = powq(factor0, 1.0L / exponent);
-    long double lerp_fac = (clamped < 0.5L) ?
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NANq;
+
+    if (exponent <= 0.L) return (a + b) * 0.5L;
+
+    if (lerp_factor == 0.L) return a;
+    if (lerp_factor == 1.L) return b;
+    if (lerp_factor == 0.5L) return (a + b) * 0.5L;
+
+    long double clamped_factor = (lerp_factor > 1.L) ? 1.L : (lerp_factor < 0.L) ? 0.L : lerp_factor;
+
+    long double factor0 = (clamped_factor < 0.5L) ?
+        (0.5L - clamped_factor) * 2.0L :
+        (clamped_factor - 0.5L) * 2.0L ;
+    long double factor1 = powl(factor0, 1.L / exponent);
+    long double lerp_fac = (clamped_factor < 0.5L) ?
         0.5L - (factor1 * 0.5L) :
         0.5L + (factor1 * 0.5L) ;
     return (a * (1.0L - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-long double lerpwarpq(long double a, long double b, long double lerp_factor, long double dist_warp_factor)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a long double Value to have all, none, or some of determine the output value.
+ * \param b long double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor long double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent long double The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerping blend factor out away from 0.5, while values below 1.0 pull the lerp_factor inwards towards 0.5.
+ * \return long double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE long double lerp_exp_outq(long double a, long double b, long double lerp_factor, long double exponent)
 {
-    long double clamped = clamp01q(lerp_factor);
-    long double lerp_fac = 1.0L - fabsq(distwarpq((1.0L - clamped) * dist_warp_factor));
-    return (a * (1.0L - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-long double lerp2warpq(long double a, long double b, long double lerp_factor, long double dist_warp_factor)
-{
-    long double clamped = clamp01q(lerp_factor);
-    long double factor0 = (clamped < 0.5L) ?
-        (0.5L - clamped) * 2.0L :
-        (clamped - 0.5L) * 2.0L ;
-    long double factor1 = distwarpq(factor0 * dist_warp_factor);
-    long double lerp_fac = (clamped < 0.5L) ?
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NANq;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NANq;
+
+    if (lerp_factor == 0.L) return a;
+    if (lerp_factor == 1.L) return b;
+    if (lerp_factor == 0.5L) return (a + b) * 0.5L;
+
+    long double clamped_factor = (lerp_factor > 1.L) ? 1.L : (lerp_factor < 0.L) ? 0.L : lerp_factor;
+
+    if (exponent <= 0.L) return (clamped_factor < 0.5L) ? a : (clamped_factor < 0.5L) ? b : (a * (1.0L - clamped_factor)) + (b * clamped_factor);
+
+    long double factor0 = (clamped_factor < 0.5L) ?
+        (0.5L - clamped_factor) * 2.0L :
+        (clamped_factor - 0.5L) * 2.0L ;
+    long double factor1 = powl(factor0, exponent);
+    long double lerp_fac = (clamped_factor < 0.5L) ?
         0.5L - (factor1 * 0.5L) :
         0.5L + (factor1 * 0.5L) ;
+
     return (a * (1.0L - lerp_fac)) + (b * lerp_fac);
 }
 #endif
 
-static inline __attribute__((always_inline, hot))
-float lerpf(float a, float b, float lerp_factor)
+/** \brief Lerp function, basic, linear version that calculates a blend of one floating point number and another.
+ *
+ * \param a float Value to have all, none, or some of determine the output value.
+ * \param b float Value to have all, none, or some of determine the output value.
+ * \param lerp_factor float Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \return float Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE float lerpf(float a, float b, float lerp_factor)
 {
-    return (a * (1.0f - lerp_factor)) + (b * lerp_factor);
-}
-static inline __attribute__((always_inline, hot))
-float lerpexpf(float a, float b, float lerp_factor, float exponent)
-{
-    float lerp_fac = powf(clamp01f(lerp_factor), exponent);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor)) return NAN;
+
+    if (lerp_factor == 0.f) return a;
+    if (lerp_factor == 1.f) return b;
+    if (lerp_factor == 0.5f) return (a + b) * 0.5f;
+
+    float lerp_fac = (lerp_factor > 1.f) ? 1.f : (lerp_factor < 0.f) ? 0.f : lerp_factor;
+
     return (a * (1.0f - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-float lerp2expf(float a, float b, float lerp_factor, float exponent)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a float Value to have all, none, or some of determine the output value.
+ * \param b float Value to have all, none, or some of determine the output value.
+ * \param lerp_factor float Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent float The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerp_factor inwards towards 0.5, while values below 1.0 pull the lerping blend factor out away from 0.5.
+ * \return float Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE float lerp_exp_inf(float a, float b, float lerp_factor, float exponent)
 {
-    float clamped = clamp01f(lerp_factor);
-    float factor0 = (clamped < 0.5f) ?
-        (0.5f - clamped) * 2.0f :
-        (clamped - 0.5f) * 2.0f ;
-    float factor1 = powf(factor0, 1.0f / exponent);
-    float lerp_fac = (clamped < 0.5f) ?
-        0.5f - (factor1 * 0.5f) :
-        0.5f + (factor1 * 0.5f) ;
-    return (a * (1.0f - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-float lerpwarpf(float a, float b, float lerp_factor, float dist_warp_factor)
-{
-    float clamped = clamp01f(lerp_factor);
-    float lerp_fac = 1.0f - fabsf(distwarpf((1.0f - clamped) * dist_warp_factor));
-    return (a * (1.0f - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-float lerp2warpf(float a, float b, float lerp_factor, float dist_warp_factor)
-{
-    float clamped = clamp01f(lerp_factor);
-    float factor0 = (clamped < 0.5f) ?
-        (0.5f - clamped) * 2.0f :
-        (clamped - 0.5f) * 2.0f ;
-    float factor1 = distwarpf(factor0 * dist_warp_factor);
-    float lerp_fac = (clamped < 0.5f) ?
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NAN;
+
+    if (exponent <= 0.f) return (a + b) * 0.5f;
+
+    if (lerp_factor == 0.f) return a;
+    if (lerp_factor == 1.f) return b;
+    if (lerp_factor == 0.5f) return (a + b) * 0.5f;
+
+    float clamped_factor = (lerp_factor > 1.f) ? 1.f : (lerp_factor < 0.f) ? 0.f : lerp_factor;
+
+    float factor0 = (clamped_factor < 0.5f) ?
+        (0.5f - clamped_factor) * 2.0f :
+        (clamped_factor - 0.5f) * 2.0f ;
+    float factor1 = powf(factor0, 1.f / exponent);
+    float lerp_fac = (clamped_factor < 0.5f) ?
         0.5f - (factor1 * 0.5f) :
         0.5f + (factor1 * 0.5f) ;
     return (a * (1.0f - lerp_fac)) + (b * lerp_fac);
 }
 
-static inline __attribute__((always_inline, hot))
-double lerpd(double a, double b, double lerp_factor)
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a float Value to have all, none, or some of determine the output value.
+ * \param b float Value to have all, none, or some of determine the output value.
+ * \param lerp_factor float Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent float The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerping blend factor out away from 0.5, while values below 1.0 pull the lerp_factor inwards towards 0.5.
+ * \return float Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE float lerp_exp_outf(float a, float b, float lerp_factor, float exponent)
 {
-    return (a * (1.0 - lerp_factor)) + (b * lerp_factor);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NAN;
+
+    if (lerp_factor == 0.f) return a;
+    if (lerp_factor == 1.f) return b;
+    if (lerp_factor == 0.5f) return (a + b) * 0.5f;
+
+    float clamped_factor = (lerp_factor > 1.f) ? 1.f : (lerp_factor < 0.f) ? 0.f : lerp_factor;
+
+    if (exponent <= 0.f) return (clamped_factor < 0.5f) ? a : (clamped_factor < 0.5f) ? b : (a * (1.0f - clamped_factor)) + (b * clamped_factor);
+
+    float factor0 = (clamped_factor < 0.5f) ?
+        (0.5f - clamped_factor) * 2.0f :
+        (clamped_factor - 0.5f) * 2.0f ;
+    float factor1 = powf(factor0, exponent);
+    float lerp_fac = (clamped_factor < 0.5f) ?
+        0.5f - (factor1 * 0.5f) :
+        0.5f + (factor1 * 0.5f) ;
+
+    return (a * (1.0f - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-double lerpexpd(double a, double b, double lerp_factor, double exponent)
+
+/** \brief Lerp function, basic, linear version that calculates a blend of one floating point number and another.
+ *
+ * \param a double Value to have all, none, or some of determine the output value.
+ * \param b double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \return double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE double lerpd(double a, double b, double lerp_factor)
 {
-    double lerp_fac = pow(clamp01d(lerp_factor), exponent);
-    return (a * (1.0 - lerp_fac)) + (b * lerp_fac);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor)) return NAN;
+
+    if (lerp_factor == 0.0) return a;
+    if (lerp_factor == 1.0) return b;
+    if (lerp_factor == 0.50) return (a + b) * 0.50;
+
+    double lerp_fac = (lerp_factor > 1.0) ? 1.0 : (lerp_factor < 0.0) ? 0.0 : lerp_factor;
+
+    return (a * (1.00 - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-double lerp2expd(double a, double b, double lerp_factor, double exponent)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a double Value to have all, none, or some of determine the output value.
+ * \param b double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent double The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerp_factor inwards towards 0.5, while values below 1.0 pull the lerping blend factor out away from 0.5.
+ * \return double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE double lerp_exp_ind(double a, double b, double lerp_factor, double exponent)
 {
-    double clamped = clamp01d(lerp_factor);
-    double factor0 = (clamped < 0.5) ?
-        (0.5 - clamped) * 2.0 :
-        (clamped - 0.5) * 2.0 ;
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NAN;
+
+    if (exponent <= 0.0) return (a + b) * 0.50;
+
+    if (lerp_factor == 0.0) return a;
+    if (lerp_factor == 1.0) return b;
+    if (lerp_factor == 0.50) return (a + b) * 0.50;
+
+    double clamped_factor = (lerp_factor > 1.0) ? 1.0 : (lerp_factor < 0.0) ? 0.0 : lerp_factor;
+
+    double factor0 = (clamped_factor < 0.50) ?
+        (0.50 - clamped_factor) * 2.00 :
+        (clamped_factor - 0.50) * 2.00 ;
     double factor1 = pow(factor0, 1.0 / exponent);
-    double lerp_fac = (clamped < 0.5) ?
-        0.5 - (factor1 * 0.5) :
-        0.5 + (factor1 * 0.5) ;
-    return (a * (1.0 - lerp_fac)) + (b * lerp_fac);
+    double lerp_fac = (clamped_factor < 0.50) ?
+        0.50 - (factor1 * 0.50) :
+        0.50 + (factor1 * 0.50) ;
+    return (a * (1.00 - lerp_fac)) + (b * lerp_fac);
 }
-static inline __attribute__((always_inline, hot))
-double lerpwarpd(double a, double b, double lerp_factor, double dist_warp_factor)
+
+/** \brief Lerp function, nonstandard version that raises the lerping blend factor by an exponent towards or away from a lerping blend value of 0.5 (half of value a and half of value b).
+ *
+ * \param a double Value to have all, none, or some of determine the output value.
+ * \param b double Value to have all, none, or some of determine the output value.
+ * \param lerp_factor double Ranging from 0.0 to 1.0, determines how much of input value b makes up the output.
+ * \param exponent double The lerp_factor parameter is altered by this exponent, values above 1.0 push the lerping blend factor out away from 0.5, while values below 1.0 pull the lerp_factor inwards towards 0.5.
+ * \return double Output value made up of none, some, or all of the input values a and b.
+ */
+static HOT_INLINE double lerp_exp_outd(double a, double b, double lerp_factor, double exponent)
 {
-    double clamped = clamp01d(lerp_factor);
-    double lerp_fac = 1.0 - fabs(distwarpd((1.0 - clamped) * dist_warp_factor));
-    return (a * (1.0 - lerp_fac)) + (b * lerp_fac);
-}
-static inline __attribute__((always_inline, hot))
-double lerp2warpd(double a, double b, double lerp_factor, double dist_warp_factor)
-{
-    double clamped = clamp01d(lerp_factor);
-    double factor0 = (clamped < 0.5) ?
-        (0.5 - clamped) * 2.0 :
-        (clamped - 0.5) * 2.0 ;
-    double factor1 = distwarpd(factor0 * dist_warp_factor);
-    double lerp_fac = (clamped < 0.5) ?
-        0.5 - (factor1 * 0.5) :
-        0.5 + (factor1 * 0.5) ;
-    return (a * (1.0 - lerp_fac)) + (b * lerp_fac);
+    if (isnanq(a) || isnanq(b) || isnanq(lerp_factor) || isnanq(exponent)) return NAN;
+    if (isinfq(a) || isinfq(b) || isinfq(lerp_factor) || isinfq(exponent)) return NAN;
+
+    if (lerp_factor == 0.0) return a;
+    if (lerp_factor == 1.0) return b;
+    if (lerp_factor == 0.50) return (a + b) * 0.50;
+
+    double clamped_factor = (lerp_factor > 1.0) ? 1.0 : (lerp_factor < 0.0) ? 0.0 : lerp_factor;
+
+    if (exponent <= 0.0) return (clamped_factor < 0.50) ? a : (clamped_factor < 0.50) ? b : (a * (1.00 - clamped_factor)) + (b * clamped_factor);
+
+    double factor0 = (clamped_factor < 0.50) ?
+        (0.50 - clamped_factor) * 2.00 :
+        (clamped_factor - 0.50) * 2.00 ;
+    double factor1 = pow(factor0, exponent);
+    double lerp_fac = (clamped_factor < 0.50) ?
+        0.50 - (factor1 * 0.50) :
+        0.50 + (factor1 * 0.50) ;
+
+    return (a * (1.00 - lerp_fac)) + (b * lerp_fac);
 }

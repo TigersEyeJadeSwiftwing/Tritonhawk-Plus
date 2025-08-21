@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "components/thp_types.h"
 #include "tritonhawk-plus-image-resize.h"
 #include "components/thp_log.h"
@@ -7,6 +5,7 @@
 #include "components/thp_parameters.h"
 #include "components/thp_gui-combowidget-size.h"
 
+#include <algorithm>
 #include <iostream>
 #include <omp.h>
 

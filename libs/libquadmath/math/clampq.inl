@@ -15,72 +15,134 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Return a value that ranges from "lo" to "hi", including the values of both "lo" and "hi" as potential output values.
  *
- * \param v (__float128) The input value, to be limited to being between the other two parameters.
- * \param lo (__float128) The lower limit.  If the input value "v" is below this value, this value will be returned instead.
- * \param hi (__float128) The upper limit.  If the input value "v" is above this value, this value will be returned instead.
- * \return (__float128) The input value "v", but limited to the range of the input values "lo" to "hi".
+ * \param v __float128 The input value, to be limited to being between the other two parameters.
+ * \param lo __float128 The lower limit.  If the input value "v" is below this value, this value will be returned instead.
+ * \param hi __float128 The upper limit.  If the input value "v" is above this value, this value will be returned instead.
+ * \return __float128 The input value "v", but limited to the range of the input values "lo" to "hi".
  *
  * Return a value that ranges from "lo" to "hi", including the values of both "lo" to "hi" as potential output values.  128-bit float version.
  * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
- * If you have trouble understanding it, and you're not brand-new to C or C-style languages, you may want to reconsider being a C/C++ programmer...
  */
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-static inline __attribute__((always_inline, hot))
-__float128 clampq(__float128 v, __float128 lo, __float128 hi)
+static HOT_INLINE __float128 clampq(__float128 v, __float128 lo, __float128 hi)
 {
+    if (__builtin_isnan(v) || __builtin_isnan(lo) || __builtin_isnan(hi)) return NANq;
+
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 #else
-static inline __attribute__((always_inline, hot))
-long double clampq(long double v, long double lo, long double hi)
+/** \brief Return a value that ranges from "lo" to "hi", including the values of both "lo" and "hi" as potential output values.
+ *
+ * \param v long double The input value, to be limited to being between the other two parameters.
+ * \param lo long double The lower limit.  If the input value "v" is below this value, this value will be returned instead.
+ * \param hi long double The upper limit.  If the input value "v" is above this value, this value will be returned instead.
+ * \return long double The input value "v", but limited to the range of the input values "lo" to "hi".
+ *
+ * Return a value that ranges from "lo" to "hi", including the values of both "lo" to "hi" as potential output values.  128-bit float version.
+ * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
+ */
+static HOT_INLINE long double clampq(long double v, long double lo, long double hi)
 {
+    if (__builtin_isnan(v) || __builtin_isnan(lo) || __builtin_isnan(hi)) return NANq;
+
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 #endif
 
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
  *
- * \param v (__float128) The input value, to be limited to being between 0.0 and 1.0.
- * \return (__float128) The input value "v", but limited.
+ * \param v __float128 The input value, to be limited to being between 0.0 and 1.0.
+ * \return __float128 The input value "v", but limited.
  *
  * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
  */
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-static inline __attribute__((always_inline, hot))
-__float128 clamp01q(__float128 v)
+static HOT_INLINE __float128 clamp01q(__float128 v)
 {
+    if (__builtin_isnan(v)) return NANq;
+
     return (v >= 0.q) ? ((v <= 1.q) ? v : 1.q) : 0.q;
 }
 #else
-static inline __attribute__((always_inline, hot))
-long double clamp01q(long double v)
+/** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
+ *
+ * \param v long double The input value, to be limited to being between 0.0 and 1.0.
+ * \return long double The input value "v", but limited.
+ *
+ * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
+ */
+static HOT_INLINE long double clamp01q(long double v)
 {
+    if (__builtin_isnan(v)) return NANq;
+
     return (v >= 0.L) ? ((v <= 1.L) ? v : 1.L) : 0.L;
 }
 #endif
 
-static inline __attribute__((always_inline, hot))
-float clampf (float v, float lo, float hi)
+/** \brief Return a value that ranges from "lo" to "hi", including the values of both "lo" and "hi" as potential output values.
+ *
+ * \param v float The input value, to be limited to being between the other two parameters.
+ * \param lo float The lower limit.  If the input value "v" is below this value, this value will be returned instead.
+ * \param hi float The upper limit.  If the input value "v" is above this value, this value will be returned instead.
+ * \return float The input value "v", but limited to the range of the input values "lo" to "hi".
+ *
+ * This function is a 32-bit float version.
+ * Return a value that ranges from "lo" to "hi", including the values of both "lo" to "hi" as potential output values.  128-bit float version.
+ * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
+ */
+static HOT_INLINE float clampf (float v, float lo, float hi)
 {
+    if (__builtin_isnan(v) || __builtin_isnan(lo) || __builtin_isnan(hi)) return NANq;
+
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-float clamp01f (float v)
+/** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
+ *
+ * \param v float The input value, to be limited to being between 0.0 and 1.0.
+ * \return float The input value "v", but limited.
+ *
+ * This function is a 32-bit float version.
+ * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
+ */
+static HOT_INLINE float clamp01f (float v)
 {
+    if (__builtin_isnan(v)) return NANq;
+
     return (v >= 0.f) ? ((v <= 1.f) ? v : 1.f) : 0.f;
 }
 
-static inline __attribute__((always_inline, hot))
-double clampd (double v, double lo, double hi)
+/** \brief Return a value that ranges from "lo" to "hi", including the values of both "lo" and "hi" as potential output values.
+ *
+ * \param v double The input value, to be limited to being between the other two parameters.
+ * \param lo double The lower limit.  If the input value "v" is below this value, this value will be returned instead.
+ * \param hi double The upper limit.  If the input value "v" is above this value, this value will be returned instead.
+ * \return double The input value "v", but limited to the range of the input values "lo" to "hi".
+ *
+ * This function is a 64-bit float version.
+ * Return a value that ranges from "lo" to "hi", including the values of both "lo" to "hi" as potential output values.  128-bit float version.
+ * This is pretty much a combination of min() and max() functions combined into one, nothing fancy here.
+ */
+static HOT_INLINE double clamp (double v, double lo, double hi)
 {
+    if (__builtin_isnan(v) || __builtin_isnan(lo) || __builtin_isnan(hi)) return NANq;
+
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-double clamp01d (double v)
+/** \brief Return a value that ranges from 0.0 to 1.0, including the values of both 0.0 and 1.0 as potential output values.
+ *
+ * \param v double The input value, to be limited to being between 0.0 and 1.0.
+ * \return double The input value "v", but limited.
+ *
+ * This function is a 64-bit float version.
+ * This is like the regular version, clampq(), but this version assumes the upper and lower limits are 1.0 and 0.0, respectively.
+ */
+static HOT_INLINE double clamp01 (double v)
 {
+    if (__builtin_isnan(v)) return NANq;
+
     return (v >= 0.0) ? ((v <= 1.0) ? v : 1.0) : 0.0;
 }

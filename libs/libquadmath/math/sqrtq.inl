@@ -1,10 +1,5 @@
 #pragma once
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "lnq.inl"
-    #include "expq.inl"
-#endif
-
 /*
     Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
@@ -20,8 +15,16 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 sqrtq(__float128 x)
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "powq.inl"
+#endif
+
+/** \brief 128-bit float square root function.
+ *
+ * \param x __float128 Input value.
+ * \return __float128 Output value, square root of input.
+ */
+static HOT_INLINE __float128 sqrtq(__float128 x)
 {
-    return expq(0.5q * lnq(x));
+    return powq(x, 0.5q);
 }

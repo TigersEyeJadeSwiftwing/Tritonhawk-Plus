@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="clang" />
 		<Build>
-			<Target title="clang64">
+			<Target title="Clang64 LD128">
 				<Option platforms="Windows;" />
 				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus-image-resize/tritonhawk-plus-image-resize" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/clang64/" />
@@ -18,10 +18,11 @@
 					<Add option="-Wall" />
 					<Add option="-std=gnu23" />
 					<Add option="-std=gnu++23" />
-					<Add option="-march=x86-64-v2" />
+					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-funroll-loops" />
+					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
 					<Add option="-flto" />
 					<Add option="-fno-math-errno" />
@@ -59,6 +60,8 @@
 					<Add option='-DPLUG_IN_COPYRIGHT=&quot;(gchar*)(\&quot;(c) 2025 Tiger J. Swiftwing\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_DATE=&quot;(gchar*)(\&quot;July 2025 CE\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option="-DTHP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT" />
+					<Add option="-DTHP_FORCE_USE_LONG_DOUBLE_128" />
 					<Add directory="../../tritonhawk-plus" />
 					<Add directory="../../libs/libquadmath" />
 					<Add directory="../../libs/libquadmath/math" />
@@ -69,10 +72,12 @@
 					<Add option="-m64" />
 					<Add option="-std=gnu23" />
 					<Add option="-std=gnu++23" />
-					<Add option="-march=x86-64-v2" />
+					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-funroll-loops" />
+					<Add option="-O3" />
+					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
 					<Add option="-flto" />
 					<Add option="-fno-math-errno" />
@@ -123,7 +128,131 @@
 					<Add option="-lglib-2.0" />
 					<Add option="-lintl" />
 					<Add library="C:/msys64/clang64/lib/libomp.dll.a" />
-					<Add directory="C:/msys64/clang64/lib" />
+					<Add library="C:/msys64/clang64/lib/libpthread.dll.a" />
+				</Linker>
+			</Target>
+			<Target title="Clang64 __float128">
+				<Option platforms="Windows;" />
+				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus-image-resize/tritonhawk-plus-image-resize" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/clang64/" />
+				<Option type="0" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-m64" />
+					<Add option="-O3" />
+					<Add option="-Wall" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
+					<Add option="-march=x86-64-v3" />
+					<Add option="-mtune=generic" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-funroll-loops" />
+					<Add option="-mlong-double-128" />
+					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=off" />
+					<Add option="-IC:/msys64/clang64/include/gimp-3.0" />
+					<Add option="-IC:/msys64/clang64/include/gtk-3.0" />
+					<Add option="-IC:/msys64/clang64/include/pango-1.0" />
+					<Add option="-IC:/msys64/clang64/include/harfbuzz" />
+					<Add option="-IC:/msys64/clang64/include/cairo" />
+					<Add option="-IC:/msys64/clang64/include/atk-1.0" />
+					<Add option="-IC:/msys64/clang64/include/fribidi" />
+					<Add option="-IC:/msys64/clang64/include/gegl-0.4" />
+					<Add option="-IC:/msys64/clang64/include/json-glib-1.0" />
+					<Add option="-IC:/msys64/clang64/include/babl-0.1" />
+					<Add option="-IC:/msys64/clang64/include/freetype2" />
+					<Add option="-IC:/msys64/clang64/include/pixman-1" />
+					<Add option="-IC:/msys64/clang64/include/gdk-pixbuf-2.0" />
+					<Add option="-IC:/msys64/clang64/include/libpng16" />
+					<Add option="-IC:/msys64/clang64/include/webp" />
+					<Add option="-IC:/msys64/clang64/include/gio-win32-2.0" />
+					<Add option="-IC:/msys64/clang64/include/glib-2.0" />
+					<Add option="-IC:/msys64/clang64/lib/glib-2.0/include" />
+					<Add option="-DINI_SHARED_LIB" />
+					<Add option="-DLIBDEFLATE_DLL" />
+					<Add option='-DPLUG_IN_BINARY=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_SOURCE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize.cpp\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_PROC=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_ROLE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_LABEL=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_PATH=&quot;(gchar*)(\&quot;&lt;Image&gt;/Image/Tritonhawk Plus/\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_BLURB=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_HELP_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_AUTHOR=&quot;(gchar*)(\&quot;Tiger J. Swiftwing\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_COPYRIGHT=&quot;(gchar*)(\&quot;(c) 2025 Tiger J. Swiftwing\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DATE=&quot;(gchar*)(\&quot;July 2025 CE\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option="-DTHP_FORCE_USE_FLOAT128" />
+					<Add directory="../../tritonhawk-plus" />
+					<Add directory="../../libs/libquadmath" />
+					<Add directory="../../libs/libquadmath/math" />
+					<Add directory="../../libs/libintmath" />
+					<Add directory="../../libs/libintmath/math" />
+				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
+					<Add option="-march=x86-64-v3" />
+					<Add option="-mtune=generic" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-funroll-loops" />
+					<Add option="-mlong-double-128" />
+					<Add option="-O3" />
+					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=off" />
+					<Add option="-static-libgcc" />
+					<Add option="-static-libstdc++" />
+					<Add option="-lgimpui-3.0" />
+					<Add option="-lgimpwidgets-3.0" />
+					<Add option="-lgimpmodule-3.0" />
+					<Add option="-lgimp-3.0" />
+					<Add option="-lgimpbase-3.0" />
+					<Add option="-lgimpcolor-3.0" />
+					<Add option="-lgimpconfig-3.0" />
+					<Add option="-lgimpmath-3.0" />
+					<Add option="-lgtk-3" />
+					<Add option="-lgdk-3" />
+					<Add option="-lz" />
+					<Add option="-lgdi32" />
+					<Add option="-limm32" />
+					<Add option="-lshell32" />
+					<Add option="-lole32" />
+					<Add option="-luuid" />
+					<Add option="-lwinmm" />
+					<Add option="-ldwmapi" />
+					<Add option="-lsetupapi" />
+					<Add option="-lcfgmgr32" />
+					<Add option="-lhid" />
+					<Add option="-lwinspool" />
+					<Add option="-lcomctl32" />
+					<Add option="-lcomdlg32" />
+					<Add option="-lpangocairo-1.0" />
+					<Add option="-lpangowin32-1.0" />
+					<Add option="-lpango-1.0" />
+					<Add option="-lcairo-gobject" />
+					<Add option="-latk-1.0" />
+					<Add option="-lgegl-0.4" />
+					<Add option="-lgegl-npd-0.4" />
+					<Add option="-ljson-glib-1.0" />
+					<Add option="-lbabl-0.1" />
+					<Add option="-lgexiv2" />
+					<Add option="-lcairo" />
+					<Add option="-lharfbuzz" />
+					<Add option="-lgdk_pixbuf-2.0" />
+					<Add option="-lgio-2.0" />
+					<Add option="-lgobject-2.0" />
+					<Add option="-lgmodule-2.0" />
+					<Add option="-lglib-2.0" />
+					<Add option="-lintl" />
+					<Add library="C:/msys64/clang64/lib/libomp.dll.a" />
+					<Add library="C:/msys64/clang64/lib/libpthread.dll.a" />
 				</Linker>
 			</Target>
 		</Build>
@@ -134,32 +263,86 @@
 		<Unit filename="../../libs/libintmath/math/clamp.inl" />
 		<Unit filename="../../libs/libintmath/math/max.inl" />
 		<Unit filename="../../libs/libintmath/math/min.inl" />
-		<Unit filename="../../libs/libquadmath/math/ceilq.inl" />
+		<Unit filename="../../libs/libquadmath/math/ceilq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/math/clampq.inl" />
-		<Unit filename="../../libs/libquadmath/math/copysignq.inl" />
-		<Unit filename="../../libs/libquadmath/math/cosq.inl" />
+		<Unit filename="../../libs/libquadmath/math/copysignq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/cosq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/math/distwarpq.inl" />
-		<Unit filename="../../libs/libquadmath/math/expq.inl" />
-		<Unit filename="../../libs/libquadmath/math/fabsq.inl" />
-		<Unit filename="../../libs/libquadmath/math/floorq.inl" />
-		<Unit filename="../../libs/libquadmath/math/fmaxq.inl" />
-		<Unit filename="../../libs/libquadmath/math/fminq.inl" />
-		<Unit filename="../../libs/libquadmath/math/fmodq.inl" />
-		<Unit filename="../../libs/libquadmath/math/frexpq.inl" />
-		<Unit filename="../../libs/libquadmath/math/isinfq.inl" />
-		<Unit filename="../../libs/libquadmath/math/isnanq.inl" />
-		<Unit filename="../../libs/libquadmath/math/issignalingq.inl" />
+		<Unit filename="../../libs/libquadmath/math/expq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/fabsq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/floorq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/fmaq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/fmaxq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/fminq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/fmodq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/frexpq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/isinfq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/isnanq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/issignalingq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/ldexpq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/math/lerp.inl" />
-		<Unit filename="../../libs/libquadmath/math/lnq.inl" />
-		<Unit filename="../../libs/libquadmath/math/powq.inl" />
+		<Unit filename="../../libs/libquadmath/math/lnq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/modfq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/nearbyintq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/powq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/math/rounddgq.inl" />
-		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
-		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />
-		<Unit filename="../../libs/libquadmath/math/sinq.inl" />
-		<Unit filename="../../libs/libquadmath/math/sqrtq.inl" />
-		<Unit filename="../../libs/libquadmath/math/tanq.inl" />
+		<Unit filename="../../libs/libquadmath/math/roundq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/scalbnq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/sinq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/sqrtq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
+		<Unit filename="../../libs/libquadmath/math/tanq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/math/to_intq.inl" />
-		<Unit filename="../../libs/libquadmath/math/truncq.inl" />
+		<Unit filename="../../libs/libquadmath/math/truncq.inl">
+			<Option target="Clang64 __float128" />
+		</Unit>
 		<Unit filename="../../libs/libquadmath/quadmath-config.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-imp.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-modded.hpp" />
@@ -178,6 +361,15 @@
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" />
 		<Extensions>
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot have_dot="1" />
+				<general />
+			</DoxyBlocks>
 			<lib_finder disable_auto="1" />
 		</Extensions>
 	</Project>

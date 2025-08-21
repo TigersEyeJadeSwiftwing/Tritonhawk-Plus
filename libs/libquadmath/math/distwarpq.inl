@@ -15,10 +15,11 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
  *
- * \param a (__float128) The input value, can be any real floating-point number.
- * \return (__float128) The output value, which is the input limited on a curve to -1.0 to 1.0.
+ * \param a __float128 The input value, can be any real floating-point number.
+ * \return __float128 The output value, which is the input limited on a curve to -1.0 to 1.0.
  *
  * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
  * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
@@ -30,28 +31,83 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
  * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
  * video games, and other fun stuff...
  */
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-static inline __attribute__((always_inline, hot))
-__float128 distwarpq (__float128 a)
+static HOT_INLINE __float128 distwarpq (__float128 a)
 {
-    return a / ( ((a >= 0.Q) ? a : -a) + 1.Q );
+    if (__builtin_isnan(a)) return NANq;
+    if (__builtin_isinf(a)) return a;
+
+    return a / ( ((a >= 0.q) ? a : -a) + 1.q );
 }
 #else
-static inline __attribute__((always_inline, hot))
-long double distwarpq (long double a)
+/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ *
+ * \param a long double The input value, can be any real floating-point number.
+ * \return long double The output value, which is the input limited on a curve to -1.0 to 1.0.
+ *
+ * This function is a version that uses long double input and output data types.
+ * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
+ * increases more and more as the input value is increasingly larger and larger, whether positive or negative
+ * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
+ * from zero makes less difference to the output, and the resulting output value never completely "gets there"
+ * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
+ * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
+ * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
+ * video games, and other fun stuff...
+ */
+static HOT_INLINE long double distwarpq (long double a)
 {
+    if (__builtin_isnan(a)) return NANq;
+    if (__builtin_isinf(a)) return a;
+
     return a / ( ((a >= 0.L) ? a : -a) + 1.L );
 }
 #endif
 
-static inline __attribute__((always_inline, hot))
-float distwarpf (float a)
+/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ *
+ * \param a float The input value, can be any real floating-point number.
+ * \return float The output value, which is the input limited on a curve to -1.0 to 1.0.
+ *
+ * This function is a 32-bit float version.
+ * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
+ * increases more and more as the input value is increasingly larger and larger, whether positive or negative
+ * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
+ * from zero makes less difference to the output, and the resulting output value never completely "gets there"
+ * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
+ * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
+ * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
+ * video games, and other fun stuff...
+ */
+static HOT_INLINE float distwarpf (float a)
 {
+    if (__builtin_isnan(a)) return NANq;
+    if (__builtin_isinf(a)) return a;
+
     return a / ( ((a >= 0.f) ? a : -a) + 1.f );
 }
 
-static inline __attribute__((always_inline, hot))
-double distwarpd (double a)
+/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ *
+ * \param a double The input value, can be any real floating-point number.
+ * \return double The output value, which is the input limited on a curve to -1.0 to 1.0.
+ *
+ * This function is a 64-bit float version.
+ * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
+ * increases more and more as the input value is increasingly larger and larger, whether positive or negative
+ * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
+ * from zero makes less difference to the output, and the resulting output value never completely "gets there"
+ * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
+ * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
+ * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
+ * video games, and other fun stuff...
+ */
+static HOT_INLINE double distwarp (double a)
 {
+    if (__builtin_isnan(a)) return NANq;
+    if (__builtin_isinf(a)) return a;
+
     return a / ( ((a >= 0.0) ? a : -a) + 1.0 );
 }

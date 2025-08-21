@@ -1,9 +1,5 @@
 #pragma once
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "truncq.inl"
-#endif
-
 #include <cstdint>
 
 /*
@@ -21,35 +17,48 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-/** \brief Returns an integer, from the 128-bit floating input value, truncated.
- *
- * \param a (__float128) The input value to be made into an int32_t.
- * \return (int32_t) The input value, converted into an int32_t.
- *
- * Returns an integer, from the 128-bit floating input value, truncated.
- */
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-static inline __attribute__((always_inline, hot))
-int32_t to_intq (__float128 a)
+    #include "truncq.inl"
+#endif
+
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+/** \brief Returns an integer, from the 128-bit floating point input value, truncated.
+ *
+ * \param x __float128 The input value to be made into an int32_t.
+ * \return int32_t The input value, converted into an int32_t.
+ */
+static HOT_INLINE int32_t to_intq (__float128 x)
 {
-    return int32_t(truncq(a) + 0.1Q);
+    return int32_t(truncq(x) + 0.1q);
 }
 #else
-static inline __attribute__((always_inline, hot))
-int32_t to_intq (long double a)
+/** \brief Returns an integer, from the floating point input value, truncated.
+ *
+ * \param x long double The input value to be made into an int32_t.
+ * \return int32_t The input value, converted into an int32_t.
+ */
+static HOT_INLINE int32_t to_intq (long double x)
 {
-    return int32_t(truncl(a) + 0.1L);
+    return int32_t(truncl(x) + 0.1L);
 }
 #endif
 
-static inline __attribute__((always_inline, hot))
-int32_t to_intf (float a)
+/** \brief Returns an integer, from the 32-bit floating point input value, truncated.
+ *
+ * \param x float The input value to be made into an int32_t.
+ * \return int32_t The input value, converted into an int32_t.
+ */
+static HOT_INLINE int32_t to_intf (float x)
 {
-    return int32_t(truncf(a) + 0.1f);
+    return int32_t(truncf(x) + 0.1f);
 }
 
-static inline __attribute__((always_inline, hot))
-int32_t to_intd (double a)
+/** \brief Returns an integer, from the 64-bit floating point input value, truncated.
+ *
+ * \param x double The input value to be made into an int32_t.
+ * \return int32_t The input value, converted into an int32_t.
+ */
+static HOT_INLINE int32_t to_int (double x)
 {
-    return int32_t(trunc(a) + 0.1);
+    return int32_t(trunc(x) + 0.1);
 }

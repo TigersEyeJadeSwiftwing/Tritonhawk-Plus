@@ -1,35 +1,34 @@
 #pragma once
 
-/* s_copysignl.c -- long double version of s_copysign.c.
- * Conversion to long double by Jakub Jelinek, jj@ultra.linux.cz.
- */
-
 /*
- * ====================================================
- * Copyright (C) 1993 by Sun Microsystems, Inc. All rights reserved.
+    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
+GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
+middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    This program is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later
+version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along
+with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+/** \brief 128-bit float function to copy the sign to an input f128 value.
  *
- * Developed at SunPro, a Sun Microsystems, Inc. business.
- * Permission to use, copy, modify, and distribute this
- * software is freely granted, provided that this notice
- * is preserved.
- * ====================================================
+ * \param x f128 Input value to have it's sign potentially changed.
+ * \param y f128 Value to get the sign of, to make the sign of x.
+ * \return f128 Output value, x with the sign of y.
  */
-
-/*
- * copysignq(long double x, long double y)
- * copysignq(x,y) returns a value with the magnitude of x and
- * with the sign bit of y.
- */
-
-#define NO_MATH_REDIRECT
-
-static inline __attribute__((always_inline, hot))
-__float128 copysignq(__float128 x, __float128 y)
+static HOT_INLINE f128 copysignq(f128 x, f128 y)
 {
-    uint64_t hx,hy;
-    GET_FLT128_MSW64(hx,x);
-    GET_FLT128_MSW64(hy,y);
-    SET_FLT128_MSW64(x,(hx&0x7fffffffffffffffULL)
-                |(hy&0x8000000000000000ULL));
-        return x;
+    if (x < 0._q)
+    {
+        return (y < 0._q) ? x : -x;
+    }
+    else
+    {
+        return (y < 0._q) ? -x : x;
+    }
 }

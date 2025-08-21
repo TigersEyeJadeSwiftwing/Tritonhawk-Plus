@@ -15,86 +15,63 @@ details.  You should have received a copy of the GNU General Public License alon
 with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-static inline __attribute__((always_inline, hot))
-__float128 cosq(__float128 x)
+#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
+    #include "isnanq.inl"
+    #include "isinfq.inl"
+    #include "nearbyintq.inl"
+    #include "fmaq.inl"
+#endif
+
+/** \brief 128-bit float cosine function.
+ *
+ * \param x __float128 Input value.
+ * \return __float128 Output value, cosine of input.
+ */
+static HOT_INLINE __float128 cosq(__float128 x)
 {
-    // Precomputed leading 192 bits of 2/π in quad precision (hex)
-    inline static constexpr __float128 TWO_OVER_PI_HI[3] = {
-        (__float128) 0x28be60db9391054aULL,  // high 64 bits
-        (__float128) 0x84a8ff7988eaadbbULL,  // mid 64 bits
-        (__float128) 0xfb8a7e8f1e2863f2ULL   // low 64 bits
-    };
+    // -- a) Handle bad input
+    if (isnanq(x) || isinfq(x)) return x;
 
-    // Precomputed π/2 in quad precision (hex)
-    inline static constexpr __float128 PI_OVER_2_HI[3] = {
-        (__float128) 0xc90fdaa22168c234ULL,
-        (__float128) 0xc4c6628b80dc1cd1ULL,
-        (__float128) 0x29024e088a67cc74ULL
-    };
-    inline static constexpr __float128 PI_OVER_2_MI[3] = {
-        (__float128) 0xa918fdc8ba30fbc2ULL,
-        (__float128) 0x86e220b9f33d1d1eULL,
-        (__float128) 0xdfe3c84680b74a13ULL
-    };
-    inline static constexpr __float128 PI_OVER_2_LO[3] = {
-        (__float128) 0x4f29411aea1c3c7ULL,
-        (__float128) 0x9e8b6c9d60f3c0fULL,
-        (__float128) 0x2f066c59fcf53ceULL
-    };
+    if (x < 0.q) x = -x;
 
-    inline static constexpr __float128 C[] = {
-        // Coefficients for P(r^2) = 1 + c1·r² + c2·r⁴ + ... + c7·r¹⁴
-        ( (__float128) -0.5L),
-        ( (__float128) +0.041666666666666666666666666666666666L),
-        ( (__float128) -0.001388888888888888888888888888888889L),
-        ( (__float128) +0.000024801587301587301587301587301587L),
-        ( (__float128) -0.00000027557319223985890652557319224L),
-        ( (__float128) +0.00000000208767569878680989792100903L),
-        ( (__float128) -0.00000000001147074559772972635174139L)
-    };
+    // -- b) Argument reduction: n = round(x * 2/π) --
+    // split product with TWO_OVER_PI_HI / _LO
+    __float128 z_hi = x * TWO_OVER_PI_HI;
+    __float128 z_lo = x * TWO_OVER_PI_LO;
 
-    inline static constexpr __float128 ZN_Z1_FACTOR = (__float128)0x1p-64L;
-    inline static constexpr __float128 ZN_Z2_FACTOR = (__float128)0x1p-128L;
+    // ALIGN must be 2^112
+    static constexpr __float128 ALIGN = 0x1.0p112q;
 
-    // Handle NaN/Inf
-    if (x != x || x == INFINITYq || x == INFINITYnq) return NANq;
+    // now the sum really picks up both hi and lo parts
+    __float128 z = z_hi + z_lo * ALIGN;
+    int64_t    n = (int64_t)nearbyintq(z);
 
-    // Payne–Hanek: compute n = nearest integer to x*(2/π)
-    // We do a 192-bit multiply via three 64-bit pieces.
-    __float128 z0 = x * TWO_OVER_PI_HI[0];
-    __float128 z1 = x * TWO_OVER_PI_HI[1];
-    __float128 z2 = x * TWO_OVER_PI_HI[2];
-    // sum with correct alignment:
-    __float128 zn = z0
-                  + (z1 * ZN_Z1_FACTOR)
-                  + (z2 * ZN_Z2_FACTOR);
-    // n = integer part of zn (round to nearest even):
-    int64_t n = (int64_t) (__builtin_nearbyintl(zn));
+    // -- c) Reconstruct r = x – n*(π/2) using the 3-term split --
+    __float128 r = ((x - n*PI_OVER_2_HI)
+                  - n*PI_OVER_2_MI)
+                  - n*PI_OVER_2_LO;
 
-    // Reconstruct r = x - n*(π/2) using hi, mid, lo
-    __float128 prod_hi = PI_OVER_2_HI[0] * (__float128)n;
-    __float128 prod_mi = PI_OVER_2_MI[0] * (__float128)n;
-    __float128 prod_lo = PI_OVER_2_LO[0] * (__float128)n;
-    __float128 r = x - prod_hi;
-    r -= prod_mi;
-    r -= prod_lo;
+    // -- d) Which quadrant? sign? sine or cosine? --
+    int      qd     = n & 3;
+    bool     useSin = (qd & 1) != 0;          // odd quadrants → sin
+    bool     neg    = (qd == 2 || qd == 3);  // flip sign in 2nd and 3rd
 
-    // Reduce r into [0, π/2)
-    int64_t quadrant = n & 3;
-    bool negate = (quadrant == 1 || quadrant == 2);
-    bool swap_xy = (quadrant == 1 || quadrant == 3);
-    // For cos: use cos(r) or sin(r) based on quadrant
-    // If swap_xy, compute sin from cos polynomial via cos(π/2 - r).
-    if (swap_xy == true)
-        r = M_PI_2q - r;
+    // -- e) Fold |r| into ≤ π/4 by reflecting around π/4 --
+    static constexpr __float128 PIO4 = M_PI_4q;
+    if (r >  PIO4) {
+        r       = M_PI_2q - r;
+        useSin  = !useSin;
+    }
+    else if (r < -PIO4) {
+        r       = -M_PI_2q - r;
+        useSin  = !useSin;
+        neg     = !neg;
+    }
 
-    // Evaluate minimax polynomial P(r²) with Horner + FMA
-    __float128 r2 = r * r;
-    __float128 p = C[6];
-    for (s32 i = 5; i >= 0; --i)
-        p = __builtin_fmaf(p, r2, C[i]);
-    __float128 y = __builtin_fmaf(p, r2, 1.q);
-
-    // Adjust sign for the quadrant
-    return negate ? -y : y;
+    // -- f) Evaluate the right kernel and apply sign --
+    __float128 y = useSin ? sin_kernel(r) : cos_kernel(r);
+    if (qd == 0 && neg) y = -y;
+    if (qd == 1 && !neg) y = -y;
+    if (qd == 3) y = -y;
+    return y;
 }

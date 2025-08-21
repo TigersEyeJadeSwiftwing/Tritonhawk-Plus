@@ -201,7 +201,7 @@ namespace TritonhawkPlus
                         sample_grid_center_x, sample_grid_center_y \
                     ) \
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
-                for (u64 s_xy = 0uL; s_xy < samples_total; s_xy++)
+                for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
                     f128 smp_grid_x = 0.0_q,
                          smp_grid_y = 0.0_q,
@@ -229,7 +229,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.00001_q)
+                    else if (sample_interpolation_x < 0.00005_q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -300,7 +300,7 @@ namespace TritonhawkPlus
                         lerp_y = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.00001_q)
+                    else if (sample_interpolation_y < 0.00005_q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
@@ -366,9 +366,9 @@ namespace TritonhawkPlus
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
                     if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
+                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
                     if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.
@@ -933,9 +933,9 @@ namespace TritonhawkPlus
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
                     if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp2expq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
+                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
                     if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp2expq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.

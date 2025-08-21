@@ -18,36 +18,36 @@ with this program. If not, see <https://www.gnu.org/licenses/>.
 #ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
     #include "isnanq.inl"
     #include "isinfq.inl"
+    #include "floorq.inl"
     #include "fabsq.inl"
 #endif
 
-/** \brief Gets the nearest whole number that is equal to or less than the input value.
- *
- * \param x __float128 The input number to round down.
- * \return __float128 The nearest whole number that is always equal to or less than the input.
- */
-static HOT_INLINE __float128 floorq(__float128 x)
+static HOT_INLINE __float128 modfq(__float128 num, __float128* iptr)
 {
-    if (isnanq(x) || isinfq(x))
-        return x;                // Preserve NaN and ±Inf
-
-    static constexpr __float128 TWO_POW_113_base = 9007199254740992.0q;
-    static constexpr __float128 TWO_POW_113 = TWO_POW_113_base * TWO_POW_113_base;
-
-    // For very large |x|, x is already integral
-    if (fabsq(x) >= TWO_POW_113)
-        return x;
-
-    __float128 y;
-    if (x >= 0.q) {
-        y = x + TWO_POW_113; // shift fractional bits out
-        y = y - TWO_POW_113;
-        // y is truncated toward zero → same as floor for x ≥ 0
-        return y;
-    } else {
-        // For negatives, truncation gives ceil. To get floor, subtract 1.
-        y = x - TWO_POW_113; // shift fractional bits out
-        y = y + TWO_POW_113;
-        return (y == x) ? y : (y - 1.q);
+    if (isnanq(num)) return NANq;
+    if (isinfq(num))
+    {
+        *iptr = INFINITYq;
+        return 0.q;
     }
+
+    // Check if iptr is null
+    if (iptr == nullptr)
+        return num - floorq(num);
+
+    // Get the integer part of num
+    __float128 intPart = floorq(num);
+
+    // Store the integer part in the location pointed by iptr
+    *iptr = intPart;
+
+    // Calculate the modulus
+    __float128 modResult = num - intPart;
+
+    // Ensure the result is non-negative
+    if (modResult < 0) {
+        modResult += fabsq(intPart);
+    }
+
+    return modResult;
 }

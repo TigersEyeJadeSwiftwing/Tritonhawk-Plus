@@ -1712,7 +1712,7 @@ namespace TritonhawkPlus
     }
     string ComboSizeWidget::SetInterpolationString(f64 v)
     {
-        f64 rv = rounddgd(v, -5.0);
+        f64 rv = rounddg(v, -5.0);
 
         if (rv < 0.000005) return "Nearest";
         if (rv < 1.000005) return "Linear";
