@@ -8,7 +8,7 @@ https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
 
 
 
-\[Main readme file](./README.md)
+[Main readme file](./README.md)
 
 
 
@@ -20,11 +20,9 @@ Download MSYS2 from https://www.msys2.org/.  Run the installer, and follow the d
 
 
 
-'''bash
-
+```bash
 pacman -Suuyy
-
-'''
+```
 
 
 
@@ -36,37 +34,22 @@ After updating the basic components of MSYS2 with that command, open up a Clang6
 
 
 
-'''bash
-
-pacman -S \\
-
-mingw-w64-clang-x86\_64-clang \\
-
-mingw-w64-clang-x86\_64-clang-tools-extra \\
-
-mingw-w64-clang-x86\_64-libc++ \\
-
-mingw-w64-clang-x86\_64-llvm-openmp \\
-
-mingw-w64-clang-x86\_64-python \\
-
-mingw-w64-clang-x86\_64-codeblocks \\
-
-mingw-w64-clang-x86\_64-doxygen \\
-
-mingw-w64-clang-x86\_64-graphviz \\
-
-mingw-w64-clang-x86\_64-gimp \\
-
-mingw-w64-clang-x86\_64-hunspell-en \\
-
-mingw-w64-clang-x86\_64-gcc \\
-
-mingw-w64-clang-x86\_64-gcc-libs \\
-
+```bash
+pacman -S \
+mingw-w64-clang-x86\_64-clang \
+mingw-w64-clang-x86\_64-clang-tools-extra \
+mingw-w64-clang-x86\_64-libc++ \
+mingw-w64-clang-x86\_64-llvm-openmp \
+mingw-w64-clang-x86\_64-python \
+mingw-w64-clang-x86\_64-codeblocks \
+mingw-w64-clang-x86\_64-doxygen \
+mingw-w64-clang-x86\_64-graphviz \
+mingw-w64-clang-x86\_64-gimp \
+mingw-w64-clang-x86\_64-hunspell-en \
+mingw-w64-clang-x86\_64-gcc \
+mingw-w64-clang-x86\_64-gcc-libs \
 mingw-w64-clang-x86\_64-lfortran
-
-'''
+```
 
 
 
@@ -82,11 +65,9 @@ To start Codeblocks, you can type into the MSYS2 command window for Clang64:
 
 
 
-,,,bash
-
+```bash
 codeblocks
-
-,,,
+```
 
 
 
