@@ -1,7 +1,9 @@
-    Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
+/*  Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
 GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
 middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    Tritonhawk-Plus is a creation of Tiger's Eye Jade Swiftwing, also known as
+Tiger J. Swiftwing, Tiger Swiftwing, and a few other versions of my name...
     This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
@@ -10,9 +12,22 @@ WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
 details.  You should have received a copy of the GNU General Public License along
 with this program. If not, see <https://www.gnu.org/licenses/>.
+    This file is part of the open-source Tritonhawk-Plus project(s), located at:
+https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
+    This software is one or more plug-ins for the open-source graphics and image
+software editing and creation programs known as GIMP.  GIMP can be found at:
+https://www.gimp.org/
+    If you want to borrow any of the source code from the custom math library .inl files
+that are part of this project, the ones with this copyright notice and such are also
+licensed under the GPL version 3 license. */
 
 This file may come in handy if you want to build the plug-in without Codeblocks IDE.
 It lists all of the stuff that Codeblocks sends to the Clang++ command line.
+Without Codeblocks, this file will help when it comes to what to pass to Clang++, or
+another compiler toolchain, for building the Tritonhawk-Plus project(s).
+
+// Dependencies for building from source code include all of the stuff you need for building GIMP, version 3.x, plus
+//   you will also need OpenMP and anything else your compiler needs to make OpenMP programs build and work properly.
 
 // preprocessor defines
 -DINI_SHARED_LIB
@@ -29,10 +44,26 @@ It lists all of the stuff that Codeblocks sends to the Clang++ command line.
 -DPLUG_IN_COPYRIGHT="(gchar*)(\"(c) 2025 Tiger J. Swiftwing\")"
 -DPLUG_IN_DATE="(gchar*)(\"July 2025 CE\")"
 -DPLUG_IN_GUI_DIALOG_CAPTION="(gchar*)(\"Tritonhawk Plus Multi-Threaded Image Resize\")"
+-DPLUG_IN_VERSION_AND_DATE_INFO="(gchar*)(\"Non-numbered version, compiled from Github source, first version July 2025 CE\")"
+-DPLUG_IN_GITHUB_REPO_URL="(gchar*)(\"https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus\")"
+
+// You can, if you want, define either one or the other of the following two, if you want to specify how the 128-bit floating-point
+//   data types are defined and used.  This affects whether or not the code will use existing, built-in functions for quad
+//   precision floats by using "f128" as an alias for "long double" and pre-existing functions like "powl()" for processing,
+//   or if the program should use custom-coded math routines from included source code files that offer their own integrated
+//   quad math library along with __float128 for the "f128" data type, and functions like "powq()" from included ".inl" inline
+//   C++ source code.
+// You can decline to use either of the two #defines, and one will be picked for you, or you can define THP_FORCE_USE_LONG_DOUBLE_128
+//   to insist on using "long double" for the data type "f128" (which uses existing long double math functions), and also expects
+//   long doubles to be 128-bits, or you can #define THP_FORCE_USE_FLOAT128 to force the compiler to try to use "__float128" for "f128"
+//   128-bit floating-point variables, which would make use of the included math functions found in inline ".inl" source code files.
+-DTHP_FORCE_USE_LONG_DOUBLE_128
+or
+-DTHP_FORCE_USE_FLOAT128
 
 // flags passed to clang++ at the command line
--std=gnu17
--std=gnu++17
+-std=gnu23
+-std=gnu++23
 -march=x86-64-v3
 -mtune=generic
 -ftree-vectorize
@@ -48,8 +79,8 @@ It lists all of the stuff that Codeblocks sends to the Clang++ command line.
 -ffp-contract=off
 
 // flags passed to the linker at the command line
--std=gnu17
--std=gnu++17
+-std=gnu23
+-std=gnu++23
 -march=x86-64-v2
 -mtune=generic
 -ftree-vectorize

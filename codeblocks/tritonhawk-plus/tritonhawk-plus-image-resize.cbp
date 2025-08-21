@@ -60,7 +60,6 @@
 					<Add option='-DPLUG_IN_COPYRIGHT=&quot;(gchar*)(\&quot;(c) 2025 Tiger J. Swiftwing\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_DATE=&quot;(gchar*)(\&quot;July 2025 CE\&quot;)&quot;' />
 					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
-					<Add option="-DTHP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT" />
 					<Add option="-DTHP_FORCE_USE_LONG_DOUBLE_128" />
 					<Add directory="../../tritonhawk-plus" />
 					<Add directory="../../libs/libquadmath" />
@@ -257,6 +256,8 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option='-DPLUG_IN_GITHUB_REPO_URL=&quot;(gchar*)(\&quot;https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus\&quot;)&quot;' />
+			<Add option='-DPLUG_IN_VERSION_AND_DATE_INFO=&quot;(gchar*)(\&quot;Version 0.8.1 (Github Source), on or after August 2025 CE, first version July 2025 CE\&quot;)&quot;' />
 			<Add directory="../../tritonhawk-plus" />
 		</Compiler>
 		<Unit filename="../../libs/libintmath/lib_int_math.hpp" />
