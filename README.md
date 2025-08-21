@@ -32,9 +32,13 @@ Features:
 - GPLv3 license.
 
 [Install instructions](./INSTALL.md)
+
 [Building from source for Windows, with Codeblocks (MSYS2 + GCC/Clang64 + Codeblocks IDE)](./BUILD_WINDOWS_CB.md)
+
 [Building from source for Windows, for other or no IDEs (MSYS2 + GCC/Clang64)](./BUILD_WINDOWS.md)
+
 [Building from source for non-Windows operating systems](./BUILD_NON_WINDOWS.md)
+
 [GPLv3 License](./LICENSE)
 
     Tritonhawk Plus plug-ins are designed to work with the latest official release of GIMP, which at the time of this writing is version 3.0.4.  Once the plug-ins are built, they should show up under applicable menus in GIMP, after being added to GIMP's plug-in paths.  They are designed to hopefully work with the existing DLL files and libraries that are installed with GIMP and not need any additional utilities, libraries, or other stuff for working.  They use SSE 4.1 if they are built using the source code and included Codeblocks IDE project files.
