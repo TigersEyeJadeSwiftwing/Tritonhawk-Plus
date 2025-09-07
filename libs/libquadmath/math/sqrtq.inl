@@ -22,16 +22,14 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "powq.inl"
-#endif
+#include "powq.inl"
 
 /** \brief 128-bit float square root function.
  *
- * \param x __float128 Input value.
- * \return __float128 Output value, square root of input.
+ * \param x f128 Input value.
+ * \return f128 Output value, square root of input.
  */
-static HOT_INLINE __float128 sqrtq(__float128 x)
+static HOT_INLINE f128 sqrtq(const f128 x) noexcept
 {
     return powq(x, 0.5q);
 }

@@ -22,46 +22,12 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#if __has_builtin(__builtin_isinff128)
-    /** \brief Determines if a given floating-point number is a positive or negative infinity.
-     *
-     * \param x (__float128) The number to check for being infinity, positive or negative.
-     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
-     */
-    static HOT_INLINE int isinfq (__float128 x)
-    {
-        return __builtin_isinff128(x);
-    }
-#elif __has_builtin(__builtin_isinfq)
-    /** \brief Determines if a given floating-point number is a positive or negative infinity.
-     *
-     * \param x (__float128) The number to check for being infinity, positive or negative.
-     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
-     */
-    static HOT_INLINE int isinfq (__float128 x)
-    {
-        return __builtin_isinfq(x);
-    }
-#elif __has_builtin(__builtin_isinf)
-    /** \brief Determines if a given floating-point number is a positive or negative infinity.
-     *
-     * \param x (__float128) The number to check for being infinity, positive or negative.
-     * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
-     */
-    static HOT_INLINE int isinfq (__float128 x)
-    {
-        return __builtin_isinf(x);
-    }
-#else
-
 /** \brief Determines if a given floating-point number is a positive or negative infinity.
  *
- * \param x (__float128) The number to check for being infinity, positive or negative.
+ * \param x (f128) The number to check for being infinity, positive or negative.
  * \return (int) Returns 0 if false, 1 if the input is positive or negative infinity.
  */
-static HOT_INLINE int isinfq (__float128 x)
+static HOT_INLINE int isinfq(const f128 x) noexcept
 {
     return __builtin_isinf(x);
 }
-
-#endif

@@ -28,8 +28,10 @@ licensed under the GPL version 3 license. */
  * \param y f128 Value to get the sign of, to make the sign of x.
  * \return f128 Output value, x with the sign of y.
  */
-static HOT_INLINE f128 copysignq(f128 x, f128 y)
+static HOT_INLINE f128 copysignq(const f128 x, const f128 y) noexcept
 {
+    if (invalidq(x) || invalidq(y)) return x;
+
     if (x < 0._q)
     {
         return (y < 0._q) ? x : -x;

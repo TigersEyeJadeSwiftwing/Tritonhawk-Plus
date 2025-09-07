@@ -22,12 +22,45 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-/** \brief Determines if a number is NAN.
+#include "isnanq.inl"
+#include "isinfq.inl"
+
+/** \brief Determines if a number is NAN or infinity.
  *
- * \param x (f128) The number to check for being NAN.
+ * \param x (f128) The number to check for being NAN and-or infinity.
  * \return (int) 1 if true, 0 if false.
  */
-static HOT_INLINE int isnanq(f128 x) noexcept
+static HOT_INLINE int invalidq(const f128 x) noexcept
 {
-    return __builtin_isnan(x);
+    return (__builtin_isnan(x) || __builtin_isinf(x));
+}
+
+/** \brief Determines if a number is NAN or infinity.
+ *
+ * \param x (f64) The number to check for being NAN and-or infinity.
+ * \return (int) 1 if true, 0 if false.
+ */
+static HOT_INLINE int invalid(const f64 x) noexcept
+{
+    return (__builtin_isnan(x) || __builtin_isinf(x));
+}
+
+/** \brief Determines if a number is NAN or infinity.
+ *
+ * \param x (f32) The number to check for being NAN and-or infinity.
+ * \return (int) 1 if true, 0 if false.
+ */
+static HOT_INLINE int invalidf(const f32 x) noexcept
+{
+    return (__builtin_isnan(x) || __builtin_isinf(x));
+}
+
+/** \brief Determines if a number is NAN or infinity.
+ *
+ * \param x (f16) The number to check for being NAN and-or infinity.
+ * \return (int) 1 if true, 0 if false.
+ */
+static HOT_INLINE int invalidfs(const f16 x) noexcept
+{
+    return (__builtin_isnan(x) || __builtin_isinf(x));
 }

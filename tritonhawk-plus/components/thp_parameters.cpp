@@ -44,8 +44,8 @@ namespace TritonhawkPlus
         sample_count_adjustment = 1.0_q;
         sample_grid_height_percent = 100.0;
         sample_grid_width_percent = 100.0;
-        sample_interpolation_x = 3.0_q;
-        sample_interpolation_y = 3.0_q;
+        sample_interpolation_x = 1.0_q;
+        sample_interpolation_y = 1.0_q;
         sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         sample_grid_weighting = 0._q;
         chunk_size_kilo = 256uL;

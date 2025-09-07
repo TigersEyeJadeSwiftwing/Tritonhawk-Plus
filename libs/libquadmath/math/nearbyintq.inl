@@ -22,63 +22,25 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-    #include "fabsq.inl"
-    #include "floorq.inl"
-    #include "fmodq.inl"
-    #include "roundq.inl"
-    #include "copysignq.inl"
-#endif
+#include "fabsq.inl"
+#include "floorq.inl"
+#include "fmodq.inl"
+#include "roundq.inl"
+#include "copysignq.inl"
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-/** \brief Rounds a __float128 value to the nearest integer, using the current rounding mode.
+/** \brief Rounds a f128 value to the nearest integer, using the current rounding mode.
  *
- * \param x __float128 The input value to round.
- * \return __float128 The nearest integer value as a __float128.
+ * \param x f128 The input value to round.
+ * \return f128 The nearest integer value as a f128.
  */
-static HOT_INLINE __float128 nearbyintq(__float128 x) {
-    static constexpr __float128 SHIFT = 0x1.0p112q;  // 2^112
+static HOT_INLINE f128 nearbyintq(const f128 x) noexcept
+{
+    if (invalidq(x)) return x;
 
-    __float128 ax = x < 0 ? -x : x;
-    __float128 y  = (ax + SHIFT) - SHIFT;  // rounds to nearest‐even
+    static constexpr f128 SHIFT = 0x1.0p112q;  // 2^112
+
+    f128 ax = x < 0 ? -x : x;
+    f128 y  = (ax + SHIFT) - SHIFT;  // rounds to nearest‐even
 
     return x < 0 ? -y : y;
 }
-
-#else
-/** \brief Rounds a long double value to the nearest integer, using the current rounding mode.
- *
- * \param x long double The input value to round.
- * \return long double The nearest integer value as a long double.
- */
-static HOT_INLINE long double nearbyintq(long double x)
-{
-    // Handle special cases
-    if (isnanq(x) || isinfq(x))
-        return x; // Preserve NaN and ±Inf
-
-    // Handle zero
-    if (x == 0.0L)
-        return 0.0L; // The nearest integer to zero is zero
-
-    // Get the integer part and the fractional part
-    long double intPart = static_cast<long double>(static_cast<int64_t>(x)); // Truncate to integer
-    long double fracPart = x - intPart; // Get the fractional part
-
-    // Handle rounding
-    if (fracPart > 0.5L) {
-        return intPart + 1.0L; // Round up
-    } else if (fracPart < 0.5L) {
-        return intPart; // Round down
-    } else {
-        // If exactly halfway, round to the nearest even integer
-        if (static_cast<int64_t>(intPart) % 2 == 0) {
-            return intPart; // Even case
-        } else {
-            return intPart + 1.0L; // Odd case, round up
-        }
-    }
-}
-#endif

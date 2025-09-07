@@ -22,50 +22,52 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#include <cstdint>
+#include "truncq.inl"
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "truncq.inl"
-#endif
-
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Returns an integer, from the 128-bit floating point input value, truncated.
  *
- * \param x __float128 The input value to be made into an int32_t.
- * \return int32_t The input value, converted into an int32_t.
+ * \param x f128 The input value to be made into an s32.
+ * \return s32 The input value, converted into an s32.
  */
-static HOT_INLINE int32_t to_intq (__float128 x)
+static HOT_INLINE s32 to_intq(const f128 x) noexcept
 {
-    return int32_t(truncq(x) + 0.1q);
-}
-#else
-/** \brief Returns an integer, from the floating point input value, truncated.
- *
- * \param x long double The input value to be made into an int32_t.
- * \return int32_t The input value, converted into an int32_t.
- */
-static HOT_INLINE int32_t to_intq (long double x)
-{
-    return int32_t(truncl(x) + 0.1L);
-}
-#endif
+    if (invalidq(x)) return 0;
 
-/** \brief Returns an integer, from the 32-bit floating point input value, truncated.
- *
- * \param x float The input value to be made into an int32_t.
- * \return int32_t The input value, converted into an int32_t.
- */
-static HOT_INLINE int32_t to_intf (float x)
-{
-    return int32_t(truncf(x) + 0.1f);
+    return s32(truncq(x) + 0.1q);
 }
 
 /** \brief Returns an integer, from the 64-bit floating point input value, truncated.
  *
- * \param x double The input value to be made into an int32_t.
- * \return int32_t The input value, converted into an int32_t.
+ * \param x f64 The input value to be made into an s32.
+ * \return s32 The input value, converted into an s32.
  */
-static HOT_INLINE int32_t to_int (double x)
+static HOT_INLINE s32 to_int(const f64 x) noexcept
 {
-    return int32_t(trunc(x) + 0.1);
+    if (invalid(x)) return 0;
+
+    return s32(trunc(x) + 0.1);
+}
+
+/** \brief Returns an integer, from the 32-bit floating point input value, truncated.
+ *
+ * \param x f32 The input value to be made into an s32.
+ * \return s32 The input value, converted into an s32.
+ */
+static HOT_INLINE s32 to_intf(const f32 x) noexcept
+{
+    if (invalidf(x)) return 0;
+
+    return s32(truncf(x) + 0.1f);
+}
+
+/** \brief Returns an integer, from the 16-bit floating point input value, truncated.
+ *
+ * \param x f16 The input value to be made into an s32.
+ * \return s32 The input value, converted into an s32.
+ */
+static HOT_INLINE s32 to_intfs(const f16 x) noexcept
+{
+    if (invalidfs(x)) return 0;
+
+    return s32((f16)truncf(x) + 0.1f16);
 }

@@ -22,30 +22,25 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-    #include "fabsq.inl"
-#endif
+#include "fabsq.inl"
 
 /** \brief Gets the nearest whole number that is equal to or less than the input value.
  *
- * \param x __float128 The input number to round down.
- * \return __float128 The nearest whole number that is always equal to or less than the input.
+ * \param x f128 The input number to round down.
+ * \return f128 The nearest whole number that is always equal to or less than the input.
  */
-static HOT_INLINE __float128 floorq(__float128 x)
+static HOT_INLINE f128 floorq(const f128 x) noexcept
 {
-    if (isnanq(x) || isinfq(x))
-        return x;                // Preserve NaN and ±Inf
+    if (invalidq(x)) return x; // Preserve NaN and ±Inf
 
-    static constexpr __float128 TWO_POW_113_base = 9007199254740992.0q;
-    static constexpr __float128 TWO_POW_113 = TWO_POW_113_base * TWO_POW_113_base;
+    static constexpr f128 TWO_POW_113_base = 9007199254740992.0q;
+    static constexpr f128 TWO_POW_113 = TWO_POW_113_base * TWO_POW_113_base;
 
     // For very large |x|, x is already integral
     if (fabsq(x) >= TWO_POW_113)
         return x;
 
-    __float128 y;
+    f128 y;
     if (x >= 0.q) {
         y = x + TWO_POW_113; // shift fractional bits out
         y = y - TWO_POW_113;

@@ -885,14 +885,14 @@ namespace TritonhawkPlus
         size_x = (gint) max((gint)val, (gint)1);
         f128 scale_x_f = f128(size_x) / f128(original_x);
         scale_x_f = clampq(scale_x_f, V_MIN, V_MAX);
-        scale_x_f = rounddgq(scale_x_f, -5._q);
+        scale_x_f = rounddgq(scale_x_f, -5);
         scale_x = gdouble(scale_x_f);
 
         if (chain_button_on == TRUE)
         {
             size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
-            scale_y = (gdouble)rounddgq(n_scale, -5._q);
+            scale_y = (gdouble)rounddgq(n_scale, -5);
         } else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
@@ -912,14 +912,14 @@ namespace TritonhawkPlus
         size_y = (gint) max((gint)val, (gint)1);
         f128 scale_y_f = f128(size_y) / f128(original_y);
         scale_y_f = clampq(scale_y_f, V_MIN, V_MAX);
-        scale_y_f = rounddgq(scale_y_f, -5._q);
+        scale_y_f = rounddgq(scale_y_f, -5);
         scale_y = gdouble(scale_y_f);
 
         if (chain_button_on == TRUE)
         {
             size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
-            scale_x = (gdouble)rounddgq(n_scale, -5._q);
+            scale_x = (gdouble)rounddgq(n_scale, -5);
         } else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
@@ -937,7 +937,7 @@ namespace TritonhawkPlus
         constexpr f128 V_MIN = 1._q / V_MAX;
 
         f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
-        value = rounddgq(value, -6._q);
+        value = rounddgq(value, -6);
         scale_x = gdouble(value);
         f128 size_x_f = f128(original_x) * value;
         size_x = (gint) max((gint)size_x_f, (gint)1);
@@ -946,7 +946,7 @@ namespace TritonhawkPlus
         {
             size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
-            scale_y = (gdouble)rounddgq(n_scale, -6._q);
+            scale_y = (gdouble)rounddgq(n_scale, -6);
         } else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
@@ -964,7 +964,7 @@ namespace TritonhawkPlus
         constexpr f128 V_MIN = 1._q / V_MAX;
 
         f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
-        value = rounddgq(value, -6._q);
+        value = rounddgq(value, -6);
         scale_y = gdouble(value);
         f128 size_y_f = f128(original_y) * value;
         size_y = (gint) max((gint)size_y_f, (gint)1);
@@ -973,7 +973,7 @@ namespace TritonhawkPlus
         {
             size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
-            scale_x = (gdouble)rounddgq(n_scale, -6._q);
+            scale_x = (gdouble)rounddgq(n_scale, -6);
         } else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
@@ -988,13 +988,13 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
-        value = rounddgq(value, -4._q);
+        value = rounddgq(value, -4);
         sample_grid_scale_x = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
             f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_x) / f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
-            sample_grid_scale_y = (gdouble)rounddgq(sample_grid_scale_f, -4._q);
+            sample_grid_scale_y = (gdouble)rounddgq(sample_grid_scale_f, -4);
         } else
         {
             sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
@@ -1009,13 +1009,13 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
-        value = rounddgq(value, -4._q);
+        value = rounddgq(value, -4);
         sample_grid_scale_y = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
             f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_y) * f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
-            sample_grid_scale_x = (gdouble)rounddgq(sample_grid_scale_f, -4._q);
+            sample_grid_scale_x = (gdouble)rounddgq(sample_grid_scale_f, -4);
         } else
         {
             sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
@@ -1028,7 +1028,7 @@ namespace TritonhawkPlus
     void ComboSizeWidget::SetSampleGridWeighting(gdouble val)
     {
         sample_grid_weighting = clampq((f128)val, 0.0_q, 1.0_q);
-        sample_grid_weighting = rounddgq(sample_grid_weighting, -5._q);
+        sample_grid_weighting = rounddgq(sample_grid_weighting, -5);
 
         ignore_auto_changes = true;
         UpdateGUI();
@@ -1037,7 +1037,7 @@ namespace TritonhawkPlus
     void ComboSizeWidget::SetSampleCountAdj(gdouble val)
     {
         sample_count_adjustment = clampq((f128)val * 0.01_q, 1.0_q, 16.0_q);
-        sample_count_adjustment = rounddgq(sample_count_adjustment, -5._q);
+        sample_count_adjustment = rounddgq(sample_count_adjustment, -5);
 
         ignore_auto_changes = true;
         UpdateGUI();
@@ -1048,13 +1048,13 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val, 0._q, 50._q);
-        value = rounddgq(value, -2._q);
+        value = rounddgq(value, -3);
         sample_interpolation_x = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
             f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
-            sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3._q);
+            sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
         } else
         {
             sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
@@ -1069,13 +1069,13 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val, 0._q, 50._q);
-        value = rounddgq(value, -2._q);
+        value = rounddgq(value, -3);
         sample_interpolation_y = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
             f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
-            sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3._q);
+            sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
         } else
         {
             sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
@@ -1720,18 +1720,18 @@ namespace TritonhawkPlus
     }
     string ComboSizeWidget::SetInterpolationString(f64 v)
     {
-        f64 rv = rounddg(v, -5.0);
+        f64 rv = rounddg(v, -5);
 
-        if (rv < 0.000005) return "Nearest";
-        if (rv < 1.000005) return "Linear";
-        if (rv < 2.00000) return "Linear to Quadratic";
-        if (rv < 2.000005) return "Quadratic";
-        if (rv < 3.00000) return "Quadratic to Cubic";
-        if (rv < 3.000005) return "Cubic";
-        if (rv < 4.00000) return "Cubic to Quartic";
-        if (rv < 4.000005) return "Quartic";
-        if (rv < 5.00000) return "Quartic to Quintic";
-        if (rv < 5.000005) return "Quintic";
+        if (rv < 0.0000005) return "Nearest";
+        if (rv < 1.0000005) return "Linear";
+        if (rv < 2.000000) return "Linear to Quadratic";
+        if (rv < 2.0000005) return "Quadratic";
+        if (rv < 3.000000) return "Quadratic to Cubic";
+        if (rv < 3.0000005) return "Cubic";
+        if (rv < 4.000000) return "Cubic to Quartic";
+        if (rv < 4.0000005) return "Quartic";
+        if (rv < 5.000000) return "Quartic to Quintic";
+        if (rv < 5.0000005) return "Quintic";
         return "Beyond Quintic";
     }
 

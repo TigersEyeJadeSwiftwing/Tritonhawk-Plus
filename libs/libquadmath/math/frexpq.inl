@@ -24,13 +24,14 @@ licensed under the GPL version 3 license. */
 
 /** \brief Decomposes x into its normalized fraction and exponent.
  *
- * \param x __float128 The input value to decompose.
+ * \param x f128 The input value to decompose.
  * \param eptr s64* Pointer to store the exponent.
- * \return __float128 The normalized fraction in the range [0.5, 1.0).
+ * \return f128 The normalized fraction in the range [0.5, 1.0).
  */
-static HOT_INLINE __float128 frexpq(__float128 x, s64* eptr)
+static HOT_INLINE f128 frexpq(f128 x, s64* eptr) noexcept
 {
-    if (isnanq(x) || isinfq(x)) {
+    if (invalidq(x))
+    {
         if (eptr) *eptr = 0; // Set exponent to 0 for NaN or Inf
         return x; // Preserve NaN and ±Inf
     }

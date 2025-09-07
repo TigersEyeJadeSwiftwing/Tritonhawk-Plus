@@ -22,12 +22,15 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#include <cfloat>
-
-#include <cstddef>
+#define __STDC_WANT_IEC_60559_TYPES_EXT__ 1
+#include <string>
 #include <cmath>
+// #include <stdfloat>
+#include <cfloat>
+#include <cstddef>
 #include <cstdint>
 #include <type_traits>
+#include <algorithm>
 
 #include <omp.h>
 
@@ -67,9 +70,9 @@ namespace TritonhawkPlus
         using s64 = int64_t;
         using u64 = uint64_t;
 
-        using f16 = _Float16;
-        using f32 = float;
-        using f64 = double;
+        using f16 = _Float16; /**< Uses predefined values and math library functions ending in "fs", which stands for "float, short" */
+        using f32 = float; /**< Uses predefined values and math library functions ending in "f", which stands for "float" */
+        using f64 = double; /**< Uses predefined values and math library functions ending in no extra letters, which is for only 64-bit doubles and does not have overloaded functions with custom functions in math library extensions. */
     #ifdef __cplusplus
         }
     #endif
@@ -79,7 +82,7 @@ namespace TritonhawkPlus
         #ifdef __cplusplus
             extern "C" {
         #endif
-            using f128 = long double;
+            using f128 = long double; /**< Uses predefined values and math library functions ending in "q", which stands for "quad precision" */
         #ifdef __cplusplus
             }
         #endif
@@ -92,13 +95,13 @@ namespace TritonhawkPlus
         #ifdef __cplusplus
             extern "C" {
         #endif
-            using f128 = __float128;
+            using f128 = __float128; /**< Uses predefined values and math library functions ending in "q", which stands for "quad precision" */
         #ifdef __cplusplus
             }
         #endif
 
-        const f128 test1 = 10.q;
-        const f128 test2 = test1 + 5.q;
+        // const f128 test1 = 10.q;
+        // const f128 test2 = test1 + 5.q;
 
         constexpr __float128 operator ""_q(long double x)
         {
@@ -106,6 +109,9 @@ namespace TritonhawkPlus
         };
     #endif
 };
+
+#include "lib_int_math.hpp"
+#include "quadmath-modded.hpp"
 
 #include "config_h/clang64/config.h"
 
@@ -118,13 +124,15 @@ namespace TritonhawkPlus
 
 #include "config_h/clang64/stdplugins-intl.h"
 
+/*
 #include "lib_int_math.hpp"
-#include "quadmath-modded.hpp"
 #include <string>
 #include <algorithm>
 #include <cmath>
+#include "quadmath-modded.hpp"
 
 #include <omp.h>
+*/
 
 #ifndef NULL_TERMINATE
 // #define NULL_TERMINATE 0L

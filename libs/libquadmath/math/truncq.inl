@@ -22,20 +22,14 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-#endif
-
 /** \brief 128-bit float truncate function.
  *
- * \param x __float128 Input value.
- * \return __float128 Output value, truncated.
+ * \param x f128 Input value.
+ * \return f128 Output value, truncated.
  */
-static HOT_INLINE __float128 truncq(__float128 x)
+static HOT_INLINE f128 truncq(f128 x) noexcept
 {
-    if (isnanq(x) || isinfq(x))
-        return x;                // Preserve NaN and ±Inf
+    if (invalidq(x)) return x; // Preserve NaN and ±Inf
 
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);

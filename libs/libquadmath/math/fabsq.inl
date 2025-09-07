@@ -22,43 +22,14 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#if __has_builtin(__builtin_fabsf128)
-    /** \brief Returns the absolute value of a 128-bit floating point value.
-     *
-     * \param x __float128 The input value to get the absolute value of.
-     * \return __float128 The input value, but always positive (zero or greater).
-     */
-    static HOT_INLINE __float128 fabsq(__float128 x)
-    {
-        return __builtin_fabsf128(x);
-    }
-#elif __has_builtin(__builtin_fabsq)
-    /** \brief Returns the absolute value of a 128-bit floating point value.
-     *
-     * \param x __float128 The input value to get the absolute value of.
-     * \return __float128 The input value, but always positive (zero or greater).
-     */
-    static HOT_INLINE __float128 fabsq(__float128 x)
-    {
-        return __builtin_fabsq(x);
-    }
-#else
-
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-#endif
-
 /** \brief Returns the absolute value of a 128-bit floating point value.
  *
- * \param x __float128 The input value to get the absolute value of.
- * \return __float128 The input value, but always positive (zero or greater).
+ * \param x f128 The input value to get the absolute value of.
+ * \return f128 The input value, but always positive (zero or greater).
  */
-static HOT_INLINE __float128 fabsq(__float128 x)
+static HOT_INLINE f128 fabsq(const f128 x) noexcept
 {
-    if (isnanq(x)) return x;
+    if (invalidq(x)) return x;
 
     return x >= 0.q ? x : -x;
 }
-
-#endif

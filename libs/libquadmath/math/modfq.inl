@@ -22,14 +22,10 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-    #include "floorq.inl"
-    #include "fabsq.inl"
-#endif
+#include "floorq.inl"
+#include "fabsq.inl"
 
-static HOT_INLINE __float128 modfq(__float128 num, __float128* iptr)
+static HOT_INLINE f128 modfq(const f128 num, f128* iptr) noexcept
 {
     if (isnanq(num)) return NANq;
     if (isinfq(num))
@@ -43,13 +39,13 @@ static HOT_INLINE __float128 modfq(__float128 num, __float128* iptr)
         return num - floorq(num);
 
     // Get the integer part of num
-    __float128 intPart = floorq(num);
+    f128 intPart = floorq(num);
 
     // Store the integer part in the location pointed by iptr
     *iptr = intPart;
 
     // Calculate the modulus
-    __float128 modResult = num - intPart;
+    f128 modResult = num - intPart;
 
     // Ensure the result is non-negative
     if (modResult < 0) {

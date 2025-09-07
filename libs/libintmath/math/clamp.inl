@@ -23,49 +23,49 @@ that are part of this project, the ones with this copyright notice and such are 
 licensed under the GPL version 3 license. */
 
 static inline __attribute__((always_inline, hot))
-s8 clamp(s8 v, s8 lo, s8 hi)
+s8 clamp(const s8 v, const s8 lo, const s8 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-s16 clamp(s16 v, s16 lo, s16 hi)
+s16 clamp(const s16 v, const s16 lo, const s16 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-s32 clamp(s32 v, s32 lo, s32 hi)
+s32 clamp(const s32 v, const s32 lo, const s32 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-s64 clamp(s64 v, s64 lo, s64 hi)
+s64 clamp(const s64 v, const s64 lo, const s64 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-u8 clamp(u8 v, u8 lo, u8 hi)
+u8 clamp(const u8 v, const u8 lo, const u8 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-u16 clamp(u16 v, u16 lo, u16 hi)
+u16 clamp(const u16 v, const u16 lo, const u16 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-u32 clamp(u32 v, u32 lo, u32 hi)
+u32 clamp(const u32 v, const u32 lo, const u32 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
 static inline __attribute__((always_inline, hot))
-u64 clamp(u64 v, u64 lo, u64 hi)
+u64 clamp(const u64 v, const u64 lo, const u64 hi)
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }

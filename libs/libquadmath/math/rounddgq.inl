@@ -22,70 +22,119 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "roundq.inl"
-    #include "powq.inl"
-#endif
+#include "roundq.inl"
+#include "powq.inl"
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x __float128 The input value, can be any real floating-point number.
- * \param digits __float128 Controls the power of ten to round to.
- * \return __float128 The output value, rounded.
+ * \param x (const f128) The input value, can be any real floating-point number.
+ * \param digits (const s8) Controls the power of ten to round to.
+ * \return (f128) The output value, rounded.
  *
  * Returns a floating-point number that is rounded to the nearest specified power of ten, or
- * "number of digits".  For example, if the "digits" parameter is 2.0, then the input "x"
- * parameter is rounded to the nearest 100.0, so an input value of 12345.064 becomes 12300.0.
+ * "number of digits".  The name "rounddg" is from "round digits", and, similar to other math
+ * library functions, has versions for different data types, such as having a "q" for
+ * "quad precision", which is for 128-bit precision, or additional letter for 64-bit data types
+ * such as a "double", or an "f" for handling 32-bit floating-point data types such as "float".
+ *
+ * This function is like a standard rounding function that rounds a floating-point variable to a
+ * whole number that is floating-point, with the same number of bits, except that this function
+ * rounds the variable to a nearest multiple of ten, or specific digits to the left or right of
+ * the decimal point, specified by the second input parameter which is an exponent of ten.
+ *
+ * For example, if the "digits" parameter is 2, then the input "x" parameter is rounded to the
+ * nearest 100.0q, so an input value of 12345.064q becomes 12300.0q.
+ *
  * This function also accepts negative input values for the "digits" parameter, so an input "x"
- * of 12345.064 with a value of "-2.0" for "digits" will round the 12345.064 to the nearest
- * 0.01, or nearest hundredth, resulting in an output of 12345.06.
+ * of 12345.064q with a value of "-2" for "digits" will round the 12345.064q to the nearest
+ * 0.01q (the nearest hundredth), resulting in an output of 12345.06q.
  */
-static HOT_INLINE __float128 rounddgq(__float128 x, __float128 digits)
+static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
 {
-    __float128 multiplier = powq(10.q, digits);
-    return roundq(x / multiplier) * multiplier;
+    if (invalidq(x)) return NANq;
+    if (digits == 0) return roundq(x);
+
+    constexpr f128 POW10_POS[] =
+    {
+        1e0q,  1e1q,  1e2q,  1e3q,  1e4q,  1e5q,  1e6q,  1e7q,  1e8q,  1e9q,
+        1e10q, 1e11q, 1e12q, 1e13q, 1e14q, 1e15q, 1e16q, 1e17q, 1e18q, 1e19q,
+        1e20q, 1e21q, 1e22q, 1e23q, 1e24q, 1e25q, 1e26q, 1e27q, 1e28q, 1e29q,
+        1e30q, 1e31q, 1e32q, 1e33q, 1e34q, 1e35q, 1e36q, 1e37q
+    };
+    constexpr f128 POW10_NEG[] =
+    {
+        1e0q,   1e-1q,  1e-2q,  1e-3q,  1e-4q,  1e-5q,  1e-6q,  1e-7q,  1e-8q,  1e-9q,
+        1e-10q, 1e-11q, 1e-12q, 1e-13q, 1e-14q, 1e-15q, 1e-16q, 1e-17q, 1e-18q, 1e-19q,
+        1e-20q, 1e-21q, 1e-22q, 1e-23q, 1e-24q, 1e-25q, 1e-26q, 1e-27q, 1e-28q, 1e-29q,
+        1e-30q, 1e-31q, 1e-32q, 1e-33q, 1e-34q, 1e-35q, 1e-36q, 1e-37q
+    };
+    constexpr s8 POW10_MAX = 38;
+    constexpr s8 POW10_MIN = -38;
+
+    f128 multiplier = 1.q, divisor = 1.q;
+
+    if ((digits > POW10_MAX) || (digits < POW10_MIN))
+    {
+        multiplier = powq(10.q, f128(digits));
+        divisor = powq(10.q, f128(-digits));
+    }
+    else if (digits > 0)
+    {
+        multiplier = POW10_POS[digits];
+        divisor = POW10_NEG[digits];
+    }
+    else if (digits < 0)
+    {
+        multiplier = POW10_NEG[-digits];
+        divisor = POW10_POS[-digits];
+    }
+
+    if (invalidq(multiplier) || invalidq(divisor)) return NANq;
+
+    f128 result = roundq(x * divisor) * multiplier;
+    if (invalidq(result)) return NANq;
+
+    return result;
 }
-#else
-/** \brief Rounds a floating point number to a nearest specified power of ten.
- *
- * \param x long double The input value, can be any real floating-point number.
- * \param digits long double Controls the power of ten to round to.
- * \return long double The output value, rounded.
- *
- * long double version.
- */
-static HOT_INLINE long double rounddgq(long double x, long double digits)
-{
-    long double multiplier = powl(10.L, digits);
-    return roundl(x / multiplier) * multiplier;
-}
-#endif // THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x double The input value, can be any real floating-point number.
- * \param digits double Controls the power of ten to round to.
- * \return double The output value, rounded.
+ * \param x (const f64) The input value, can be any real floating-point number.
+ * \param digits (const s8) Controls the power of ten to round to.
+ * \return (f64) The output value, rounded.
  *
- * double version.
+ * 64-bit version.  Promotes input values to 128-bits for precision, before converting back to 64-bits.
  */
-static HOT_INLINE double rounddg(double x, double digits)
+static HOT_INLINE f64 rounddg(const f64 x, const s8 digits) noexcept
 {
-    double multiplier = pow(10.0, digits);
-    return round(x / multiplier) * multiplier;
+    if (invalid(x)) return NAN;
+    return f64 (rounddgq(f128 (x), digits));
 }
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
- * \param x float The input value, can be any real floating-point number.
- * \param digits float Controls the power of ten to round to.
- * \return float The output value, rounded.
+ * \param x (const f32) The input value, can be any real floating-point number.
+ * \param digits (const s8) Controls the power of ten to round to.
+ * \return (f32) The output value, rounded.
  *
- * float version.
+ * 32-bit version.  Promotes input values to 128-bits for precision, before converting back to 32-bits.
  */
-static HOT_INLINE float rounddgf(float x, float digits)
+static HOT_INLINE f32 rounddgf(const f32 x, const s8 digits) noexcept
 {
-    float multiplier = powf(10.f, digits);
-    return roundf(x / multiplier) * multiplier;
+    if (invalidf(x)) return NAN;
+    return f32 (rounddgq(f128 (x), digits));
+}
+
+/** \brief Rounds a floating point number to a nearest specified power of ten.
+ *
+ * \param x (const f16) The input value, can be any real floating-point number.
+ * \param digits (const s8) Controls the power of ten to round to.
+ * \return (f16) The output value, rounded.
+ *
+ * 16-bit version.  Promotes input values to 128-bits for precision, before converting back to 16-bits.
+ */
+static HOT_INLINE f16 rounddgfs(const f16 x, const s8 digits) noexcept
+{
+    if (invalidfs(x)) return NAN;
+    return f16 (rounddgq(f128 (x), digits));
 }

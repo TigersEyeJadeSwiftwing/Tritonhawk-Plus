@@ -22,26 +22,23 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-/** \brief Computes a * 2^exp for __float128 data types.
+/** \brief Computes a * 2^exp for f128 data types.
  *
- * \param a __float128 The base value to scale.
+ * \param a f128 The base value to scale.
  * \param exp s64 The exponent to which 2 is raised.
- * \return __float128 The result of a * 2^exp.
+ * \return f128 The result of a * 2^exp.
  */
-static HOT_INLINE __float128 ldexpq(__float128 a, s64 exp)
+static HOT_INLINE f128 ldexpq(const f128 a, const s64 exp) noexcept
 {
-    if (isnanq(a) || isinfq(a)) {
-        return a; // Preserve NaN and ±Inf
-    }
+    if (invalidq(a)) return a; // Preserve NaN and ±Inf
 
     // Handle the case where exp is zero
-    if (exp == 0) {
+    if (exp == 0)
         return a; // a * 2^0 = a
-    }
 
-    // Calculate the scaling factor as __float128
-    static constexpr __float128 TWO_POW_64 = 18446744073709551616.0q; // 2^64
-    __float128 result;
+    // Calculate the scaling factor as f128
+    static constexpr f128 TWO_POW_64 = 18446744073709551616.0q; // 2^64
+    f128 result;
 
     if (exp > 0) {
         // For positive exponents

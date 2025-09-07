@@ -23,13 +23,13 @@ that are part of this project, the ones with this copyright notice and such are 
 licensed under the GPL version 3 license. */
 
 static inline __attribute__((always_inline, hot))
-s64 max(s64 a, s64 b)
+s64 max(const s64 a, const s64 b)
 {
     return (a > b) ? a : b;
 }
 
 static inline __attribute__((always_inline, hot))
-u64 max(u64 a, u64 b)
+u64 max(const u64 a, const u64 b)
 {
     return (a > b) ? a : b;
 }

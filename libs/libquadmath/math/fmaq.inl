@@ -28,19 +28,22 @@ licensed under the GPL version 3 license. */
  * \param a First multiplicand.
  * \param b Second multiplicand.
  * \param c Addend.
- * \return __float128 The result of the fused multiply-add operation.
+ * \return f128 The result of the fused multiply-add operation.
  */
-static HOT_INLINE __float128 fmaq(__float128 a, __float128 b, __float128 c) {
+static HOT_INLINE f128 fmaq(const f128 a, const f128 b, const f128 c) noexcept
+{
+    if (invalidq(a) || invalidq(b) || invalidq(c)) return NANq;
+
     // --- TwoProd(a, b) ---
-    static constexpr __float128 SPLIT = 0x1.0p57q + 1.0q;
-    __float128 ap = a * SPLIT, ah = ap - (ap - a), al = a - ah;
-    __float128 bp = b * SPLIT, bh = bp - (bp - b), bl = b - bh;
-    __float128 p1 = a * b;
-    __float128 p2 = ((ah*bh - p1) + ah*bl + al*bh) + al*bl;
+    static constexpr f128 SPLIT = 0x1.0p57q + 1.q;
+    f128 ap = a * SPLIT, ah = ap - (ap - a), al = a - ah;
+    f128 bp = b * SPLIT, bh = bp - (bp - b), bl = b - bh;
+    f128 p1 = a * b;
+    f128 p2 = ((ah*bh - p1) + ah*bl + al*bh) + al*bl;
 
     // --- TwoSum(p1, c) ---
-    __float128 s     = p1 + c;
-    __float128 err   = (p1 - s) + c;
+    f128 s     = p1 + c;
+    f128 err   = (p1 - s) + c;
 
     return s + (p2 + err);
 }

@@ -22,20 +22,15 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-    #include "expq.inl"
-    #include "lnq.inl"
-    #include "modfq.inl"
-#endif
+#include "expq.inl"
+#include "lnq.inl"
+#include "modfq.inl"
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Calculate x raised to the power of y.
  *
- * \param x __float128 The base value.
- * \param y __float128 The exponent value.
- * \return __float128 The resulting value of x^y.
+ * \param x f128 The base value.
+ * \param y f128 The exponent value.
+ * \return f128 The resulting value of x^y.
  *
  * Special-cases:
  *   - If x == 0 and y == 0: returns 1.
@@ -46,10 +41,10 @@ licensed under the GPL version 3 license. */
  *   - If x == 1 or y == 1: returns x.
  *   - If y == 0: returns 1.
  */
-static HOT_INLINE __float128 powq(__float128 x, __float128 y)
+static HOT_INLINE f128 powq(const f128 x, const f128 y) noexcept
 {
     // Check for NaNs
-    if ( (isnanq(x)) || (isnanq(y)) ) return NANq;
+    if (invalidq(x) || invalidq(y)) return NANq;
 
     // Fast-path trivial cases
     if ((x == 1.q) || (y == 1.q)) return x;
@@ -63,8 +58,8 @@ static HOT_INLINE __float128 powq(__float128 x, __float128 y)
 
     // Negative base: only valid for integer exponents
     if (x < 0.q) {
-        __float128 intpart;
-        __float128 frac = modfq(y, &intpart);
+        f128 intpart;
+        f128 frac = modfq(y, &intpart);
         if (frac != 0.q)
         {
             // non-integer exponent of negative → NaN
@@ -73,61 +68,10 @@ static HOT_INLINE __float128 powq(__float128 x, __float128 y)
         // integer exponent: determine sign
         // odd integer → negative result; even → positive
         int64_t ival = (int64_t)intpart;
-        __float128 magnitude = expq(y * lnq(-x));
+        f128 magnitude = expq(y * lnq(-x));
         return ((ival & 1) ? -magnitude : magnitude);
     }
 
     // General positive-base case: exp(y * ln(x))
     return expq(y * lnq(x));
 }
-#else
-/** \brief Calculate x raised to the power of y.
- *
- * \param x long double The base value.
- * \param y long double The exponent value.
- * \return long double The resulting value of x^y.
- *
- * Special-cases:
- *   - If x == 0 and y == 0: returns 1.
- *   - If x == 0 and y > 0: returns 0.
- *   - If x == 0 and y < 0: returns +∞.
- *   - If x < 0 and y is an integer: returns sign(x^y) * exp(y*ln|x|).
- *   - If x < 0 and y not integer: returns NaN.
- *   - If x == 1 or y == 1: returns x.
- *   - If y == 0: returns 1.
- */
-static HOT_INLINE long double powq(long double x, long double y)
-{
-    // Check for NaNs
-    if ( (isnanq(x)) || (isnanq(y)) ) return NANq;
-
-    // Fast-path trivial cases
-    if ((x == 1.q) || (y == 1.q)) return x;
-    if (y == 0.q) return 1.q;
-
-    if (x == 0.q)
-    {
-        if (y > 0.q) return 0.q;
-        if (y < 0.q) return INFINITYq;
-    }
-
-    // Negative base: only valid for integer exponents
-    if (x < 0.q) {
-        long double intpart;
-        long double frac = modfq(y, &intpart);
-        if (frac != 0.q)
-        {
-            // non-integer exponent of negative → NaN
-            return NANq;
-        }
-        // integer exponent: determine sign
-        // odd integer → negative result; even → positive
-        int64_t ival = (int64_t)intpart;
-        long double magnitude = expq(y * lnq(-x));
-        return ((ival & 1) ? -magnitude : magnitude);
-    }
-
-    // General positive-base case: exp(y * ln(x))
-    return expq(y * lnq(x));
-}
-#endif

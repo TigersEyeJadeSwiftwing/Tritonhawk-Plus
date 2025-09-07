@@ -226,8 +226,8 @@ namespace TritonhawkPlus
         gdouble                 sample_grid_scale_x = (gdouble) 1.0;
         gdouble                 sample_grid_scale_y = (gdouble) 1.0;
         gboolean                chain_button_sample_interpolation_on = (gboolean) TRUE;
-        gdouble                 sample_interpolation_x = (gdouble) 3.0;
-        gdouble                 sample_interpolation_y = (gdouble) 3.0;
+        gdouble                 sample_interpolation_x = (gdouble) 1.0;
+        gdouble                 sample_interpolation_y = (gdouble) 1.0;
         string                  sample_interpolation_x_text = "";
         string                  sample_interpolation_y_text = "";
         f128                    sample_interpolation_locked_ratio_xy = 1.0_q;

@@ -22,23 +22,17 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-#endif
-
 /** \brief Returns one of two input values, whichever is lowest.
  *
- * \param a __float128 One of two input values to compare to each other.
- * \param b __float128 One of two input values to compare to each other.
- * \return __float128 Either "a" or "b", whichever is lower.
+ * \param a f128 One of two input values to compare to each other.
+ * \param b f128 One of two input values to compare to each other.
+ * \return f128 Either "a" or "b", whichever is lower.
  *
  * Returns one of two input values, whichever is lowest.  128-bit float version.
  */
-static HOT_INLINE __float128 fminq (__float128 a, __float128 b)
+static HOT_INLINE f128 fminq (const f128 a, const f128 b) noexcept
 {
-    if (isnanq(a) || isnanq(b)) return NANq;
-    if (isinfq(a) || isinfq(b)) return NANq;
+    if (invalidq(a) || invalidq(b)) return NANq;
 
     return (a < b) ? a : b;
 }

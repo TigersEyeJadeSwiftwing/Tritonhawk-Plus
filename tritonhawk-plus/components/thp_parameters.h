@@ -115,8 +115,8 @@ namespace TritonhawkPlus
         f128 sample_grid_scale_y = 1.0_q;
         f128 sample_grid_offset_x = 0.0_q;
         f128 sample_grid_offset_y = 0.0_q;
-        f128 sample_interpolation_x = 3.0_q;
-        f128 sample_interpolation_y = 3.0_q;
+        f128 sample_interpolation_x = 1.0_q;
+        f128 sample_interpolation_y = 1.0_q;
         SAMPLE_GRID_SHAPE sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;

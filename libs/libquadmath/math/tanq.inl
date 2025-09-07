@@ -22,24 +22,22 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "sinq.inl"
-    #include "cosq.inl"
-#endif
+#include "sinq.inl"
+#include "cosq.inl"
 
 /** \brief 128-bit float tangent function.
  *
- * \param x __float128 Input value.
- * \return __float128 Output value, tangent of input.
+ * \param x f128 Input value.
+ * \return f128 Output value, tangent of input.
  */
-static HOT_INLINE __float128 tanq(__float128 x)
+static HOT_INLINE f128 tanq(const f128 x) noexcept
 {
     // Handle NaN/Inf
-    if (x != x || x == INFINITYq || x == INFINITYnq) return NANq;
+    if (invalidq(x)) return NANq;
 
     // Compute sine and cosine via our high-precision routines
-    __float128 s = sinq(x);
-    __float128 c = cosq(x);
+    f128 s = sinq(x);
+    f128 c = cosq(x);
 
     // Divide, taking care of poles
     // If |c| is extremely small, result overflows to ±Inf

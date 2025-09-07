@@ -22,32 +22,28 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
-    #include "isnanq.inl"
-    #include "isinfq.inl"
-    #include "fabsq.inl"
-    #include "fmaq.inl"
-    #include "copysignq.inl"
-#endif
+#include "fabsq.inl"
+#include "fmaq.inl"
+#include "copysignq.inl"
 
 /** \brief 128-bit modulus: remainder of x/y, with same sign as x and |r|<|y|.
  *
- * \param x __float128 Numerator.
- * \param y __float128 Denominator.
- * \return __float128 Remainder.
+ * \param x f128 Numerator.
+ * \param y f128 Denominator.
+ * \return f128 Remainder.
  */
-static inline __float128 fmodq(__float128 x, __float128 y)
+static inline f128 fmodq(const f128 x, const f128 y) noexcept
 {
     // 1) Special cases
-    if (isnanq(x) || isnanq(y))     return NANq;
-    if (isinfq(x)  || y == 0.0q)     return NANq;  // fmod(inf, y)  or fmod(x,0) → NaN
+    if (invalidq(x) || isnanq(y)) return NANq;
+    if (y == 0.0q) return NANq;  // fmod(inf, y)  or fmod(x,0) → NaN
 
     // 2) Compute truncated quotient n = trunc(x/y)
-    __float128 q = x / y;
-    int64_t   n = (int64_t)q;   // C++ cast truncates toward zero
+    f128 q = x / y;
+    s64 n = (s64)q;   // C++ cast truncates toward zero
 
     // 3) Compute remainder r = x – n*y in one rounding via fused-multiply-add
-    __float128 r = fmaq(-y, (__float128)n, x);
+    f128 r = fmaq(-y, (f128)n, x);
 
     // 4) Correct any off-by-one due to rounding
     //    Guarantee |r| < |y|    and    sign(r) == sign(x)

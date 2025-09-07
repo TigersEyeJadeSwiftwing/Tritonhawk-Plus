@@ -24,10 +24,10 @@ licensed under the GPL version 3 license. */
 
 /** \brief Check if a 128-bit float is a signaling NaN
  *
- * \param x __float128 value to be tested
+ * \param x f128 value to be tested
  * \return int 1 if \c x is a signaling NaN, 0 otherwise
  */
-static HOT_INLINE int issignalingq(__float128 x)
+static HOT_INLINE int issignalingq(f128 x) noexcept
 {
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);

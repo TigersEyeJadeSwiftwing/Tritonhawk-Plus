@@ -21,6 +21,8 @@
 					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
 					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
@@ -74,6 +76,8 @@
 					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
 					<Add option="-O3" />
 					<Add option="-mlong-double-128" />
@@ -84,6 +88,7 @@
 					<Add option="-ffp-contract=off" />
 					<Add option="-static-libgcc" />
 					<Add option="-static-libstdc++" />
+					<Add option="-lm" />
 					<Add option="-lgimpui-3.0" />
 					<Add option="-lgimpwidgets-3.0" />
 					<Add option="-lgimpmodule-3.0" />
@@ -145,6 +150,8 @@
 					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
 					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
@@ -198,9 +205,11 @@
 					<Add option="-march=x86-64-v3" />
 					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
-					<Add option="-mlong-double-128" />
 					<Add option="-O3" />
+					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
 					<Add option="-flto" />
 					<Add option="-fno-math-errno" />
@@ -208,6 +217,7 @@
 					<Add option="-ffp-contract=off" />
 					<Add option="-static-libgcc" />
 					<Add option="-static-libstdc++" />
+					<Add option="-lm" />
 					<Add option="-lgimpui-3.0" />
 					<Add option="-lgimpwidgets-3.0" />
 					<Add option="-lgimpmodule-3.0" />
@@ -299,6 +309,7 @@
 		<Unit filename="../../libs/libquadmath/math/frexpq.inl">
 			<Option target="Clang64 __float128" />
 		</Unit>
+		<Unit filename="../../libs/libquadmath/math/invalidq.inl" />
 		<Unit filename="../../libs/libquadmath/math/isinfq.inl">
 			<Option target="Clang64 __float128" />
 		</Unit>

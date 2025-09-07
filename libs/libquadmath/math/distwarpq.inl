@@ -22,11 +22,10 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_USING_LONG_DOUBLE_FOR_128_BIT_FLOAT
 /** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
  *
- * \param a __float128 The input value, can be any real floating-point number.
- * \return __float128 The output value, which is the input limited on a curve to -1.0 to 1.0.
+ * \param a f128 The input value, can be any real floating-point number.
+ * \return f128 The output value, which is the input limited on a curve to -1.0 to 1.0.
  *
  * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
  * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
@@ -38,67 +37,20 @@ licensed under the GPL version 3 license. */
  * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
  * video games, and other fun stuff...
  */
-static HOT_INLINE __float128 distwarpq (__float128 a)
+static HOT_INLINE f128 distwarpq(const f128 a) noexcept
 {
-    if (__builtin_isnan(a)) return NANq;
-    if (__builtin_isinf(a)) return a;
+    if (isnanq(a)) return NANq;
+    if (isinfq(a)) return a;
 
     return a / ( ((a >= 0.q) ? a : -a) + 1.q );
 }
-#else
-/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
- *
- * \param a long double The input value, can be any real floating-point number.
- * \return long double The output value, which is the input limited on a curve to -1.0 to 1.0.
- *
- * This function is a version that uses long double input and output data types.
- * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
- * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
- * increases more and more as the input value is increasingly larger and larger, whether positive or negative
- * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
- * from zero makes less difference to the output, and the resulting output value never completely "gets there"
- * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
- * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
- * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
- * video games, and other fun stuff...
- */
-static HOT_INLINE long double distwarpq (long double a)
-{
-    if (__builtin_isnan(a)) return NANq;
-    if (__builtin_isinf(a)) return a;
 
-    return a / ( ((a >= 0.L) ? a : -a) + 1.L );
-}
-#endif
+
 
 /** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
  *
- * \param a float The input value, can be any real floating-point number.
- * \return float The output value, which is the input limited on a curve to -1.0 to 1.0.
- *
- * This function is a 32-bit float version.
- * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
- * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
- * increases more and more as the input value is increasingly larger and larger, whether positive or negative
- * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
- * from zero makes less difference to the output, and the resulting output value never completely "gets there"
- * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
- * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
- * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
- * video games, and other fun stuff...
- */
-static HOT_INLINE float distwarpf (float a)
-{
-    if (__builtin_isnan(a)) return NANq;
-    if (__builtin_isinf(a)) return a;
-
-    return a / ( ((a >= 0.f) ? a : -a) + 1.f );
-}
-
-/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
- *
- * \param a double The input value, can be any real floating-point number.
- * \return double The output value, which is the input limited on a curve to -1.0 to 1.0.
+ * \param a f64 The input value, can be any real floating-point number.
+ * \return f64 The output value, which is the input limited on a curve to -1.0 to 1.0.
  *
  * This function is a 64-bit float version.
  * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
@@ -111,10 +63,62 @@ static HOT_INLINE float distwarpf (float a)
  * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
  * video games, and other fun stuff...
  */
-static HOT_INLINE double distwarp (double a)
+static HOT_INLINE f64 distwarp(const f64 a) noexcept
 {
-    if (__builtin_isnan(a)) return NANq;
-    if (__builtin_isinf(a)) return a;
+    if (isnan(a)) return NAN;
+    if (isinf(a)) return a;
 
     return a / ( ((a >= 0.0) ? a : -a) + 1.0 );
+}
+
+
+
+/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ *
+ * \param a f32 The input value, can be any real floating-point number.
+ * \return f32 The output value, which is the input limited on a curve to -1.0 to 1.0.
+ *
+ * This function is a 32-bit float version.
+ * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
+ * increases more and more as the input value is increasingly larger and larger, whether positive or negative
+ * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
+ * from zero makes less difference to the output, and the resulting output value never completely "gets there"
+ * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
+ * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
+ * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
+ * video games, and other fun stuff...
+ */
+static HOT_INLINE f32 distwarpf(const f32 a) noexcept
+{
+    if (isnan(a)) return NANf;
+    if (isinf(a)) return a;
+
+    return a / ( ((a >= 0.f) ? a : -a) + 1.f );
+}
+
+
+
+/** \brief Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ *
+ * \param a f16 The input value, can be any real floating-point number.
+ * \return f16 The output value, which is the input limited on a curve to -1.0 to 1.0.
+ *
+ * This function is a 16-bit float version.
+ * Returns a floating-point input value of any size that is restricted to an output range of -1.0 to 1.0.
+ * The restriction, or amount the input value is divided by, starts at 1.0 when the input is at 0.0, and
+ * increases more and more as the input value is increasingly larger and larger, whether positive or negative
+ * in how far away it gets from 0.0.  At very high positive and very large negative values, going farther away
+ * from zero makes less difference to the output, and the resulting output value never completely "gets there"
+ * to 1.0 or -1.0, but instead gets closer and closer to such.  Useful for limiting a value to being between
+ * -1.0 and 1.0 but without a hard-edge that comes from a simple min() or max() function, this function does
+ * it with a curve on a graph instead.  Used in audio engineering plug-ins, pro-audio, certain things for
+ * video games, and other fun stuff...
+ */
+static HOT_INLINE f16 distwarpfs(const f16 a) noexcept
+{
+    if (isnan(a)) return NANfs;
+    if (isinf(a)) return a;
+
+    return a / ( ((a >= 0.f16) ? a : -a) + 1.f16 );
 }

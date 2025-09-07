@@ -22,32 +22,32 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-static HOT_INLINE u64 RGBA_red(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGBA_red(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 4);
 }
-static HOT_INLINE u64 RGBA_green(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGBA_green(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 4) + 1;
 }
-static HOT_INLINE u64 RGBA_blue(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGBA_blue(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 4) + 2;
 }
-static HOT_INLINE u64 RGBA_alpha(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGBA_alpha(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 4) + 3;
 }
 
-static HOT_INLINE u64 RGB_red(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGB_red(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 3);
 }
-static HOT_INLINE u64 RGB_green(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGB_green(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 3) + 1;
 }
-static HOT_INLINE u64 RGB_blue(u64 size_x, u64 x, u64 y)
+static HOT_INLINE const u64 RGB_blue(const u64 size_x, const u64 x, const u64 y)
 {
     return (((y * size_x) + x) * 3) + 2;
 }
