@@ -274,104 +274,55 @@
 		<Unit filename="../../libs/libintmath/math/clamp.inl" />
 		<Unit filename="../../libs/libintmath/math/max.inl" />
 		<Unit filename="../../libs/libintmath/math/min.inl" />
-		<Unit filename="../../libs/libquadmath/math/ceilq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/ceilq.inl" />
 		<Unit filename="../../libs/libquadmath/math/clampq.inl" />
-		<Unit filename="../../libs/libquadmath/math/copysignq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/cosq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/copysignq.inl" />
+		<Unit filename="../../libs/libquadmath/math/cosq.inl" />
 		<Unit filename="../../libs/libquadmath/math/distwarpq.inl" />
-		<Unit filename="../../libs/libquadmath/math/expq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/fabsq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/floorq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/fmaq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/fmaxq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/fminq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/fmodq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/frexpq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/expq.inl" />
+		<Unit filename="../../libs/libquadmath/math/fabsq.inl" />
+		<Unit filename="../../libs/libquadmath/math/floorq.inl" />
+		<Unit filename="../../libs/libquadmath/math/fmaq.inl" />
+		<Unit filename="../../libs/libquadmath/math/fmaxq.inl" />
+		<Unit filename="../../libs/libquadmath/math/fminq.inl" />
+		<Unit filename="../../libs/libquadmath/math/fmodq.inl" />
+		<Unit filename="../../libs/libquadmath/math/frexpq.inl" />
 		<Unit filename="../../libs/libquadmath/math/invalidq.inl" />
-		<Unit filename="../../libs/libquadmath/math/isinfq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/isnanq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/issignalingq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/ldexpq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/isinfq.inl" />
+		<Unit filename="../../libs/libquadmath/math/isnanq.inl" />
+		<Unit filename="../../libs/libquadmath/math/issignalingq.inl" />
+		<Unit filename="../../libs/libquadmath/math/ldexpq.inl" />
 		<Unit filename="../../libs/libquadmath/math/lerp.inl" />
-		<Unit filename="../../libs/libquadmath/math/lnq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/modfq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/nearbyintq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/powq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/lnq.inl" />
+		<Unit filename="../../libs/libquadmath/math/modfq.inl" />
+		<Unit filename="../../libs/libquadmath/math/nearbyintq.inl" />
+		<Unit filename="../../libs/libquadmath/math/powq.inl" />
 		<Unit filename="../../libs/libquadmath/math/rounddgq.inl" />
-		<Unit filename="../../libs/libquadmath/math/roundq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/scalbnq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/sinq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/sqrtq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
-		<Unit filename="../../libs/libquadmath/math/tanq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
+		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />
+		<Unit filename="../../libs/libquadmath/math/sinq.inl" />
+		<Unit filename="../../libs/libquadmath/math/sqrtq.inl" />
+		<Unit filename="../../libs/libquadmath/math/tanq.inl" />
 		<Unit filename="../../libs/libquadmath/math/to_intq.inl" />
-		<Unit filename="../../libs/libquadmath/math/truncq.inl">
-			<Option target="Clang64 __float128" />
-		</Unit>
+		<Unit filename="../../libs/libquadmath/math/truncq.inl" />
 		<Unit filename="../../libs/libquadmath/quadmath-config.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-imp.hpp" />
 		<Unit filename="../../libs/libquadmath/quadmath-modded.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/inline/thp_pixel_vector.inl" />
 		<Unit filename="../../tritonhawk-plus/components/thp_gui-combowidget-size.cpp" />
-		<Unit filename="../../tritonhawk-plus/components/thp_gui-combowidget-size.h" />
+		<Unit filename="../../tritonhawk-plus/components/thp_gui-combowidget-size.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_log.cpp" />
-		<Unit filename="../../tritonhawk-plus/components/thp_log.h" />
+		<Unit filename="../../tritonhawk-plus/components/thp_log.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_parameters.cpp" />
-		<Unit filename="../../tritonhawk-plus/components/thp_parameters.h" />
+		<Unit filename="../../tritonhawk-plus/components/thp_parameters.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_resize.cpp" />
-		<Unit filename="../../tritonhawk-plus/components/thp_resize.h" />
-		<Unit filename="../../tritonhawk-plus/components/thp_types.h" />
+		<Unit filename="../../tritonhawk-plus/components/thp_resize.hpp" />
+		<Unit filename="../../tritonhawk-plus/components/thp_types.hpp" />
 		<Unit filename="../../tritonhawk-plus/config_h/clang64/compile-image-resize.txt" />
-		<Unit filename="../../tritonhawk-plus/config_h/clang64/config.h" />
+		<Unit filename="../../tritonhawk-plus/config_h/clang64/config.hpp" />
+		<Unit filename="../../tritonhawk-plus/config_h/clang64/stdplugins-intl.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" />
-		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.h" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.hpp" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />

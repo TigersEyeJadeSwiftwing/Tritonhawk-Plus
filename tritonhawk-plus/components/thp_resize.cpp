@@ -21,10 +21,10 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#include "components/thp_types.h"
-#include "components/thp_resize.h"
-#include "components/thp_log.h"
-#include "components/thp_parameters.h"
+#include "components/thp_types.hpp"
+#include "components/thp_resize.hpp"
+#include "components/thp_log.hpp"
+#include "components/thp_parameters.hpp"
 
 #include "components/inline/thp_pixel_vector.inl"
 
