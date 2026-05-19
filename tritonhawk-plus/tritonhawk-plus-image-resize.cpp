@@ -202,7 +202,7 @@ static GimpValueArray* thpimageresize_run(
     gboolean seamless_y =           gboolean(FALSE);
     gdouble sample_grid_x =         gdouble(100.0);
     gdouble sample_grid_y =         gdouble(100.0);
-    gint chunk_size =               gint(256);
+    gint chunk_size =               gint(100);
 
     GtkWidget*              Program_Dialog;
     GtkWidget*              Gui_Log_Box_0;
@@ -360,7 +360,9 @@ static GimpValueArray* thpimageresize_run(
         );
 
         image_copy = gimp_image_duplicate (image);
-        gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
+        // if (Params->run_mode == RUN_MODE_RESIZE__BASIC) gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
         layer_list_image = gimp_image_list_layers(image);
         layer_list_image_copy = gimp_image_list_layers(image_copy);
 
@@ -378,6 +380,7 @@ static GimpValueArray* thpimageresize_run(
         Params->chunk_size_default = (int)chunk_size * 1024;
         Params->CalcSampleGrid();
         Params->CalcNumberOfChunks();
+        Params->CalcAll();
     }
     else
     {
@@ -392,7 +395,9 @@ static GimpValueArray* thpimageresize_run(
         chunk_size = (gint)(Params->chunk_size_default / 1024);
 
         image_copy = gimp_image_duplicate (image);
-        gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
+        // if (Params->run_mode == RUN_MODE_RESIZE__BASIC) gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
         layer_list_image = gimp_image_list_layers(image);
         layer_list_image_copy = gimp_image_list_layers(image_copy);
 
@@ -402,6 +407,146 @@ static GimpValueArray* thpimageresize_run(
         Params->CalcAll();
     }
 
+    if (Params->run_mode == RUN_MODE_RESIZE__BASIC)
+    {
+        for (int layer_index = 0; layer_index < drawable_count; layer_index++)
+        {
+            GimpLayer* layer = (GimpLayer*)g_list_nth_data(layer_list_image, (guint)layer_index);
+            GimpLayer* layer_copy = (GimpLayer*)g_list_nth_data(layer_list_image_copy, (guint)layer_index);
+            GimpDrawable* layer_drawable = (GimpDrawable*)layer;
+            GimpDrawable* layer_drawable_copy = (GimpDrawable*)layer_copy;
+
+            s32 full_x = gimp_drawable_get_width((GimpDrawable*)layer_copy);
+            s32 full_y = gimp_drawable_get_height((GimpDrawable*)layer_copy);
+            s32 out_x = Params->output_size_x;
+            s32 out_y = Params->output_size_y;
+            if ((full_x != (s32)Params->input_size_x) || (full_y != (s32)Params->input_size_y))
+            {
+                f128 full_x_f128 = f128(full_x) * Params->image_ratio_x;
+                f128 full_y_f128 = f128(full_y) * Params->image_ratio_y;
+                out_x = s32(full_x_f128);
+                out_y = s32(full_y_f128);
+            }
+
+            f64 progress_start = f64(layer_index) / f64(drawable_count);
+            Params->progress_start = (f64)progress_start;
+            Params->progress_end = f64(progress_start + progress_size);
+            Params->CalcInfoString();
+
+            gimp_layer_scale(layer, out_x, out_y, TRUE);
+
+            if (gimp_drawable_has_alpha(layer_drawable_copy) == TRUE)
+                Thp_Resize_drawable_RGBA(Params, layer_drawable_copy, layer_drawable);
+            else
+                Thp_Resize_drawable_RGB(Params, layer_drawable_copy, layer_drawable);
+
+            Params->draw_index++;
+        }
+
+        gimp_image_resize_to_layers(image);
+
+        /*
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpDrawable* layer_image = (GimpDrawable*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            GimpDrawable* layer_image_copy = (GimpDrawable*)g_list_nth_data (layer_list_image_copy, (guint)drawable_index);
+
+            f64 progress_start = f64(drawable_index) / f64(drawable_count);
+            Params->progress_start = (f64)progress_start;
+            Params->progress_end = f64(progress_start + progress_size);
+
+            if (gimp_drawable_has_alpha(layer_image_copy) == TRUE)
+                Thp_Resize_drawable_RGBA(Params, layer_image_copy, layer_image);
+            else
+                Thp_Resize_drawable_RGB(Params, layer_image_copy, layer_image);
+
+            Params->draw_index++;
+            Params->CalcInfoString();
+        }
+        */
+    }
+    else if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS)
+    {
+        gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpLayer* image_layer = (GimpLayer*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            gimp_layer_scale(image_layer, (gint)new_size_x, (gint)new_size_y, TRUE);
+        }
+    }
+    else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL)
+    {
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpLayer* image_layer = (GimpLayer*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            GimpLayer* image_copy_layer = (GimpLayer*)g_list_nth_data (layer_list_image_copy, (guint)drawable_index);
+            // GimpDrawable* image_layer_drawable = (GimpDrawable*)image_copy_layer;
+            GimpDrawable* image_copy_layer_drawable = (GimpDrawable*)image_copy_layer;
+
+            gint layer_width = gimp_drawable_get_width(image_copy_layer_drawable);
+            gint layer_height = gimp_drawable_get_height(image_copy_layer_drawable);
+            gint layer_offset_x = (gint)0;
+            gint layer_offset_y = (gint)0;
+            gimp_drawable_get_offsets(image_copy_layer_drawable, &layer_offset_x, &layer_offset_y);
+
+            f128 aspect_ratio_current_layer = f128( (f128)layer_width / (f128)layer_height );
+            f128 layer_new_width_f128 = f128( (f128)new_size_y * aspect_ratio_current_layer );
+            gint layer_new_width = (gint)to_intq(layer_new_width_f128);
+
+            s64 layer_new_offset_x = (new_size_x / 2) + ((new_size_x - layer_new_width) / 2);
+            s64 layer_new_offset_y = new_size_y / 2;
+
+            gimp_layer_resize(image_layer, (gint)layer_new_width, (gint)new_size_y, (gint)layer_new_offset_x, (gint)layer_new_offset_y);
+        }
+    }
+    else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL)
+    {
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpLayer* image_layer = (GimpLayer*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            GimpLayer* image_copy_layer = (GimpLayer*)g_list_nth_data (layer_list_image_copy, (guint)drawable_index);
+            GimpDrawable* image_copy_layer_drawable = (GimpDrawable*)image_copy_layer;
+
+            gint layer_width = gimp_drawable_get_width(image_copy_layer_drawable);
+            gint layer_height = gimp_drawable_get_height(image_copy_layer_drawable);
+            gint layer_offset_x = (gint)0;
+            gint layer_offset_y = (gint)0;
+            gimp_drawable_get_offsets(image_copy_layer_drawable, &layer_offset_x, &layer_offset_y);
+
+            f128 aspect_ratio_current_layer = f128( (f128)layer_width / (f128)layer_height );
+            f128 layer_new_height_f128 = f128( (f128)new_size_x / aspect_ratio_current_layer );
+            gint layer_new_height = (gint)to_intq(layer_new_height_f128);
+
+            s64 layer_new_offset_y = (layer_new_height - new_size_y) / 2;
+
+            gimp_layer_resize(image_layer, (gint)new_size_x, (gint)layer_new_height,  (gint)0, (gint)layer_new_offset_y);
+        }
+    }
+    else
+    {
+        gimp_image_scale (image, (gint)new_size_x, (gint)new_size_y);
+
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpDrawable* layer_image = (GimpDrawable*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            GimpDrawable* layer_image_copy = (GimpDrawable*)g_list_nth_data (layer_list_image_copy, (guint)drawable_index);
+
+            f64 progress_start = f64(drawable_index) / f64(drawable_count);
+            Params->progress_start = (f64)progress_start;
+            Params->progress_end = f64(progress_start + progress_size);
+
+            if (gimp_drawable_has_alpha(layer_image_copy) == TRUE)
+                Thp_Resize_drawable_RGBA(Params, layer_image_copy, layer_image);
+            else
+                Thp_Resize_drawable_RGB(Params, layer_image_copy, layer_image);
+
+            Params->draw_index++;
+            Params->CalcInfoString();
+        }
+    }
+
+    /*
     for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
     {
         GimpDrawable* layer_image = (GimpDrawable*)g_list_nth_data (layer_list_image, (guint)drawable_index);
@@ -415,7 +560,21 @@ static GimpValueArray* thpimageresize_run(
             Thp_Resize_drawable_RGBA(Params, layer_image_copy, layer_image);
         else
             Thp_Resize_drawable_RGB(Params, layer_image_copy, layer_image);
+
+        Params->draw_index++;
+        Params->CalcInfoString();
     }
+
+    if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS)
+    {
+        for (int drawable_index = 0; drawable_index < drawable_count; drawable_index++)
+        {
+            GimpLayer* image_layer = (GimpLayer*)g_list_nth_data (layer_list_image, (guint)drawable_index);
+            gimp_layer_resize_to_image_size(image_layer);
+        }
+    }
+    */
+
 
     g_list_free(layer_list_image);
     g_list_free(layer_list_image_copy);

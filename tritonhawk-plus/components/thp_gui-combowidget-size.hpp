@@ -175,6 +175,10 @@ namespace TritonhawkPlus
                 GtkWidget* Gui_Button_Plugin_Run = NULL;
                 GtkWidget* Gui_Button_Plugin_Reset = NULL;
                 GtkWidget* Gui_Button_Plugin_Cancel = NULL;
+            GtkWidget* Gui_Box_H_Row_Bottom_2 = NULL;
+                GtkWidget* Gui_Button_Plugin_Run_Same_Dimensions = NULL;
+                GtkWidget* Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical = NULL;
+                GtkWidget* Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal = NULL;
 
         u16* button_pointer_Size_Reset = NULL;
         u16* button_pointer_m2 = NULL;
@@ -208,6 +212,9 @@ namespace TritonhawkPlus
         u16* button_pointer_run_plugin = NULL;
         u16* button_pointer_cancel_plugin = NULL;
         u16* button_pointer_reset_plugin = NULL;
+        u16* button_pointer_run_plugin_same_dimensions = NULL;
+        u16* button_pointer_run_plugin_keep_aspect_same_vertical = NULL;
+        u16* button_pointer_run_plugin_keep_aspect_same_horizontal = NULL;
 
         ComboSizeWidget* self = NULL;
 
@@ -236,7 +243,7 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE       sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         f128                    sample_grid_weighting = 0._q;
         f128                    sample_count_adjustment = 1._q;
-        u64                     chunk_size_kilo = 96uL;
+        u64                     chunk_size_kilo = 100uL;
 
         s8                     choices_done_result = 0;
     };

@@ -64,6 +64,7 @@ namespace TritonhawkPlus
         Params->output_size_y = new_y;
         Params->output_size_xy = new_total;
         Params->CalcAll();
+        Params->CalcAll();
 
         s32 draw_index = Params->draw_index;
         bool seamless_x = Params->seamless_x;
@@ -158,7 +159,8 @@ namespace TritonhawkPlus
                     u64 progress_chunks = 0uL;
                     #pragma omp atomic read
                     progress_chunks = chunk_accum;
-                    f64 progress_current = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
+                    f64 progress_current = fmin(100.0 * ( f64(progress_chunks) / f64(progress_steps) ), 100.0);
+                    f64 progress_total = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
 
                     Log->Run1(g_strdup_printf (
                         _(  "%s"
@@ -168,12 +170,14 @@ namespace TritonhawkPlus
                             "Chunks completed so far:" "\n"
                             "   %I64u / %I64u" "\n"
                             "\n"
+                            "Progress (current drawables): %%%3.5lf" "\n"
                             "Total progress (all drawables): %%%3.5lf"
                         ),
                         process_text_base.c_str(),
                         pixel_start, pixel_end, pixel_total,
                         progress_chunks, progress_steps,
-                        progress_current)
+                        progress_current,
+                        progress_total)
                     );
                 }
             }
@@ -631,6 +635,7 @@ namespace TritonhawkPlus
         Params->output_size_y = new_y;
         Params->output_size_xy = new_total;
         Params->CalcAll();
+        Params->CalcAll();
 
         s32 draw_index = Params->draw_index;
         bool seamless_x = Params->seamless_x;
@@ -725,7 +730,8 @@ namespace TritonhawkPlus
                     u64 progress_chunks = 0uL;
                     #pragma omp atomic read
                     progress_chunks = chunk_accum;
-                    f64 progress_current = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
+                    f64 progress_current = fmin(100.0 * ( f64(progress_chunks) / f64(progress_steps) ), 100.0);
+                    f64 progress_total = fmin(100.0 * ( progress_start + (f64(progress_chunks) * progress_increment) ), 100.0);
 
                     Log->Run1(g_strdup_printf (
                         _(  "%s"
@@ -735,12 +741,14 @@ namespace TritonhawkPlus
                             "Chunks completed so far:" "\n"
                             "   %I64u / %I64u" "\n"
                             "\n"
+                            "Progress (current drawables): %%%3.5lf" "\n"
                             "Total progress (all drawables): %%%3.5lf"
                         ),
                         process_text_base.c_str(),
                         pixel_start, pixel_end, pixel_total,
                         progress_chunks, progress_steps,
-                        progress_current)
+                        progress_current,
+                        progress_total)
                     );
                 }
             }

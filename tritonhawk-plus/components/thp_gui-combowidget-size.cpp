@@ -246,17 +246,17 @@ namespace TritonhawkPlus
             ShowWidget(Gui_Text_Size_New_Scale_Label);
             gtk_label_set_text((GtkLabel*)Gui_Text_Size_New_Scale_Label, g_strdup_printf(_("%s" "New Scale (Percent)"), "") );
             // Spin Button that determines the new image data's scale
-            Gui_SpinButton_Size_X_Scale = gimp_spin_button_new_with_range((gdouble) 0.0001, (gdouble) 99999999.9999, (gdouble) 1.0);
+            Gui_SpinButton_Size_X_Scale = gimp_spin_button_new_with_range((gdouble) 0.00001, (gdouble) 99999999.99999, (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Size_X_Scale, cell_r0_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Size_Scale), (GtkWidget*)Gui_SpinButton_Size_X_Scale, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (guint) 4u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (guint) 5u);
             ShowWidget(Gui_SpinButton_Size_X_Scale);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)scale_x * (gdouble)100.0);
             // Spin Button that determines the new image data's scale
-            Gui_SpinButton_Size_Y_Scale = gimp_spin_button_new_with_range((gdouble) 0.0001, (gdouble) 99999999.9999, (gdouble) 1.0);
+            Gui_SpinButton_Size_Y_Scale = gimp_spin_button_new_with_range((gdouble) 0.00001, (gdouble) 99999999.99999, (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Size_Y_Scale, cell_r0_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Size_Scale), (GtkWidget*)Gui_SpinButton_Size_Y_Scale, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (guint) 4u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (guint) 5u);
             ShowWidget(Gui_SpinButton_Size_Y_Scale);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)scale_y * (gdouble)100.0);
 
@@ -394,14 +394,14 @@ namespace TritonhawkPlus
             Gui_SpinButton_Sample_Grid_Scale_X = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) Params->max_sample_grid_dimension_percent, (gdouble) 1.00);
             gtk_widget_set_size_request(Gui_SpinButton_Sample_Grid_Scale_X, cell_r2_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Grid_Scale_SpinButtons), (GtkWidget*)Gui_SpinButton_Sample_Grid_Scale_X, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (guint) 2u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (guint) 3u);
             ShowWidget(Gui_SpinButton_Sample_Grid_Scale_X);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)sample_grid_scale_x * (gdouble)100.0);
             // Spin Button that determines the sample grid's scale, Y
             Gui_SpinButton_Sample_Grid_Scale_Y = gimp_spin_button_new_with_range((gdouble) 0.01, (gdouble) Params->max_sample_grid_dimension_percent, (gdouble) 1.00);
             gtk_widget_set_size_request(Gui_SpinButton_Sample_Grid_Scale_Y, cell_r2_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Grid_Scale_SpinButtons), (GtkWidget*)Gui_SpinButton_Sample_Grid_Scale_Y, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (guint) 2u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (guint) 3u);
             ShowWidget(Gui_SpinButton_Sample_Grid_Scale_Y);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)sample_grid_scale_y * (gdouble)100.0);
             // Chain Button that determines when the sample grid's scale has it's aspect ratio locked
@@ -522,7 +522,7 @@ namespace TritonhawkPlus
             Gui_SpinButton_Sample_Weighting = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) 1.0, (gdouble) 0.01);
             gtk_widget_set_size_request(Gui_SpinButton_Sample_Weighting, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_4), (GtkWidget*)Gui_SpinButton_Sample_Weighting, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Weighting, (guint) 5u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Weighting, (guint) 3u);
             ShowWidget(Gui_SpinButton_Sample_Weighting);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Weighting, (gdouble) sample_grid_weighting);
 
@@ -536,7 +536,7 @@ namespace TritonhawkPlus
             Gui_SpinButton_Sample_Count = gimp_spin_button_new_with_range((gdouble) 100.0, (gdouble) Params->max_sample_count_modifier, (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Sample_Count, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_4), (GtkWidget*)Gui_SpinButton_Sample_Count, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Count, (guint) 3u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Count, (guint) 2u);
             ShowWidget(Gui_SpinButton_Sample_Count);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Count, gdouble (sample_count_adjustment * 100._q));
         }
@@ -576,17 +576,17 @@ namespace TritonhawkPlus
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_5), (GtkWidget*)Gui_Box_V_Sample_Interpolation_SpinButtons, FALSE, FALSE, 0);
             ShowWidget(Gui_Box_V_Sample_Interpolation_SpinButtons);
             // Spin Button that determines the sample interpolation, X
-            Gui_Sample_Interpolation_X_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) Params->max_sample_interpolation, (gdouble) 0.05);
+            Gui_Sample_Interpolation_X_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) Params->max_sample_interpolation, (gdouble) 0.01);
             gtk_widget_set_size_request(Gui_Sample_Interpolation_X_SpinButton, row_5_col_width_padded, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Interpolation_SpinButtons), (GtkWidget*)Gui_Sample_Interpolation_X_SpinButton, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (guint) 4u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (guint) 2u);
             ShowWidget(Gui_Sample_Interpolation_X_SpinButton);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)sample_interpolation_x);
             // Spin Button that determines the sample interpolation, Y
-            Gui_Sample_Interpolation_Y_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) Params->max_sample_interpolation, (gdouble) 0.05);
+            Gui_Sample_Interpolation_Y_SpinButton = gimp_spin_button_new_with_range((gdouble) 0.0, (gdouble) Params->max_sample_interpolation, (gdouble) 0.01);
             gtk_widget_set_size_request(Gui_Sample_Interpolation_Y_SpinButton, row_5_col_width_padded, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_V_Sample_Interpolation_SpinButtons), (GtkWidget*)Gui_Sample_Interpolation_Y_SpinButton, FALSE, FALSE, 0);
-            gtk_spin_button_set_digits((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (guint) 4u);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (guint) 2u);
             ShowWidget(Gui_Sample_Interpolation_Y_SpinButton);
             gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)sample_interpolation_y);
             // Chain Button that determines when the sample interpolation has it's aspect ratio locked
@@ -670,7 +670,7 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Chunk_Size_Label, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_6), (GtkWidget*)Gui_Chunk_Size_Label, FALSE, FALSE, 0);
             ShowWidget(Gui_Chunk_Size_Label);
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
             // Spin Button for kilopixels (chunk size)
             Gui_Chunk_Size_SpinButton = gimp_spin_button_new_with_range((gdouble) Params->min_chunk_size, (gdouble) Params->max_chunk_size, (gdouble) Params->increment_chunk_size);
             gtk_widget_set_size_request(Gui_Chunk_Size_SpinButton, row_4_col_width, cell_height);
@@ -680,7 +680,7 @@ namespace TritonhawkPlus
             gtk_spin_button_set_value((GtkSpinButton*)Gui_Chunk_Size_SpinButton, gdouble (chunk_size_kilo));
         }
 
-        // Bottom Row, master controls
+        // Bottom Row, master controls, row 1
         {
             // Bottom Row Box
             Gui_Box_H_Row_Bottom = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
@@ -703,6 +703,30 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Button_Plugin_Reset, row_bottom_button_width, row_5_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom), (GtkWidget*)Gui_Button_Plugin_Reset, FALSE, FALSE, 0);
             ShowWidget(Gui_Button_Plugin_Reset);
+        }
+        // Bottom Row, master controls, row 2
+        {
+            // Bottom Row Box
+            Gui_Box_H_Row_Bottom_2 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+            gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Row_Bottom_2), box_padding);
+            gtk_widget_set_size_request(Gui_Box_H_Row_Bottom_2, master_width, cell_height_large);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_Master), (GtkWidget*)Gui_Box_H_Row_Bottom_2, FALSE, FALSE, 0);
+            ShowWidget(Gui_Box_H_Row_Bottom_2);
+            // Plug-in Choice Button
+            Gui_Button_Plugin_Run_Same_Dimensions = gtk_button_new_with_label("Run (Layers same dimensions)");
+            gtk_widget_set_size_request(Gui_Button_Plugin_Run_Same_Dimensions, row_bottom_button_width, cell_height_large);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom_2), (GtkWidget*)Gui_Button_Plugin_Run_Same_Dimensions, FALSE, FALSE, 0);
+            ShowWidget(Gui_Button_Plugin_Run_Same_Dimensions);
+            // Plug-in Choice Button
+            Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical = gtk_button_new_with_label("Run (Keep aspect, same height)");
+            gtk_widget_set_size_request(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical, row_bottom_button_width, cell_height_large);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom_2), (GtkWidget*)Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical, FALSE, FALSE, 0);
+            ShowWidget(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical);
+            // Plug-in Choice Button
+            Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal = gtk_button_new_with_label("Run (Keep aspect, same width)");
+            gtk_widget_set_size_request(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal, row_bottom_button_width, cell_height_large);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom_2), (GtkWidget*)Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal, FALSE, FALSE, 0);
+            ShowWidget(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal);
         }
 
         gtk_widget_show(Program_Dialog);
@@ -744,10 +768,14 @@ namespace TritonhawkPlus
         // Row 6, border wrapping controls
         button_pointer_seamless_x = new u16(4501u);
         button_pointer_seamless_y = new u16(4502u);
-        // Bottom Row, master controls
+        // Bottom Row, master controls 1
         button_pointer_run_plugin = new u16(5001u);
         button_pointer_cancel_plugin = new u16(5002u);
         button_pointer_reset_plugin = new u16(5003u);
+        // Bottom Row, master controls 2
+        button_pointer_run_plugin_same_dimensions = new u16(5011u);
+        button_pointer_run_plugin_keep_aspect_same_vertical = new u16(5012u);
+        button_pointer_run_plugin_keep_aspect_same_horizontal = new u16(5013u);
 
         g_signal_connect(Gui_SpinButton_Size_X_Pixels, "value-changed", G_CALLBACK(value_changed_size_x), self);
         g_signal_connect(Gui_SpinButton_Size_Y_Pixels, "value-changed", G_CALLBACK(value_changed_size_y), self);
@@ -796,6 +824,9 @@ namespace TritonhawkPlus
         g_object_set_data(G_OBJECT(Gui_Button_Plugin_Run), "button-name", button_pointer_run_plugin);
         g_object_set_data(G_OBJECT(Gui_Button_Plugin_Cancel), "button-name", button_pointer_cancel_plugin);
         g_object_set_data(G_OBJECT(Gui_Button_Plugin_Reset), "button-name", button_pointer_reset_plugin);
+        g_object_set_data(G_OBJECT(Gui_Button_Plugin_Run_Same_Dimensions), "button-name", button_pointer_run_plugin_same_dimensions);
+        g_object_set_data(G_OBJECT(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical), "button-name", button_pointer_run_plugin_keep_aspect_same_vertical);
+        g_object_set_data(G_OBJECT(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal), "button-name", button_pointer_run_plugin_keep_aspect_same_horizontal);
 
         g_signal_connect(Gui_Button_Size_Reset, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_flip_xy, "clicked", G_CALLBACK(value_changed_button), self);
@@ -829,6 +860,9 @@ namespace TritonhawkPlus
         g_signal_connect(Gui_Button_Plugin_Run, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_Plugin_Cancel, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_Plugin_Reset, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Plugin_Run_Same_Dimensions, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Vertical, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Plugin_Reset_Keep_Aspect_Same_Horizontal, "clicked", G_CALLBACK(value_changed_button), self);
 
         Params->CalcAll();
         SyncDataFromParameters();
@@ -871,6 +905,9 @@ namespace TritonhawkPlus
         delete button_pointer_run_plugin;
         delete button_pointer_cancel_plugin;
         delete button_pointer_reset_plugin;
+        delete button_pointer_run_plugin_same_dimensions;
+        delete button_pointer_run_plugin_keep_aspect_same_vertical;
+        delete button_pointer_run_plugin_keep_aspect_same_horizontal;
 
         self = NULL;
     }
@@ -885,15 +922,17 @@ namespace TritonhawkPlus
         size_x = (gint) max((gint)val, (gint)1);
         f128 scale_x_f = f128(size_x) / f128(original_x);
         scale_x_f = clampq(scale_x_f, V_MIN, V_MAX);
-        scale_x_f = rounddgq(scale_x_f, -5);
+        // scale_x_f = rounddgq(scale_x_f, -5);
         scale_x = gdouble(scale_x_f);
 
         if (chain_button_on == TRUE)
         {
             size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
-            scale_y = (gdouble)rounddgq(n_scale, -5);
-        } else
+            // scale_y = (gdouble)rounddgq(n_scale, -5);
+            scale_y = (gdouble)n_scale;
+        }
+        else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
         }
@@ -912,15 +951,17 @@ namespace TritonhawkPlus
         size_y = (gint) max((gint)val, (gint)1);
         f128 scale_y_f = f128(size_y) / f128(original_y);
         scale_y_f = clampq(scale_y_f, V_MIN, V_MAX);
-        scale_y_f = rounddgq(scale_y_f, -5);
+        // scale_y_f = rounddgq(scale_y_f, -5);
         scale_y = gdouble(scale_y_f);
 
         if (chain_button_on == TRUE)
         {
             size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
-            scale_x = (gdouble)rounddgq(n_scale, -5);
-        } else
+            // scale_x = (gdouble)rounddgq(n_scale, -5);
+            scale_x = (gdouble)n_scale;
+        }
+        else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
         }
@@ -937,7 +978,7 @@ namespace TritonhawkPlus
         constexpr f128 V_MIN = 1._q / V_MAX;
 
         f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
-        value = rounddgq(value, -6);
+        // value = rounddgq(value, -6);
         scale_x = gdouble(value);
         f128 size_x_f = f128(original_x) * value;
         size_x = (gint) max((gint)size_x_f, (gint)1);
@@ -946,8 +987,10 @@ namespace TritonhawkPlus
         {
             size_y = (gint) max(gint(f128(size_x) / locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_y) / f128(original_y), V_MIN, V_MAX);
-            scale_y = (gdouble)rounddgq(n_scale, -6);
-        } else
+            // scale_y = (gdouble)rounddgq(n_scale, -6);
+            scale_y = (gdouble)n_scale;
+        }
+        else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
         }
@@ -964,7 +1007,7 @@ namespace TritonhawkPlus
         constexpr f128 V_MIN = 1._q / V_MAX;
 
         f128 value = clampq((f128)val * 0.01_q, V_MIN, V_MAX);
-        value = rounddgq(value, -6);
+        // value = rounddgq(value, -6);
         scale_y = gdouble(value);
         f128 size_y_f = f128(original_y) * value;
         size_y = (gint) max((gint)size_y_f, (gint)1);
@@ -973,8 +1016,10 @@ namespace TritonhawkPlus
         {
             size_x = (gint) max(gint(f128(size_y) * locked_ratio_xy), (gint)1);
             f128 n_scale = clampq(f128(size_x) / f128(original_x), V_MIN, V_MAX);
-            scale_x = (gdouble)rounddgq(n_scale, -6);
-        } else
+            // scale_x = (gdouble)rounddgq(n_scale, -6);
+            scale_x = (gdouble)n_scale;
+        }
+        else
         {
             locked_ratio_xy = SetRatio(size_x, size_y);
         }
@@ -988,14 +1033,16 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
-        value = rounddgq(value, -4);
+        // value = rounddgq(value, -4);
         sample_grid_scale_x = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
             f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_x) / f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
-            sample_grid_scale_y = (gdouble)rounddgq(sample_grid_scale_f, -4);
-        } else
+            // sample_grid_scale_y = (gdouble)rounddgq(sample_grid_scale_f, -4);
+            sample_grid_scale_y = (gdouble)sample_grid_scale_f;
+        }
+        else
         {
             sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
         }
@@ -1009,14 +1056,16 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val * 0.01_q, 0.01_q, 5000._q);
-        value = rounddgq(value, -4);
+        // value = rounddgq(value, -4);
         sample_grid_scale_y = gdouble(value);
 
         if (chain_button_sample_grid_scale_on == TRUE)
         {
             f128 sample_grid_scale_f = clampq(f128(sample_grid_scale_y) * f128(sample_grid_scale_locked_ratio_xy), 0._q, 5000._q);
-            sample_grid_scale_x = (gdouble)rounddgq(sample_grid_scale_f, -4);
-        } else
+            // sample_grid_scale_x = (gdouble)rounddgq(sample_grid_scale_f, -4);
+            sample_grid_scale_x = (gdouble)sample_grid_scale_f;
+        }
+        else
         {
             sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
         }
@@ -1027,8 +1076,8 @@ namespace TritonhawkPlus
     }
     void ComboSizeWidget::SetSampleGridWeighting(gdouble val)
     {
-        sample_grid_weighting = clampq((f128)val, 0.0_q, 1.0_q);
-        sample_grid_weighting = rounddgq(sample_grid_weighting, -5);
+        sample_grid_weighting = clamp01q((f128)val);
+        // sample_grid_weighting = rounddgq(sample_grid_weighting, -5);
 
         ignore_auto_changes = true;
         UpdateGUI();
@@ -1037,7 +1086,7 @@ namespace TritonhawkPlus
     void ComboSizeWidget::SetSampleCountAdj(gdouble val)
     {
         sample_count_adjustment = clampq((f128)val * 0.01_q, 1.0_q, 16.0_q);
-        sample_count_adjustment = rounddgq(sample_count_adjustment, -5);
+        // sample_count_adjustment = rounddgq(sample_count_adjustment, -5);
 
         ignore_auto_changes = true;
         UpdateGUI();
@@ -1048,14 +1097,16 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val, 0._q, 50._q);
-        value = rounddgq(value, -3);
+        // value = rounddgq(value, -3);
         sample_interpolation_x = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
             f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
-            sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
-        } else
+            // sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
+            sample_interpolation_y = (gdouble)sample_interpolation_f;
+        }
+        else
         {
             sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
         }
@@ -1069,14 +1120,16 @@ namespace TritonhawkPlus
         if (ignore_auto_changes == true) return;
 
         f128 value = clampq((f128)val, 0._q, 50._q);
-        value = rounddgq(value, -3);
+        // value = rounddgq(value, -3);
         sample_interpolation_y = gdouble(value);
 
         if (chain_button_sample_interpolation_on == TRUE)
         {
             f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
-            sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
-        } else
+            // sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
+            sample_interpolation_x = (gdouble)sample_interpolation_f;
+        }
+        else
         {
             sample_interpolation_locked_ratio_xy = SetRatio(sample_interpolation_x, sample_interpolation_y);
         }
@@ -1178,16 +1231,16 @@ namespace TritonhawkPlus
         if (Gui_SpinButton_Size_Y_Pixels)
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Pixels, (gdouble)size_y);
         if (Gui_SpinButton_Size_X_Scale)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)scale_x * (gdouble)100.0);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)rounddgq((f128)scale_x * 100._q, -5));
         if (Gui_SpinButton_Size_Y_Scale)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)scale_y * (gdouble)100.0);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)rounddgq((f128)scale_y * 100._q, -5));
         if (Gui_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton, chain_button_on);
 
         if (Gui_SpinButton_Sample_Grid_Scale_X)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)sample_grid_scale_x * (gdouble)100.0);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100._q, -3));
         if (Gui_SpinButton_Sample_Grid_Scale_Y)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)sample_grid_scale_y * (gdouble)100.0);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)rounddgq((f128)sample_grid_scale_y * 100._q, -3));
         if (Gui_ChainButton_Sample_Grid_Scale)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton_Sample_Grid_Scale, chain_button_sample_grid_scale_on);
 
@@ -1204,9 +1257,9 @@ namespace TritonhawkPlus
                 g_strdup_printf(_("Sample Interpolation Y" "\n %s"), sample_interpolation_y_text.c_str()) );
         }
         if (Gui_Sample_Interpolation_X_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)sample_interpolation_x);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_x, -2));
         if (Gui_Sample_Interpolation_Y_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)sample_interpolation_y);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_y, -2));
         if (Gui_Sample_Interpolation_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_Sample_Interpolation_ChainButton, chain_button_sample_interpolation_on);
 
@@ -1222,11 +1275,11 @@ namespace TritonhawkPlus
 
         if (Gui_Sample_Weighting_Label)
         {
-            f128 rounded_weighting = rounddgq(sample_grid_weighting, -3._q);
-            if (rounded_weighting < 0.000005_q)
+            f128 rounded_weighting = rounddgq(sample_grid_weighting, -3);
+            if (rounded_weighting < 0.0005_q)
                 gtk_label_set_text((GtkLabel*)Gui_Sample_Weighting_Label,
                     g_strdup_printf(_("Sample Weighting\n" "%s"), " Off") );
-            else if (rounded_weighting > 0.999995_q)
+            else if (rounded_weighting > 0.9995_q)
                 gtk_label_set_text((GtkLabel*)Gui_Sample_Weighting_Label,
                     g_strdup_printf(_("Sample Weighting\n" "%s"), " Max") );
             else
@@ -1236,13 +1289,13 @@ namespace TritonhawkPlus
         if (Gui_SpinButton_Sample_Weighting)
         {
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Weighting,
-                (gdouble) sample_grid_weighting);
+                (gdouble) rounddgq(sample_grid_weighting, -3));
         }
 
         if (Gui_SpinButton_Sample_Count)
         {
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Count,
-                gdouble (sample_count_adjustment * 100._q));
+                (gdouble) rounddgq(sample_count_adjustment * 100._q, -2));
         }
 
         if (Gui_Button_Seamless_X)
@@ -1672,6 +1725,38 @@ namespace TritonhawkPlus
         else if (button_name == button_pointer_run_plugin)
         {
             choices_done_result = 1;
+
+            Params->run_mode = RUN_MODE_RESIZE__BASIC;
+
+            ignore_auto_changes = true;
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_run_plugin_same_dimensions)
+        {
+            choices_done_result = 1;
+
+            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+
+            ignore_auto_changes = true;
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_run_plugin_keep_aspect_same_vertical)
+        {
+            choices_done_result = 1;
+
+            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL;
+
+            ignore_auto_changes = true;
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_run_plugin_keep_aspect_same_horizontal)
+        {
+            choices_done_result = 1;
+
+            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL;
 
             ignore_auto_changes = true;
             UpdateGUI();

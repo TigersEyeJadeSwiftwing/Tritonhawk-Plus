@@ -266,6 +266,7 @@
 			</Target>
 		</Build>
 		<Compiler>
+			<Add option="-Wno-macro-redefined" />
 			<Add option='-DPLUG_IN_GITHUB_REPO_URL=&quot;(gchar*)(\&quot;https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus\&quot;)&quot;' />
 			<Add option='-DPLUG_IN_VERSION_AND_DATE_INFO=&quot;(gchar*)(\&quot;Version 0.8.1 (Github Source), on or after August 2025 CE, first version July 2025 CE\&quot;)&quot;' />
 			<Add directory="../../tritonhawk-plus" />
@@ -293,7 +294,7 @@
 		<Unit filename="../../libs/libquadmath/math/issignalingq.inl" />
 		<Unit filename="../../libs/libquadmath/math/ldexpq.inl" />
 		<Unit filename="../../libs/libquadmath/math/lerp.inl" />
-		<Unit filename="../../libs/libquadmath/math/lnq.inl" />
+		<Unit filename="../../libs/libquadmath/math/logq.inl" />
 		<Unit filename="../../libs/libquadmath/math/modfq.inl" />
 		<Unit filename="../../libs/libquadmath/math/nearbyintq.inl" />
 		<Unit filename="../../libs/libquadmath/math/powq.inl" />

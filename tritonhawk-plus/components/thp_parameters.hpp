@@ -65,6 +65,15 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE_MAX_COUNT
     };
 
+    enum RUN_MODE : u8
+    {
+        RUN_MODE_RESIZE__BASIC,
+        RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL,
+        RUN_MODE_MAX_COUNT
+    };
+
     struct SampleGridElement
     {
         f128 x = 0._q;
@@ -96,6 +105,7 @@ namespace TritonhawkPlus
     public:
         string process_name = "";
         string info_string = "";
+        RUN_MODE run_mode = RUN_MODE_RESIZE__BASIC;
         s16 hardware_max_threads = 16;
         s16 preferences_max_threads = 16;
         s16 number_threads = 16;
@@ -123,8 +133,8 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
         f128 sample_grid_weighting = 0._q;
-        u64 chunk_size_kilo = 256uL;
-        u64 chunk_size_default = 1024uL * 128uL;
+        u64 chunk_size_kilo = 100uL;
+        u64 chunk_size_default = 1024uL * 100uL;
         u64 chunk_size_samples = 1u;
         u64 chunk_size_pixels = 1u;
         u64 number_chunks = 1u;
@@ -144,9 +154,9 @@ namespace TritonhawkPlus
         f64 max_sample_grid_dimension_percent = 5000.0;
         f64 max_sample_count_modifier = 5000.0;
         f64 max_sample_interpolation = 100.0;
-        u64 min_chunk_size = 32uL;
-        u64 max_chunk_size = 65536uL;
-        u64 increment_chunk_size = 32uL;
+        u64 min_chunk_size = 1uL;
+        u64 max_chunk_size = 5000uL;
+        u64 increment_chunk_size = 5uL;
 
         void Reset();
         void CalcAll();
