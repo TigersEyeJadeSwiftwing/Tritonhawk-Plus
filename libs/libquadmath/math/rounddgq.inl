@@ -23,6 +23,7 @@ that are part of this project, the ones with this copyright notice and such are 
 licensed under the GPL version 3 license. */
 
 #include "roundq.inl"
+#include "fmodq.inl"
 #include "powq.inl"
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
@@ -48,6 +49,10 @@ licensed under the GPL version 3 license. */
  * This function also accepts negative input values for the "digits" parameter, so an input "x"
  * of 12345.064q with a value of "-2" for "digits" will round the 12345.064q to the nearest
  * 0.01q (the nearest hundredth), resulting in an output of 12345.06q.
+ *
+ * This function is customized for a GUI interface, in a way where it offsets the result upward
+ * by a small amount that is later shaved off when the value is truncated by the GUI text that
+ * displays the resulting value.
  */
 static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
 {
@@ -71,27 +76,29 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
     constexpr s8 POW10_MAX = 38;
     constexpr s8 POW10_MIN = -38;
 
-    f128 multiplier = 1.q, divisor = 1.q;
+    f128 pow10 = 1.q, pow10_x04 = 0.04q;
 
     if ((digits > POW10_MAX) || (digits < POW10_MIN))
     {
-        multiplier = powq(10.q, f128(digits));
-        divisor = powq(10.q, f128(-digits));
+        pow10 = powq(10.q, f128(digits));
     }
     else if (digits > 0)
     {
-        multiplier = POW10_POS[digits];
-        divisor = POW10_NEG[digits];
+        pow10 = POW10_POS[digits];
     }
     else if (digits < 0)
     {
-        multiplier = POW10_NEG[-digits];
-        divisor = POW10_POS[-digits];
+        pow10 = POW10_NEG[-digits];
     }
 
-    if (invalidq(multiplier) || invalidq(divisor)) return NANq;
+    if (invalidq(pow10)) return 0.q;
 
-    f128 result = roundq(x * divisor) * multiplier;
+    pow10_x04 *= pow10;
+
+    if (invalidq(pow10_x04)) return 0.q;
+
+    f128 result = pow10_x04 + x - fmodq(x, pow10);
+
     if (invalidq(result)) return NANq;
 
     return result;

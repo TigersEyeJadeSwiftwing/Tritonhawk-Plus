@@ -22,8 +22,9 @@ Boston, MA 02110-1301, USA.  */
 
 /*
 Note that this file has been heavily modified from the original, and is not much like
-the libquadmath library it was derived from.  Many of the inline files this version
-includes are licensed under the GPL version 3 license.
+the libquadmath library it was derived from.  Many or all of the inline files this version
+includes are licensed under the GPL version 3 license.  Check each file's copyright and
+license text for specifics.
 */
 
 #ifndef QUADMATH_H
@@ -179,7 +180,7 @@ namespace quadmath
 
     #include "frexpq.inl"
     #include "ldexpq.inl"
-    #include "lnq.inl"
+    #include "logq.inl"
     #include "modfq.inl"
     #include "nearbyintq.inl"
 

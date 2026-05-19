@@ -22,56 +22,45 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#include "expq.inl"
-#include "logq.inl"
-#include "modfq.inl"
+#include "frexpq.inl"
 
-/** \brief Calculate x raised to the power of y.
+/** \brief Compute the natural logarithm of a binary128 value.
  *
- * \param x f128 The base value.
- * \param y f128 The exponent value.
- * \return f128 The resulting value of x^y.
- *
- * Special-cases:
- *   - If x == 0 and y == 0: returns 1.
- *   - If x == 0 and y > 0: returns 0.
- *   - If x == 0 and y < 0: returns +∞.
- *   - If x < 0 and y is an integer: returns sign(x^y) * exp(y*ln|x|).
- *   - If x < 0 and y not integer: returns NaN.
- *   - If x == 1 or y == 1: returns x.
- *   - If y == 0: returns 1.
+ * \param x f128 Input value (must be > 0).
+ * \return f128 Result of ln(x).
  */
-static HOT_INLINE f128 powq(const f128 x, const f128 y) noexcept
+static HOT_INLINE f128 logq(const f128 x) noexcept
 {
-    // Check for NaNs
-    if (invalidq(x) || invalidq(y)) return NANq;
+    // 1) Extract exponent e and mantissa m in [0.5,1)
+    s64 e = 0;
+    f128 m = frexpq(x, &e);  // x = m * 2^e, m in [0.5,1)
 
-    // Fast-path trivial cases
-    if ((x == 1.q) || (y == 1.q)) return x;
-    if (y == 0.q) return 1.q;
+    if (x == 0) return -INFINITYq;
+    if (x < 0) return NANq;
+    if (isinfq(x)) return INFINITYq;
+    if (isnanq(x)) return NANq;
 
-    if (x == 0.q)
+    // 2) Shift m into [sqrt(1/2), sqrt(2)] to improve polynomial accuracy
+    if (m < M_SQRT1_2q) // M_SQRT1_2q = sqrt(1/2)
     {
-        if (y > 0.q) return 0.q;
-        if (y < 0.q) return INFINITYq;
+        m *= 2.q;
+        e -= 1;
     }
 
-    // Negative base: only valid for integer exponents
-    if (x < 0.q) {
-        f128 intpart;
-        f128 frac = modfq(y, &intpart);
-        if (frac != 0.q)
-        {
-            // non-integer exponent of negative → NaN
-            return NANq;
-        }
-        // integer exponent: determine sign
-        // odd integer → negative result; even → positive
-        int64_t ival = (int64_t)intpart;
-        f128 magnitude = expq(y * logq(-x));
-        return ((ival & 1) ? -magnitude : magnitude);
-    }
+    // 3) Now m in [sqrt(1/2), sqrt(2)]. Let z = (m-1)/(m+1),
+    //    then ln(m) = 2 * [ z + z^3/3 + z^5/5 + ... ]  (arctanh series)
+    f128 z = (m - 1.q) / (m + 1.q);
+    f128 z2 = z * z,
+               z4 = z2 * z2,
+               z6 = z4 * z2; // z^6 for higher accuracy
 
-    // General positive-base case: exp(y * log(x))
-    return expq(y * logq(x));
+    // 4) A small odd polynomial P(z) ≈ arctanh(z) on |z| < 0.17
+    // We do only a few terms; you can raise order for more accuracy.
+    f128 P = z
+                   + (z * z2) / 3.q
+                   + (z * z4) / 5.q
+                   + (z * z6) / 7.q
+                   + (z * z6 * z2) / 9.q; // Additional term for improved accuracy
+
+    return 2.q * P + f128(e) * M_LN2q; // M_LN2q = ln(2) as f128
 }
