@@ -69,7 +69,7 @@ namespace TritonhawkPlus
         gui_gtk_textlabel_0 = NULL;
         gui_gtk_textlabel_1 = NULL;
 
-        console_logging = TRUE;
+        console_logging = FALSE;
         error_console_logging = FALSE;
         gui_logging = TRUE;
         gui_logging_text_box = TRUE;
