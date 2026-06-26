@@ -670,7 +670,7 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Chunk_Size_Label, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_6), (GtkWidget*)Gui_Chunk_Size_Label, FALSE, FALSE, 0);
             ShowWidget(Gui_Chunk_Size_Label);
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1000uL) );
             // Spin Button for kilopixels (chunk size)
             Gui_Chunk_Size_SpinButton = gimp_spin_button_new_with_range((gdouble) Params->min_chunk_size, (gdouble) Params->max_chunk_size, (gdouble) Params->increment_chunk_size);
             gtk_widget_set_size_request(Gui_Chunk_Size_SpinButton, row_4_col_width, cell_height);
@@ -1047,6 +1047,9 @@ namespace TritonhawkPlus
             sample_grid_scale_locked_ratio_xy = SetRatio(sample_grid_scale_x, sample_grid_scale_y);
         }
 
+        sample_grid_scale_x = rounddg(sample_grid_scale_x, -4);
+        sample_grid_scale_y = rounddg(sample_grid_scale_y, -4);
+
         ignore_auto_changes = true;
         UpdateGUI();
         ignore_auto_changes = false;
@@ -1231,16 +1234,16 @@ namespace TritonhawkPlus
         if (Gui_SpinButton_Size_Y_Pixels)
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Pixels, (gdouble)size_y);
         if (Gui_SpinButton_Size_X_Scale)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)rounddgq((f128)scale_x * 100._q, -5));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_X_Scale, (gdouble)rounddgq((f128)scale_x * 100._q, -8));
         if (Gui_SpinButton_Size_Y_Scale)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)rounddgq((f128)scale_y * 100._q, -5));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)rounddgq((f128)scale_y * 100._q, -8));
         if (Gui_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton, chain_button_on);
 
         if (Gui_SpinButton_Sample_Grid_Scale_X)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100._q, -3));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100._q, -4));
         if (Gui_SpinButton_Sample_Grid_Scale_Y)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)rounddgq((f128)sample_grid_scale_y * 100._q, -3));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)rounddgq((f128)sample_grid_scale_y * 100._q, -4));
         if (Gui_ChainButton_Sample_Grid_Scale)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton_Sample_Grid_Scale, chain_button_sample_grid_scale_on);
 
@@ -1257,9 +1260,9 @@ namespace TritonhawkPlus
                 g_strdup_printf(_("Sample Interpolation Y" "\n %s"), sample_interpolation_y_text.c_str()) );
         }
         if (Gui_Sample_Interpolation_X_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_x, -2));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_x, -3));
         if (Gui_Sample_Interpolation_Y_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_y, -2));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_y, -3));
         if (Gui_Sample_Interpolation_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_Sample_Interpolation_ChainButton, chain_button_sample_interpolation_on);
 
@@ -1315,7 +1318,7 @@ namespace TritonhawkPlus
 
         if (Gui_Chunk_Size_Label)
         {
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1024uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1000uL) );
         }
         if (Gui_Chunk_Size_SpinButton)
         {
@@ -1726,7 +1729,7 @@ namespace TritonhawkPlus
         {
             choices_done_result = 1;
 
-            Params->run_mode = RUN_MODE_RESIZE__BASIC;
+            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2;
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1736,7 +1739,7 @@ namespace TritonhawkPlus
         {
             choices_done_result = 1;
 
-            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2;
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1746,7 +1749,7 @@ namespace TritonhawkPlus
         {
             choices_done_result = 1;
 
-            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL;
+            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_V2;
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1756,7 +1759,7 @@ namespace TritonhawkPlus
         {
             choices_done_result = 1;
 
-            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL;
+            Params->run_mode = RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_V2;
 
             ignore_auto_changes = true;
             UpdateGUI();

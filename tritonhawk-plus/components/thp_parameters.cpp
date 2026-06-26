@@ -21,6 +21,10 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
+// #define WIN32_LEAN_AND_MEAN
+// #define NOMINMAX
+#include <windows.h>
+
 #include "components/thp_types.hpp"
 #include "components/thp_parameters.hpp"
 
@@ -37,8 +41,29 @@ using namespace quadmath;
 
 namespace TritonhawkPlus
 {
+    void ThpParams::SetPluginRealtime(bool realtime_active)
+    {
+        plugin_priority_realtime = realtime_active;
+    }
+    void ThpParams::EngagePluginPriority()
+    {
+        if (plugin_priority_realtime == true)
+        {
+            SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+        }
+        else
+        {
+            SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
+        }
+    }
+    void ThpParams::DisengagePluginPriority()
+    {
+        // SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
+        SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
+    }
     void ThpParams::Reset()
     {
+        plugin_priority_realtime = true;
         seamless_x = false;
         seamless_y = false;
         sample_count_adjustment = 1.0_q;
@@ -48,9 +73,11 @@ namespace TritonhawkPlus
         sample_interpolation_y = 1.0_q;
         sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         sample_grid_weighting = 0._q;
-        run_mode = RUN_MODE_RESIZE__BASIC;
-        chunk_size_kilo = 100uL;
-        chunk_size_default = 1024uL * chunk_size_kilo;
+        run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+        layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
+        images_to_process = IMAGES_TO_PROCESS__CURRENT;
+        chunk_size_kilo = 5uL;
+        chunk_size_default = 1000uL * chunk_size_kilo;
         output_size_x = input_size_x;
         output_size_y = input_size_y;
 
@@ -62,6 +89,9 @@ namespace TritonhawkPlus
         CalcNumberOfChunks();
         CalcSampleGrid();
         CalcNumberOfChunks();
+        CalcSampleGrid();
+        CalcNumberOfChunks();
+        CalcInfoString();
         CalcInfoString();
     }
     void ThpParams::CalcInfoString()
@@ -354,7 +384,7 @@ namespace TritonhawkPlus
     void ThpParams::CalcNumberOfChunks()
     {
         sample_count_xy = max(sample_count_xy, 1uLL);
-        chunk_size_default = max(1024uL * chunk_size_kilo, 1024uL);
+        chunk_size_default = max(1000uL * chunk_size_kilo, 1000uL);
         chunk_size_samples = chunk_size_default;
         input_size_x = clamp(input_size_x, 1uL, max_image_dimension);
         input_size_y = clamp(input_size_y, 1uL, max_image_dimension);

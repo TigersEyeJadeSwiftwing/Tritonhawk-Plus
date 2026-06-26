@@ -62,16 +62,48 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE_Square,
         SAMPLE_GRID_SHAPE_Circle,
         SAMPLE_GRID_SHAPE_Auto,
-        SAMPLE_GRID_SHAPE_MAX_COUNT
+
+        SAMPLE_GRID_SHAPE__MAX_COUNT
     };
 
     enum RUN_MODE : u8
     {
+        RUN_MODE_RESIZE__BASIC_OLD,
+        RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_OLD,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_OLD,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_OLD,
+
         RUN_MODE_RESIZE__BASIC,
         RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL,
-        RUN_MODE_MAX_COUNT
+
+        RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_V2,
+        RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_V2,
+
+        RUN_MODE__MAX_COUNT
+    };
+
+    enum LAYERS_TO_PROCESS : u8
+    {
+        LAYERS_TO_PROCESS__ACTIVE_SELECTION,
+        LAYERS_TO_PROCESS__ACTIVE_LAYER,
+
+        LAYERS_TO_PROCESS__ALL_VISIBLE_LAYERS,
+        LAYERS_TO_PROCESS__ALL_LAYERS,
+
+        LAYERS_TO_PROCESS__MAX_COUNT
+    };
+
+    enum IMAGES_TO_PROCESS : u8
+    {
+        IMAGES_TO_PROCESS__CURRENT,
+        IMAGES_TO_PROCESS__ALL,
+        IMAGES_TO_PROCESS__FILE,
+        IMAGES_TO_PROCESS__FILES_IN_FOLDER,
+
+        IMAGES_TO_PROCESS__MAX_COUNT
     };
 
     struct SampleGridElement
@@ -105,10 +137,13 @@ namespace TritonhawkPlus
     public:
         string process_name = "";
         string info_string = "";
-        RUN_MODE run_mode = RUN_MODE_RESIZE__BASIC;
+        RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+        LAYERS_TO_PROCESS layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
+        IMAGES_TO_PROCESS images_to_process = IMAGES_TO_PROCESS__CURRENT;
         s16 hardware_max_threads = 16;
         s16 preferences_max_threads = 16;
         s16 number_threads = 16;
+        bool plugin_priority_realtime = true;
         s32 draw_index = 0;
         s32 draw_count = 0;
         bool seamless_x = false;
@@ -134,7 +169,7 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
         f128 sample_grid_weighting = 0._q;
         u64 chunk_size_kilo = 100uL;
-        u64 chunk_size_default = 1024uL * 100uL;
+        u64 chunk_size_default = 1000uL * 100uL;
         u64 chunk_size_samples = 1u;
         u64 chunk_size_pixels = 1u;
         u64 number_chunks = 1u;
@@ -148,16 +183,33 @@ namespace TritonhawkPlus
         f64 progress_end = 1.0;
         f64 progress_increment = 0.0;
 
+        bool layer_is_full_frame = true;
+        u64 in_frame_min_x = 0uL;
+        u64 in_frame_min_y = 0uL;
+        u64 in_frame_max_x = 0uL;
+        u64 in_frame_max_y = 0uL;
+        u64 in_frame_size_x = 0uL;
+        u64 in_frame_size_y = 0uL;
+        u64 out_frame_min_x = 0uL;
+        u64 out_frame_min_y = 0uL;
+        u64 out_frame_max_x = 0uL;
+        u64 out_frame_max_y = 0uL;
+        u64 out_frame_size_x = 0uL;
+        u64 out_frame_size_y = 0uL;
+
         bool gui_enabled = false;
 
         u64 max_image_dimension = 65536uL;
-        f64 max_sample_grid_dimension_percent = 5000.0;
+        f64 max_sample_grid_dimension_percent = 10000.0;
         f64 max_sample_count_modifier = 5000.0;
-        f64 max_sample_interpolation = 100.0;
+        f64 max_sample_interpolation = 5000.0;
         u64 min_chunk_size = 1uL;
         u64 max_chunk_size = 5000uL;
-        u64 increment_chunk_size = 5uL;
+        u64 increment_chunk_size = 1uL;
 
+        void SetPluginRealtime(bool realtime_active=true);
+        void EngagePluginPriority();
+        void DisengagePluginPriority();
         void Reset();
         void CalcAll();
         void CalcInfoString();

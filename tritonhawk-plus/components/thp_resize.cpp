@@ -49,22 +49,36 @@ namespace TritonhawkPlus
         u64 progress_steps = Params->number_chunks;
         if (progress_steps < 1) return;
 
-        u64 old_x = (u64)gimp_drawable_get_width (draw_0);
-        u64 old_y = (u64)gimp_drawable_get_height (draw_0);
-        u64 new_x = (u64)gimp_drawable_get_width (draw_1);
-        u64 new_y = (u64)gimp_drawable_get_height (draw_1);
+        u64 old_x = (u64)Params->input_size_x;
+        u64 old_y = (u64)Params->input_size_y;
+        u64 new_x = (u64)Params->output_size_x;
+        u64 new_y = (u64)Params->output_size_y;
         u64 old_total = old_x * old_y;
         u64 new_total = new_x * new_y;
-        if ((old_total < 1uL) || (new_total < 1uL)) return;
+        if ((old_total < 1uLL) || (new_total < 1uLL)) return;
 
-        Params->input_size_x = old_x;
-        Params->input_size_y = old_y;
-        Params->input_size_xy = old_total;
-        Params->output_size_x = new_x;
-        Params->output_size_y = new_y;
-        Params->output_size_xy = new_total;
-        Params->CalcAll();
-        Params->CalcAll();
+        /*
+        u64 old_start_x = 0;
+        u64 old_end_x = old_x;
+        u64 old_start_y = 0;
+        u64 old_end_y = old_y;
+        u64 new_start_x = 0;
+        u64 new_end_x = new_x;
+        u64 new_start_y = 0;
+        u64 new_end_y = new_y;
+
+        if (Params->layer_is_full_frame == false)
+        {
+            old_start_x = Params->in_frame_min_x;
+            old_end_x = Params->in_frame_max_x;
+            old_start_y = Params->in_frame_min_y;
+            old_end_y = Params->in_frame_max_y;
+            new_start_x = Params->out_frame_min_x;
+            new_end_x = Params->out_frame_max_x;
+            new_start_y = Params->out_frame_min_y;
+            new_end_y = Params->out_frame_max_y;
+        }
+        */
 
         s32 draw_index = Params->draw_index;
         bool seamless_x = Params->seamless_x;
@@ -83,6 +97,23 @@ namespace TritonhawkPlus
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
+        bool gui_active = Params->gui_enabled;
+
+        /*
+        if (Params->layer_is_full_frame == false)
+        {
+            if (old_start_x > 0) seamless_x = false;
+            if (old_end_x < old_x) seamless_x = false;
+            if (old_start_y > 0) seamless_y = false;
+            if (old_end_y < old_y) seamless_y = false;
+
+            if (new_start_x > 0) seamless_x = false;
+            if (new_end_x < new_x) seamless_x = false;
+            if (new_start_y > 0) seamless_y = false;
+            if (new_end_y < new_y) seamless_y = false;
+        }
+        */
+
         vector<SampleGridElement> sample_grid_data;
         Params->GetSampleGridVectors(&sample_grid_data);
 
@@ -91,7 +122,7 @@ namespace TritonhawkPlus
         {
             process_text_base = g_strdup_printf (
                 _(
-                    "Current drawable: %i / %i" "\n"
+                    "Current drawable: %i / %i, RGBA" "\n"
                     "Current old image drawable size:" "\n"
                     "   %I64u x %I64u pixels, %I64u total pixels" "\n"
                     "Current new image drawable size:" "\n"
@@ -122,19 +153,38 @@ namespace TritonhawkPlus
             delete rect;
         }
 
+        /*
         s32 oxs = s32(old_x);
         s32 oys = s32(old_y);
         f128 oxf = f128(old_x);
         f128 oyf = f128(old_y);
+        */
+
+        s32 oxs = s32(old_x);
+        s32 oys = s32(old_y);
+        f128 oxf = f128(old_x);
+        f128 oyf = f128(old_y);
+
+        /*
+        s32 oxs0 = s32(old_start_x);
+        s32 oys0 = s32(old_start_y);
+        s32 oxs1 = s32(old_end_x);
+        s32 oys1 = s32(old_end_y);
+        f128 oxf0 = f128(old_start_x);
+        f128 oyf0 = f128(old_start_y);
+        f128 oxf1 = f128(old_end_x);
+        f128 oyf1 = f128(old_end_y);
+        */
 
         u64 chunk_accum = 0uL;
 
         // Process Chunks
         #pragma omp parallel for \
             shared( \
-                chunk_accum, process_text_base, old_pixelarray, new_pixelarray, Log \
+                chunk_accum, old_pixelarray, new_pixelarray, Log \
             ) \
             firstprivate( \
+                gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
                 samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height,\
                 sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
@@ -152,11 +202,11 @@ namespace TritonhawkPlus
             #pragma omp atomic update
             chunk_accum++;
 
-            if (omp_get_thread_num() == 0)
+            if ((omp_get_thread_num() == 0) && (gui_active == true))
             {
                 if (process_text_base.empty() == false)
                 {
-                    u64 progress_chunks = 0uL;
+                    u64 progress_chunks = (u64)0uLL;
                     #pragma omp atomic read
                     progress_chunks = chunk_accum;
                     f64 progress_current = fmin(100.0 * ( f64(progress_chunks) / f64(progress_steps) ), 100.0);
@@ -170,8 +220,8 @@ namespace TritonhawkPlus
                             "Chunks completed so far:" "\n"
                             "   %I64u / %I64u" "\n"
                             "\n"
-                            "Progress (current drawables): %%%3.5lf" "\n"
-                            "Total progress (all drawables): %%%3.5lf"
+                            "Progress (current drawables): %%%3.2lf" "\n"
+                            "Total progress (all drawables): %%%3.2lf"
                         ),
                         process_text_base.c_str(),
                         pixel_start, pixel_end, pixel_total,
@@ -241,7 +291,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.00005_q)
+                    else if (sample_interpolation_x < 0.000001_q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -601,6 +651,9 @@ namespace TritonhawkPlus
 
         // Write output drawable
         {
+            // if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2)
+                gimp_layer_resize((GimpLayer*)draw_1, (gint)new_x, (gint)new_y, (gint)0, (gint)0);
+
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)new_x, (guint)new_y);
             const Babl* format = babl_format_with_space("RGBA double", NULL);
             double* pxl = new double[new_total * 4u];
@@ -620,10 +673,21 @@ namespace TritonhawkPlus
         u64 progress_steps = Params->number_chunks;
         if (progress_steps < 1) return;
 
+        u64 old_x = (u64)Params->input_size_x;
+        u64 old_y = (u64)Params->input_size_y;
+        u64 new_x = (u64)Params->output_size_x;
+        u64 new_y = (u64)Params->output_size_y;
+        u64 old_total = old_x * old_y;
+        u64 new_total = new_x * new_y;
+        if ((old_total < 1uLL) || (new_total < 1uLL)) return;
+
+        /*
         u64 old_x = (u64)gimp_drawable_get_width (draw_0);
         u64 old_y = (u64)gimp_drawable_get_height (draw_0);
-        u64 new_x = (u64)gimp_drawable_get_width (draw_1);
-        u64 new_y = (u64)gimp_drawable_get_height (draw_1);
+        // u64 new_x = (u64)gimp_drawable_get_width (draw_1);
+        // u64 new_y = (u64)gimp_drawable_get_height (draw_1);
+        u64 new_x = (u64)Params->output_size_x;
+        u64 new_y = (u64)Params->output_size_y;
         u64 old_total = old_x * old_y;
         u64 new_total = new_x * new_y;
         if ((old_total < 1uL) || (new_total < 1uL)) return;
@@ -636,6 +700,7 @@ namespace TritonhawkPlus
         Params->output_size_xy = new_total;
         Params->CalcAll();
         Params->CalcAll();
+        */
 
         s32 draw_index = Params->draw_index;
         bool seamless_x = Params->seamless_x;
@@ -654,6 +719,8 @@ namespace TritonhawkPlus
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
+        bool gui_active = Params->gui_enabled;
+
         vector<SampleGridElement> sample_grid_data;
         Params->GetSampleGridVectors(&sample_grid_data);
 
@@ -662,7 +729,7 @@ namespace TritonhawkPlus
         {
             process_text_base = g_strdup_printf (
                 _(
-                    "Current drawable: %i / %i" "\n"
+                    "Current drawable: %i / %i, RGB" "\n"
                     "Current old image drawable size:" "\n"
                     "   %I64u x %I64u pixels, %I64u total pixels" "\n"
                     "Current new image drawable size:" "\n"
@@ -703,9 +770,10 @@ namespace TritonhawkPlus
         // Process Chunks
         #pragma omp parallel for \
             shared( \
-                chunk_accum, process_text_base, old_pixelarray, new_pixelarray, Log \
+                chunk_accum, old_pixelarray, new_pixelarray, Log \
             ) \
             firstprivate( \
+                gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
                 samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
                 sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
@@ -723,11 +791,11 @@ namespace TritonhawkPlus
             #pragma omp atomic update
             chunk_accum++;
 
-            if (omp_get_thread_num() == 0)
+            if ((omp_get_thread_num() == 0) && (gui_active == true))
             {
                 if (process_text_base.empty() == false)
                 {
-                    u64 progress_chunks = 0uL;
+                    u64 progress_chunks = (u64)0uLL;
                     #pragma omp atomic read
                     progress_chunks = chunk_accum;
                     f64 progress_current = fmin(100.0 * ( f64(progress_chunks) / f64(progress_steps) ), 100.0);
@@ -741,8 +809,8 @@ namespace TritonhawkPlus
                             "Chunks completed so far:" "\n"
                             "   %I64u / %I64u" "\n"
                             "\n"
-                            "Progress (current drawables): %%%3.5lf" "\n"
-                            "Total progress (all drawables): %%%3.5lf"
+                            "Progress (current drawables): %%%3.2lf" "\n"
+                            "Total progress (all drawables): %%%3.2lf"
                         ),
                         process_text_base.c_str(),
                         pixel_start, pixel_end, pixel_total,
@@ -784,7 +852,7 @@ namespace TritonhawkPlus
                         sample_grid_center_x, sample_grid_center_y \
                     ) \
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_weight)
-                for (u64 s_xy = 0uL; s_xy < samples_total; s_xy++)
+                for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
                     f128 smp_grid_x = 0.0_q,
                          smp_grid_y = 0.0_q,
@@ -812,7 +880,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.00001_q)
+                    else if (sample_interpolation_x < 0.000001_q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -1104,6 +1172,7 @@ namespace TritonhawkPlus
                     }
 
                     s_accum_weight += smp_weight;
+
                 } // END OpenMP-enabled for loop
 
                 // Calculate the final color values for the output pixel, from all of the samples that were added together and weighted.
@@ -1134,6 +1203,9 @@ namespace TritonhawkPlus
 
         // Write output drawable
         {
+            // if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2)
+                gimp_layer_resize((GimpLayer*)draw_1, (gint)new_x, (gint)new_y, (gint)0, (gint)0);
+
             const GeglRectangle* rect = gegl_rectangle_new((gint)0, (gint)0, (guint)new_x, (guint)new_y);
             const Babl* format = babl_format_with_space("RGB double", NULL);
             double* pxl = new double[new_total * 3u];
