@@ -55,6 +55,7 @@ namespace TritonhawkPlus
         void SetChainButton(gboolean val);
         void ToggleChainButton();
         void SetOriginalSize(gint val_x, gint val_y);
+        void SetThreads(gint val);
         void SetScale_SampleGridScaleX(gdouble val);
         void SetScale_SampleGridScaleY(gdouble val);
         void SetChainButton_SampleGridScale(gboolean val);
@@ -67,11 +68,12 @@ namespace TritonhawkPlus
         void SetButtonClicked(u16* button_name);
         s8 GetChoicesDoneResult();
 
+        void SyncDataToParameters();
+        void SyncDataFromParameters();
+
     private:
         void ShowWidget(GtkWidget* gw);
         void UpdateGUI();
-        void SyncDataToParameters();
-        void SyncDataFromParameters();
         f128 SetRatio(gint vx, gint vy);
         f128 SetRatio(f64 vx, f64 vy);
         f128 SetRatio(f128 vx, f128 vy);
@@ -114,6 +116,12 @@ namespace TritonhawkPlus
                     GtkWidget* Gui_Button_d4 = NULL;
                     GtkWidget* Gui_Button_d5 = NULL;
                     GtkWidget* Gui_Button_d10 = NULL;
+            // Row 1 B, Threads, priority
+            GtkWidget* Gui_Box_H_Row_1_B = NULL;
+                GtkWidget* Gui_Label_Threads = NULL;
+                GtkWidget* Gui_SpinButton_Threads = NULL;
+                GtkWidget* Gui_Button_Threads_Max = NULL;
+                GtkWidget* Gui_Button_Threads_Priority_Toggle = NULL;
             // Row 2, sample grid scale controls
             GtkWidget* Gui_Box_H_Row_2 = NULL;
                 GtkWidget* Gui_Box_V_Sample_Grid_Scale_Labels = NULL;
@@ -190,6 +198,9 @@ namespace TritonhawkPlus
         u16* button_pointer_d5 = NULL;
         u16* button_pointer_d10 = NULL;
         u16* button_pointer_flip_xy = NULL;
+        u16* button_pointer_threads = NULL;
+        u16* button_pointer_threads_max = NULL;
+        u16* button_pointer_threads_priority = NULL;
         u16* button_pointer_sample_grid_scale_Reset = NULL;
         u16* button_pointer_sample_grid_scale_125 = NULL;
         u16* button_pointer_sample_grid_scale_150 = NULL;
@@ -229,6 +240,7 @@ namespace TritonhawkPlus
         gdouble                 scale_x = (gdouble) 1.0;
         gdouble                 scale_y = (gdouble) 1.0;
         gboolean                chain_button_sample_grid_scale_on = (gboolean) TRUE;
+        gint                    threads_enabled = (gint) 16;
         gboolean                seamless_x = (gboolean) FALSE;
         gboolean                seamless_y = (gboolean) FALSE;
         f128                    sample_grid_scale_locked_ratio_xy = 1.0_q;
@@ -243,7 +255,7 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE       sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         f128                    sample_grid_weighting = 0._q;
         f128                    sample_count_adjustment = 1._q;
-        u64                     chunk_size_kilo = 100uL;
+        u64                     chunk_size_kilo = 5uL;
 
         s8                     choices_done_result = 0;
     };

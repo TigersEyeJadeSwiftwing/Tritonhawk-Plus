@@ -78,6 +78,7 @@ namespace TritonhawkPlus
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL,
 
+        RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2,
         RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_V2,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_V2,
@@ -137,12 +138,12 @@ namespace TritonhawkPlus
     public:
         string process_name = "";
         string info_string = "";
-        RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+        RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
         LAYERS_TO_PROCESS layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
         IMAGES_TO_PROCESS images_to_process = IMAGES_TO_PROCESS__CURRENT;
         s16 hardware_max_threads = 16;
         s16 preferences_max_threads = 16;
-        s16 number_threads = 16;
+        s16 number_threads = 5000;
         bool plugin_priority_realtime = true;
         s32 draw_index = 0;
         s32 draw_count = 0;
@@ -182,6 +183,7 @@ namespace TritonhawkPlus
         f64 progress_start = 0.0;
         f64 progress_end = 1.0;
         f64 progress_increment = 0.0;
+        f64 progress_increments = 1.0;
 
         bool layer_is_full_frame = true;
         u64 in_frame_min_x = 0uL;

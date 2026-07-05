@@ -102,6 +102,11 @@ namespace TritonhawkPlus
         gint val = gtk_spin_button_get_value_as_int((GtkSpinButton*)self);
         ((ComboSizeWidget*)(user_data))->SetKilopixels(val);
     };
+    void value_changed_enabled_threads(GtkSpinButton* self, gpointer user_data)
+    {
+        gint val = gtk_spin_button_get_value_as_int((GtkSpinButton*)self);
+        ((ComboSizeWidget*)(user_data))->SetThreads(val);
+    };
     void value_changed_button(GimpButton* self, gpointer user_data)
     {
         u16* name = (u16*)g_object_get_data((GObject*)self, "button-name");
@@ -354,6 +359,49 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Button_d10, cell_r1_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1), (GtkWidget*)Gui_Button_d10, FALSE, FALSE, 0);
             ShowWidget(Gui_Button_d10);
+        }
+
+        // Row 1 B, Threads, priority
+        {
+            // Row 2 Box
+            Gui_Box_H_Row_1_B = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+            gtk_container_set_border_width(GTK_CONTAINER (Gui_Box_H_Row_1_B), box_padding);
+            gtk_widget_set_size_request(Gui_Box_H_Row_1_B, master_width, row_3_height);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_Master), (GtkWidget*)Gui_Box_H_Row_1_B, FALSE, FALSE, 0);
+            ShowWidget(Gui_Box_H_Row_1_B);
+
+            // Threads and thread priority, label
+            Gui_Label_Threads = gtk_label_new(NULL);
+            gtk_widget_set_size_request(Gui_Label_Threads, cell_r2_width, cell_height);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_Label_Threads, FALSE, FALSE, 0);
+            ShowWidget(Gui_Label_Threads);
+            gtk_label_set_text(
+                (GtkLabel*)Gui_Label_Threads,
+                g_strdup_printf(_("Threads: %i / %i" "\n" "%s"),
+                    (s32)Params->number_threads,
+                    (s32)min(Params->hardware_max_threads, Params->preferences_max_threads),
+                    (Params->plugin_priority_realtime == true) ? "Realtime" : "Background"
+            ) );
+
+            // Threads and thread priority, spinbutton
+            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) min(Params->hardware_max_threads, Params->preferences_max_threads), (gdouble) 1.0);
+            gtk_widget_set_size_request(Gui_SpinButton_Threads, cell_r2_width, cell_height);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_SpinButton_Threads, FALSE, FALSE, 0);
+            gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Threads, (guint) 0u);
+            ShowWidget(Gui_SpinButton_Threads);
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Threads, (gdouble)Params->number_threads);
+
+            // Threads and thread priority, max threads button
+            Gui_Button_Threads_Max = gtk_button_new_with_label("Max Threads");
+            gtk_widget_set_size_request(Gui_Button_Threads_Max, sample_grid_quickset_button_width, cell_height);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_Button_Threads_Max, FALSE, FALSE, 0);
+            ShowWidget(Gui_Button_Threads_Max);
+
+            // Threads and thread priority, thread priority toggle button
+            Gui_Button_Threads_Priority_Toggle = gtk_button_new_with_label("Toggle Realtime / Background Processing");
+            gtk_widget_set_size_request(Gui_Button_Threads_Priority_Toggle, sample_grid_quickset_button_width, cell_height);
+            gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_Button_Threads_Priority_Toggle, FALSE, FALSE, 0);
+            ShowWidget(Gui_Button_Threads_Priority_Toggle);
         }
 
         // Row 2, sample grid scale controls
@@ -689,7 +737,7 @@ namespace TritonhawkPlus
             gtk_box_pack_start(GTK_BOX(Gui_Box_Master), (GtkWidget*)Gui_Box_H_Row_Bottom, FALSE, FALSE, 0);
             ShowWidget(Gui_Box_H_Row_Bottom);
             // Plug-in Choice Button
-            Gui_Button_Plugin_Run = gtk_button_new_with_label("Run");
+            Gui_Button_Plugin_Run = gtk_button_new_with_label("Run (All layers, same ratio)");
             gtk_widget_set_size_request(Gui_Button_Plugin_Run, row_bottom_button_width, row_5_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom), (GtkWidget*)Gui_Button_Plugin_Run, FALSE, FALSE, 0);
             ShowWidget(Gui_Button_Plugin_Run);
@@ -713,7 +761,7 @@ namespace TritonhawkPlus
             gtk_box_pack_start(GTK_BOX(Gui_Box_Master), (GtkWidget*)Gui_Box_H_Row_Bottom_2, FALSE, FALSE, 0);
             ShowWidget(Gui_Box_H_Row_Bottom_2);
             // Plug-in Choice Button
-            Gui_Button_Plugin_Run_Same_Dimensions = gtk_button_new_with_label("Run (Layers same dimensions)");
+            Gui_Button_Plugin_Run_Same_Dimensions = gtk_button_new_with_label("Run (All layers, same dimensions)");
             gtk_widget_set_size_request(Gui_Button_Plugin_Run_Same_Dimensions, row_bottom_button_width, cell_height_large);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_Bottom_2), (GtkWidget*)Gui_Button_Plugin_Run_Same_Dimensions, FALSE, FALSE, 0);
             ShowWidget(Gui_Button_Plugin_Run_Same_Dimensions);
@@ -745,6 +793,10 @@ namespace TritonhawkPlus
         button_pointer_d4 = new u16(22u);
         button_pointer_d5 = new u16(23u);
         button_pointer_d10 = new u16(24u);
+        // Row 1 B, threads and priority controls
+        button_pointer_threads = new u16(30u);
+        button_pointer_threads_max = new u16(31u);
+        button_pointer_threads_priority = new u16(32u);
         // Row 2, sample grid scale controls
         button_pointer_sample_grid_scale_Reset = new u16(41u);
         button_pointer_sample_grid_scale_125 = new u16(42u);
@@ -782,6 +834,7 @@ namespace TritonhawkPlus
         g_signal_connect(Gui_SpinButton_Size_X_Scale, "value-changed", G_CALLBACK(value_changed_scale_x), self);
         g_signal_connect(Gui_SpinButton_Size_Y_Scale, "value-changed", G_CALLBACK(value_changed_scale_y), self);
         g_signal_connect(Gui_ChainButton, "toggled", G_CALLBACK(value_changed_chain_button), self);
+        g_signal_connect(Gui_SpinButton_Threads, "value-changed", G_CALLBACK(value_changed_enabled_threads), self);
         g_signal_connect(Gui_SpinButton_Sample_Grid_Scale_X, "value-changed", G_CALLBACK(value_changed_sample_grid_scale_x), self);
         g_signal_connect(Gui_SpinButton_Sample_Grid_Scale_Y, "value-changed", G_CALLBACK(value_changed_sample_grid_scale_y), self);
         g_signal_connect(Gui_ChainButton_Sample_Grid_Scale, "toggled", G_CALLBACK(value_changed_chain_button_sample_grid_scale), self);
@@ -802,6 +855,8 @@ namespace TritonhawkPlus
         g_object_set_data(G_OBJECT(Gui_Button_d4), "button-name", button_pointer_d4);
         g_object_set_data(G_OBJECT(Gui_Button_d5), "button-name", button_pointer_d5);
         g_object_set_data(G_OBJECT(Gui_Button_d10), "button-name", button_pointer_d10);
+        g_object_set_data(G_OBJECT(Gui_Button_Threads_Max), "button-name", button_pointer_threads_max);
+        g_object_set_data(G_OBJECT(Gui_Button_Threads_Priority_Toggle), "button-name", button_pointer_threads_priority);
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_Reset), "button-name", button_pointer_sample_grid_scale_Reset);
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_125), "button-name", button_pointer_sample_grid_scale_125);
         g_object_set_data(G_OBJECT(Gui_Button_SampleGridScale_150), "button-name", button_pointer_sample_grid_scale_150);
@@ -838,6 +893,8 @@ namespace TritonhawkPlus
         g_signal_connect(Gui_Button_d4, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_d5, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_d10, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Threads_Max, "clicked", G_CALLBACK(value_changed_button), self);
+        g_signal_connect(Gui_Button_Threads_Priority_Toggle, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_SampleGridScale_Reset, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_SampleGridScale_125, "clicked", G_CALLBACK(value_changed_button), self);
         g_signal_connect(Gui_Button_SampleGridScale_150, "clicked", G_CALLBACK(value_changed_button), self);
@@ -883,6 +940,9 @@ namespace TritonhawkPlus
         delete button_pointer_d4;
         delete button_pointer_d5;
         delete button_pointer_d10;
+        delete button_pointer_threads;
+        delete button_pointer_threads_max;
+        delete button_pointer_threads_priority;
         delete button_pointer_sample_grid_scale_Reset;
         delete button_pointer_sample_grid_scale_125;
         delete button_pointer_sample_grid_scale_150;
@@ -1162,6 +1222,24 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
+    void ComboSizeWidget::SetThreads(gint val)
+    {
+        threads_enabled = gint(val);
+        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads );
+        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->preferences_max_threads );
+
+        Params->number_threads = (s16)threads_enabled;
+
+        /*
+        Params->number_threads = (s16)threads_enabled;
+        Params->CalcThreads();
+        Params->CalcAll();
+        */
+
+        ignore_auto_changes = true;
+        UpdateGUI();
+        ignore_auto_changes = false;
+    }
     void ComboSizeWidget::SetChainButton_SampleGridScale(gboolean val)
     {
         if (ignore_auto_changes == true) return;
@@ -1239,6 +1317,17 @@ namespace TritonhawkPlus
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Size_Y_Scale, (gdouble)rounddgq((f128)scale_y * 100._q, -8));
         if (Gui_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton, chain_button_on);
+
+        if (Gui_Label_Threads)
+            gtk_label_set_text(
+                (GtkLabel*)Gui_Label_Threads,
+                g_strdup_printf(_("Threads: %i / %i" "\n" "%s"),
+                    (s32)Params->number_threads,
+                    (s32)min(Params->hardware_max_threads, Params->preferences_max_threads),
+                    (Params->plugin_priority_realtime == true) ? "Realtime" : "Background"
+            ) );
+        if (Gui_SpinButton_Threads)
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Threads, (gdouble)threads_enabled);
 
         if (Gui_SpinButton_Sample_Grid_Scale_X)
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100._q, -4));
@@ -1330,12 +1419,14 @@ namespace TritonhawkPlus
         if (Log && Params)
         {
             Log->Log(false, Params->info_string);
+            while ( gtk_events_pending() ) gtk_main_iteration();
         }
     }
     void ComboSizeWidget::SyncDataToParameters()
     {
         if (Params)
         {
+            Params->number_threads = (s16)threads_enabled;
             Params->input_size_x = (u64)original_x;
             Params->input_size_y = (u64)original_y;
             Params->output_size_x = (u64)size_x;
@@ -1350,6 +1441,7 @@ namespace TritonhawkPlus
             Params->sample_grid_weighting = sample_grid_weighting;
             Params->sample_count_adjustment = sample_count_adjustment;
             Params->chunk_size_kilo = chunk_size_kilo;
+            // Params->CalcThreads();
             Params->CalcAll();
         }
     }
@@ -1359,6 +1451,7 @@ namespace TritonhawkPlus
         {
             ignore_auto_changes = true;
 
+            threads_enabled = (gint)Params->number_threads;
             original_x = (gint)Params->input_size_x;
             original_y = (gint)Params->input_size_y;
             size_x = (gint) Params->output_size_x;
@@ -1515,6 +1608,22 @@ namespace TritonhawkPlus
             scale_x = f64((f128)size_x / (f128)original_x);
             scale_y = f64((f128)size_y / (f128)original_y);
             locked_ratio_xy = f128(size_x) / f128(size_y);
+
+            ignore_auto_changes = true;
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_threads_max)
+        {
+            threads_enabled = (gint) min(Params->hardware_max_threads, Params->preferences_max_threads);
+
+            ignore_auto_changes = true;
+            UpdateGUI();
+            ignore_auto_changes = false;
+        }
+        else if (button_name == button_pointer_threads_priority)
+        {
+            Params->plugin_priority_realtime = !Params->plugin_priority_realtime;
 
             ignore_auto_changes = true;
             UpdateGUI();
@@ -1729,7 +1838,7 @@ namespace TritonhawkPlus
         {
             choices_done_result = 1;
 
-            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2;
+            Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
 
             ignore_auto_changes = true;
             UpdateGUI();

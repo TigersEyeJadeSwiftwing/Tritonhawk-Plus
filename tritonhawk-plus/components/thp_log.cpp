@@ -80,7 +80,7 @@ namespace TritonhawkPlus
         progress_bar_fraction = 0.0;
 
         time_loopbreaker = 95.0; // Should be long enough for updating text for non-time-critical stuff
-        time_loopbreaker_fast = 17.0; // Should be just long enough to update the GUI text, even for a slow ~60 Hz display monitor
+        time_loopbreaker_fast = 18.0; // Should be just long enough to update the GUI text, even for a slow ~59 Hz display monitor
         timer_time_point = clock_log::now();
     }
 
@@ -98,6 +98,56 @@ namespace TritonhawkPlus
 
             elapsed_time += GetTimeMS();
             if (elapsed_time >= time_loopbreaker_fast) break;
+        }
+    }
+    void ThpLog::Run2(gchar* log_message, f64 percent_completed)
+    {
+        if (!gui_gtk_textlabel_1) return;
+
+        // f64 time_elapsed = GetTimerElapsedMS();
+
+        time_elapsed_2 = time_elapsed_1;
+        // time_elapsed_1 = time_elapsed;
+        time_elapsed_1 = GetTimerElapsedMS();
+        percent_completed_2 = percent_completed_1;
+        percent_completed_1 = percent_completed * 0.01;
+
+        if (time_elapsed_2 > 1.0)
+        {
+            // f64 estimate_ms_1 = (time_elapsed_1 - time_elapsed) / fmax(percent_completed_1 - percent_completed, 0.0001);
+            // f64 estimate_ms_2 = (time_elapsed_2 - time_elapsed_1) / fmax(percent_completed_2 - percent_completed_1, 0.0001);
+            f64 estimate_ms_1 = time_elapsed_1 / fmax(percent_completed_1, 0.0001);
+            f64 estimate_ms_2 = time_elapsed_2 / fmax(percent_completed_2, 0.0001);
+            f64 estimate_ms = (estimate_ms_1 + estimate_ms_2) * 0.5;
+            f64 percent_left = 1.0 - percent_completed_1;
+
+            estimated_time_seconds_f = estimate_ms * percent_left * 0.001;
+            estimated_time_minutes_f = estimated_time_seconds_f / 60.0;
+            estimated_time_hours_f = estimated_time_minutes_f / 60.0;
+            estimated_time_hours = u64(estimated_time_hours_f);
+            estimated_time_minutes = u64(estimated_time_minutes_f) % 60;
+            estimated_time_seconds = u64(estimated_time_seconds_f) % 60;
+        }
+
+        gtk_label_set_text(
+            (GtkLabel*)gui_gtk_textlabel_1,
+            g_strdup_printf (_(
+                "%s" "\n"
+                "Estimated Time Left:" "\n"
+                "   %I64u Hours, %I64u Minutes, %I64u Seconds"
+            ),
+                log_message,
+                estimated_time_hours, estimated_time_minutes, estimated_time_seconds
+            ));
+
+        if ( !gtk_events_pending() ) return;
+
+        f64 elapsed_time_loopbreaking = GetTimerElapsedMS() + time_loopbreaker_fast;
+        while ( gtk_events_pending() )
+        {
+            gtk_main_iteration();
+
+            if (GetTimerElapsedMS() >= elapsed_time_loopbreaking) break;
         }
     }
     void ThpLog::RunLogging(gchar* log_message)

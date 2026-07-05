@@ -73,7 +73,7 @@ namespace TritonhawkPlus
         sample_interpolation_y = 1.0_q;
         sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         sample_grid_weighting = 0._q;
-        run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS;
+        run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
         layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
         images_to_process = IMAGES_TO_PROCESS__CURRENT;
         chunk_size_kilo = 5uL;
@@ -102,20 +102,20 @@ namespace TritonhawkPlus
                 "   High Quality, Multi-threaded, using OpenMP technology." "\n"
                 "   Uses 128-bit floating-point math for processing." "\n"
                 "\n"
-                "Enabled threads for multi-threaded: %i" "\n"
+                "Enabled threads for multi-threading: %i, %s" "\n"
                 "Number of drawables to process in image: %i" "\n"
-                "   Old image size: %I64u x %I64u pixels, %I64u total pixels" "\n"
-                "   New image size: %I64u x %I64u pixels, %I64u total pixels" "\n"
+                "   Original size: %I64u x %I64u px, %I64u total pixels" "\n"
+                "   New size: %I64u x %I64u px, %I64u total pixels" "\n"
                 "Seamless tiling X: %s, Seamless tiling Y: %s" "\n"
                 "Sample size adjustment level: %%%9.2lf" "\n"
                 "   Sample grid size: %I64u x %I64u, total samples: %I64u" "\n"
-                "   Sample grid scale: %%%9.5lf x %%%9.5lf" "\n"
+                "   Sample grid scale: %%%9.2lf x %%%9.2lf" "\n"
                 "Default Chunk size: %I64u pixels (%I64u samples)" "\n"
                 "   Actual Chunk size: %I64u pixels (%I64u samples)" "\n"
-                "   Number of chunks to process: %I64u (%I64u samples)" "\n"
+                "   Number of chunks to process: %I64u (%I64u samples)"
             ),
             process_name.c_str(),
-            number_threads,
+            number_threads, plugin_priority_realtime ? "Realtime" : "Background",
             draw_count,
             input_size_x, input_size_y, input_size_xy,
             output_size_x, output_size_y, output_size_xy,
@@ -130,7 +130,10 @@ namespace TritonhawkPlus
     }
     void ThpParams::CalcThreads()
     {
-        number_threads = min(hardware_max_threads, preferences_max_threads);
+        s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
+        number_threads = min(number_threads, max_number_threads);
+
+        omp_set_num_threads( (int)number_threads );
     }
     void ThpParams::CalcSampleGrid()
     {
@@ -414,5 +417,7 @@ namespace TritonhawkPlus
         }
 
         progress_increment = (progress_end - progress_start) / f64(number_chunks);
+        // progress_increments = 1.0 / progress_increment;
+        // progress_increments = f64(number_chunks) / fmax(f64(progress_end) - f64(progress_start), 1.0);
     }
 };

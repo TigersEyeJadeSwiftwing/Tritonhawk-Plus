@@ -264,6 +264,135 @@
 					<Add library="C:/msys64/clang64/lib/libpthread.dll.a" />
 				</Linker>
 			</Target>
+			<Target title="Clang - all (__float128)">
+				<Option platforms="Windows;" />
+				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus/tritonhawk-plus" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/clang64/native_float128/" />
+				<Option type="0" />
+				<Option compiler="clang" />
+				<Compiler>
+					<Add option="-m64" />
+					<Add option="-O3" />
+					<Add option="-Wall" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
+					<Add option="-march=x86-64-v3" />
+					<Add option="-mtune=generic" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
+					<Add option="-funroll-loops" />
+					<Add option="-mlong-double-128" />
+					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=off" />
+					<Add option="-IC:/msys64/clang64/include/gimp-3.0" />
+					<Add option="-IC:/msys64/clang64/include/gtk-3.0" />
+					<Add option="-IC:/msys64/clang64/include/pango-1.0" />
+					<Add option="-IC:/msys64/clang64/include/harfbuzz" />
+					<Add option="-IC:/msys64/clang64/include/cairo" />
+					<Add option="-IC:/msys64/clang64/include/atk-1.0" />
+					<Add option="-IC:/msys64/clang64/include/fribidi" />
+					<Add option="-IC:/msys64/clang64/include/gegl-0.4" />
+					<Add option="-IC:/msys64/clang64/include/json-glib-1.0" />
+					<Add option="-IC:/msys64/clang64/include/babl-0.1" />
+					<Add option="-IC:/msys64/clang64/include/freetype2" />
+					<Add option="-IC:/msys64/clang64/include/pixman-1" />
+					<Add option="-IC:/msys64/clang64/include/gdk-pixbuf-2.0" />
+					<Add option="-IC:/msys64/clang64/include/libpng16" />
+					<Add option="-IC:/msys64/clang64/include/webp" />
+					<Add option="-IC:/msys64/clang64/include/gio-win32-2.0" />
+					<Add option="-IC:/msys64/clang64/include/glib-2.0" />
+					<Add option="-IC:/msys64/clang64/lib/glib-2.0/include" />
+					<Add option="-DINI_SHARED_LIB" />
+					<Add option="-DLIBDEFLATE_DLL" />
+					<Add option='-DPLUG_IN_BINARY=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_SOURCE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize.cpp\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_PROC=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_ROLE=&quot;(gchar*)(\&quot;tritonhawk-plus-image-resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_LABEL=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_MENU_PATH=&quot;(gchar*)(\&quot;&lt;Image&gt;/Image/Tritonhawk Plus/\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_BLURB=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DOCUMENTATION_HELP_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_AUTHOR=&quot;(gchar*)(\&quot;Tiger J. Swiftwing\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_COPYRIGHT=&quot;(gchar*)(\&quot;(c) 2025 Tiger J. Swiftwing\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_DATE=&quot;(gchar*)(\&quot;July 2025 CE\&quot;)&quot;' />
+					<Add option='-DPLUG_IN_GUI_DIALOG_CAPTION=&quot;(gchar*)(\&quot;Tritonhawk Plus Multi-Threaded Image Resize\&quot;)&quot;' />
+					<Add option="-DTHP_FORCE_USE_FLOAT128" />
+					<Add directory="../../tritonhawk-plus" />
+					<Add directory="../../libs/libquadmath" />
+					<Add directory="../../libs/libquadmath/math" />
+					<Add directory="../../libs/libintmath" />
+					<Add directory="../../libs/libintmath/math" />
+				</Compiler>
+				<Linker>
+					<Add option="-m64" />
+					<Add option="-std=gnu23" />
+					<Add option="-std=gnu++23" />
+					<Add option="-march=x86-64-v3" />
+					<Add option="-mtune=generic" />
+					<Add option="-ftree-vectorize" />
+					<Add option="-fvectorize" />
+					<Add option="-fslp-vectorize" />
+					<Add option="-funroll-loops" />
+					<Add option="-O3" />
+					<Add option="-mlong-double-128" />
+					<Add option="-fopenmp=libomp" />
+					<Add option="-flto" />
+					<Add option="-fno-math-errno" />
+					<Add option="-fno-trapping-math" />
+					<Add option="-ffp-contract=off" />
+					<Add option="-static-libgcc" />
+					<Add option="-static-libstdc++" />
+					<Add option="-lm" />
+					<Add option="-lgimpui-3.0" />
+					<Add option="-lgimpwidgets-3.0" />
+					<Add option="-lgimpmodule-3.0" />
+					<Add option="-lgimp-3.0" />
+					<Add option="-lgimpbase-3.0" />
+					<Add option="-lgimpcolor-3.0" />
+					<Add option="-lgimpconfig-3.0" />
+					<Add option="-lgimpmath-3.0" />
+					<Add option="-lgtk-3" />
+					<Add option="-lgdk-3" />
+					<Add option="-lz" />
+					<Add option="-lgdi32" />
+					<Add option="-limm32" />
+					<Add option="-lshell32" />
+					<Add option="-lole32" />
+					<Add option="-luuid" />
+					<Add option="-lwinmm" />
+					<Add option="-ldwmapi" />
+					<Add option="-lsetupapi" />
+					<Add option="-lcfgmgr32" />
+					<Add option="-lhid" />
+					<Add option="-lwinspool" />
+					<Add option="-lcomctl32" />
+					<Add option="-lcomdlg32" />
+					<Add option="-lpangocairo-1.0" />
+					<Add option="-lpangowin32-1.0" />
+					<Add option="-lpango-1.0" />
+					<Add option="-lcairo-gobject" />
+					<Add option="-latk-1.0" />
+					<Add option="-lgegl-0.4" />
+					<Add option="-lgegl-npd-0.4" />
+					<Add option="-ljson-glib-1.0" />
+					<Add option="-lbabl-0.1" />
+					<Add option="-lgexiv2" />
+					<Add option="-lcairo" />
+					<Add option="-lharfbuzz" />
+					<Add option="-lgdk_pixbuf-2.0" />
+					<Add option="-lgio-2.0" />
+					<Add option="-lgobject-2.0" />
+					<Add option="-lgmodule-2.0" />
+					<Add option="-lglib-2.0" />
+					<Add option="-lintl" />
+					<Add library="C:/msys64/clang64/lib/libomp.dll.a" />
+					<Add library="C:/msys64/clang64/lib/libpthread.dll.a" />
+				</Linker>
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wno-macro-redefined" />
@@ -322,6 +451,9 @@
 		<Unit filename="../../tritonhawk-plus/config_h/clang64/compile-image-resize.txt" />
 		<Unit filename="../../tritonhawk-plus/config_h/clang64/config.hpp" />
 		<Unit filename="../../tritonhawk-plus/config_h/clang64/stdplugins-intl.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-deflate.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-enchant.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-resize.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.hpp" />
 		<Extensions>

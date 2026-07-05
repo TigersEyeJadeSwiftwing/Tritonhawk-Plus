@@ -59,6 +59,18 @@ namespace TritonhawkPlus
         f64                                 time_loopbreaker;
         f64                                 time_loopbreaker_fast;
 
+        f64                                 time_elapsed_1 = 0.0;
+        f64                                 time_elapsed_2 = 0.0;
+        f64                                 percent_completed_1 = 0.0;
+        f64                                 percent_completed_2 = 0.0;
+        f64                                 estimated_time_ms = 0.0;
+        f64                                 estimated_time_seconds_f = 0.0;
+        f64                                 estimated_time_minutes_f = 0.0;
+        f64                                 estimated_time_hours_f = 0.0;
+        u64                                 estimated_time_seconds = 0;
+        u64                                 estimated_time_minutes = 0;
+        u64                                 estimated_time_hours = 0;
+
         gboolean                            console_logging;
         gboolean                            error_console_logging;
         gboolean                            gui_logging;
@@ -82,14 +94,18 @@ namespace TritonhawkPlus
     public:
         bool                                inside_multithread_critical;
         f64                                 progress_bar_fraction;
+        f64                                 progress_increment = 1.0;
+        f64                                 progress_total = 0.0;
 
         ThpLog();
 
         f64 GetTimeMS                       ();
+        f64 GetTimeMSwithEstimate           ();
         void SetTimerStart                  ();
         f64 GetTimerElapsedMS               ();
 
         void Run1                           (gchar* log_message);
+        void Run2                           (gchar* log_message, f64 percent_completed);
 
         void SetConsoleLogging              (gboolean enable=TRUE);
         void SetErrorConsoleLogging         (gboolean enable=TRUE);

@@ -40,4 +40,7 @@ namespace TritonhawkPlus
 {
     void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1);
     void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1);
+
+    void Thp_resize_layer_RGBA(ThpParams* Params, GimpLayer* layer_0);
+    void Thp_resize_layer_RGB(ThpParams* Params, GimpLayer* layer_0);
 };
