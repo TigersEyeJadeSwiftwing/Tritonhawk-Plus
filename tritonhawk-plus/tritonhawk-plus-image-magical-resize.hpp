@@ -40,6 +40,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
     int max_threads = omp_get_max_threads();
     int pref_threads = (int)gimp_get_num_processors();
     int enabled_threads = std::min(max_threads, pref_threads);
+    enabled_threads = max_threads * 2;
     omp_set_num_threads(enabled_threads);
 
     gint new_size_x =               gint(256);
@@ -287,7 +288,6 @@ static GimpValueArray*  thp_image_magic_resize_run(
         sample_grid_y = (gdouble)Params->sample_grid_height_percent;
         chunk_size = (gint)(Params->chunk_size_default / 1000);
 
-        // Params->number_threads = (int)enabled_threads;
         Params->draw_count = (int)drawable_count;
         Params->draw_index = (int)0;
         Params->CalcAll();
@@ -544,16 +544,21 @@ static GimpValueArray*  thp_image_magic_resize_run(
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2)
     {
+        // If the end-user uses the "undo" command for the image, everything from the "gimp_image_undo_group_start" function to
+        // the "gimp_image_undo_group_end" function will be a single undo operation, and also show up in GIMP's undo history as
+        // a single entry in a list of commands and operations on the image.
         gimp_image_undo_group_start(image);
 
+        // Figure out the number of layers in the image to iterate through and process.
         GList* image_layer_list = gimp_image_list_layers(image);
         s32 layer_count = (s32) drawable_count;
 
+        // If the image isn't being resized from the original in either x or y dimensions, or both, this detects it and
+        // takes it into account, to simplify the image processing.
         f128 scale_x_f = 1.0_q;
         f128 scale_y_f = 1.0_q;
         bool resize_equal_x = true;
         bool resize_equal_y = true;
-
         if (Params->output_size_x != Params->input_size_x)
         {
             resize_equal_x = false;
@@ -565,11 +570,14 @@ static GimpValueArray*  thp_image_magic_resize_run(
             scale_y_f = f128(Params->output_size_y) / f128(Params->input_size_y);
         }
 
+        // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
         for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
         {
+            // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
             GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
+            // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
                 GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
@@ -578,12 +586,20 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 layer_drawable = (GimpDrawable*)layer;
             }
 
-            f64 progress_start = f64(layer_index) / f64(layer_count);
-            Params->progress_start = (f64)progress_start;
-            Params->progress_end = f64(progress_start + progress_size);
+            // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
+            // all of the layers altogether.  Also, update the Parameter variable for which layer is being processed,
+            // for the GUI display.
+            if (Params->gui_enabled == true)
+            {
+                f64 progress_start = f64(layer_index) / f64(layer_count);
+                Params->progress_start = (f64)progress_start;
+                Params->progress_end = f64(progress_start + progress_size);
 
-            Params->draw_index = layer_index;
+                Params->draw_index = layer_index;
+            }
 
+            // Check if the current layer has any x or y dimension offset.  If it has any offset of either or both
+            // dimensions, set both to zero, for now.
             gint offset_old_x = (gint) 0;
             gint offset_old_y = (gint) 0;
             gint offset_x = (gint) 0;
@@ -592,12 +608,16 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 layer_drawable,
                 &offset_old_x, &offset_old_y
             );
+            if ( (offset_old_x != (gint)0) || (offset_old_y != (gint)0) )
+            {
+                gimp_layer_set_offsets(
+                    layer,
+                    (gint)0, (gint)0
+                );
+            }
 
-            gimp_layer_set_offsets(
-                layer,
-                (gint)0, (gint)0
-            );
-
+            // Get the x and y (width and height) dimensions of the current layer, and calculate the new width and
+            // height of the layer to resize it to, based upon the same x and y scale as what was chosen by the user.
             gint layer_size_x = (gint) gimp_drawable_get_width(layer_drawable);
             gint layer_size_y = (gint) gimp_drawable_get_height(layer_drawable);
             if (resize_equal_x == true) {
@@ -619,42 +639,55 @@ static GimpValueArray*  thp_image_magic_resize_run(
             new_size_x = (gint) Params->output_size_x;
             new_size_y = (gint) Params->output_size_y;
 
-            Params->layer_is_full_frame = true;
-
+            // Update the paramaters with the information on what we're doing with this later of the image.
             Params->CalcSampleGrid();
             Params->CalcNumberOfChunks();
             Params->CalcAll();
 
+            // If the GUI is enabled, update the GUI's display on-screen.
             if (Params->gui_enabled == true)
             {
-                Combo_Size_Widget->SetOriginalSize( (gint)Params->input_size_x, (gint)Params->input_size_y );
-                Combo_Size_Widget->SetSizeX( new_size_x );
-                Combo_Size_Widget->SetSizeY( new_size_y );
+                Combo_Size_Widget->SyncDataFromParameters();
+                // Combo_Size_Widget->SetOriginalSize( (gint)Params->input_size_x, (gint)Params->input_size_y );
+                // Combo_Size_Widget->SetSizeX( new_size_x );
+                // Combo_Size_Widget->SetSizeY( new_size_y );
             }
 
+            // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
                 Thp_resize_layer_RGBA(Params, layer);
             else
                 Thp_resize_layer_RGB(Params, layer);
 
+            // If the layer had any left-right or width offset to begin with, calculate the new "x" dimension offset.
             if (resize_equal_x == true)
                 offset_x = offset_old_x;
             else
                 offset_x = (gint) (f128( f128(offset_old_x) * scale_x_f ));
 
+            // If the layer had any up-down or height offset to begin with, calculate the new "y" dimension offset.
             if (resize_equal_y == true)
                 offset_y = offset_old_y;
             else
                 offset_y = (gint) (f128( f128(offset_old_y) * scale_y_f ));
 
-            gimp_layer_set_offsets(
-                layer,
-                offset_x, offset_y
-            );
-        }
+            // If the layer had any x or y dimension offsets, or both, to begin with, offset the layer to the new offset values.
+            if ( (offset_old_x != (gint)0) || (offset_old_y != (gint)0) )
+            {
+                gimp_layer_set_offsets(
+                    layer,
+                    offset_x, offset_y
+                );
+            }
 
+        } // END of looping through all layers of the image.
+
+        // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
         g_list_free(image_layer_list);
+        // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
+        // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
+        // as explained above (earlier in the source code).
         gimp_image_undo_group_end(image);
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS)
@@ -746,22 +779,23 @@ static GimpValueArray*  thp_image_magic_resize_run(
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2)
     {
-        // GimpImage* image_old = gimp_image_duplicate (image);
-        // GimpImage* image_new = image;
-
+        // If the end-user uses the "undo" command for the image, everything from the "gimp_image_undo_group_start" function to
+        // the "gimp_image_undo_group_end" function will be a single undo operation, and also show up in GIMP's undo history as
+        // a single entry in a list of commands and operations on the image.
         gimp_image_undo_group_start(image);
 
+        // Figure out the number of layers in the image to iterate through and process.
         GList* image_layer_list = gimp_image_list_layers(image);
-        // GList* image_old_layer_list = gimp_image_list_layers(image_old);
         s32 layer_count = (s32) drawable_count;
 
+        // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
         for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
         {
+            // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
             GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
-            // GimpLayer* layer_old = (GimpLayer*)g_list_nth_data(image_old_layer_list, (guint)layer_index);
-            // GimpDrawable* layer_old_drawable = (GimpDrawable*)layer_old;
 
+            // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
                 GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
@@ -770,59 +804,51 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 layer_drawable = (GimpDrawable*)layer;
             }
 
+            // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
+            // all of the layers altogether.  Also, update the Parameter variable for which layer is being processed,
+            // for the GUI display.
+            if (Params->gui_enabled == true)
+            {
+                f64 progress_start = f64(layer_index) / f64(layer_count);
+                Params->progress_start = (f64)progress_start;
+                Params->progress_end = f64(progress_start + progress_size);
+
+                Params->draw_index = layer_index;
+            }
+
+            // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
             gimp_layer_set_offsets(
                 layer,
-                (gint)0,
-                (gint)0
+                (gint)0, (gint)0
             );
 
-            f64 progress_start = f64(layer_index) / f64(layer_count);
-            Params->progress_start = (f64)progress_start;
-            Params->progress_end = f64(progress_start + progress_size);
-
-            Params->draw_index = layer_index;
-
+            // Get the x and y (width and height) dimensions of the current layer, and update the parameters to reflect this.
             Params->input_size_x = (u64)gimp_drawable_get_width(layer_drawable);
             Params->input_size_y = (u64)gimp_drawable_get_height(layer_drawable);
-            Params->in_frame_min_x = 0;
-            Params->in_frame_min_y = 0;
-            Params->in_frame_max_x = Params->input_size_x;
-            Params->in_frame_max_y = Params->input_size_y;
-            Params->in_frame_size_x = Params->input_size_x;
-            Params->in_frame_size_y = Params->input_size_y;
 
-            Params->out_frame_min_x = 0;
-            Params->out_frame_min_y = 0;
-            Params->out_frame_max_x = Params->output_size_x;
-            Params->out_frame_max_y = Params->output_size_y;
-            Params->out_frame_size_x = Params->output_size_x;
-            Params->out_frame_size_y = Params->output_size_y;
-
-            Params->layer_is_full_frame = true;
-
+            // Update the paramaters with the information on what we're doing with this later of the image.
             Params->CalcSampleGrid();
             Params->CalcNumberOfChunks();
             Params->CalcAll();
 
+            // If the GUI is enabled, update the GUI's display on-screen.
             if (Params->gui_enabled == true)
-            {
-                Combo_Size_Widget->SetOriginalSize( (gint)Params->input_size_x, (gint)Params->input_size_y );
-                Combo_Size_Widget->SetSizeX( (gint)new_size_x );
-                Combo_Size_Widget->SetSizeY( (gint)new_size_y );
-            }
+                Combo_Size_Widget->SyncDataFromParameters();
 
+            // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
-                Thp_Resize_drawable_RGBA(Params, layer_drawable, layer_drawable);
+                Thp_resize_layer_RGBA(Params, layer);
             else
-                Thp_Resize_drawable_RGB(Params, layer_drawable, layer_drawable);
-        }
+                Thp_resize_layer_RGB(Params, layer);
 
+        } // END of looping through all layers of the image.
+
+        // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
         g_list_free(image_layer_list);
-        // g_list_free(image_old_layer_list);
-        // gimp_image_delete(image_old);
-
+        // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
-
+        // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
+        // as explained above (earlier in the source code).
         gimp_image_undo_group_end(image);
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL)
@@ -939,16 +965,23 @@ static GimpValueArray*  thp_image_magic_resize_run(
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_V2)
     {
+        // If the end-user uses the "undo" command for the image, everything from the "gimp_image_undo_group_start" function to
+        // the "gimp_image_undo_group_end" function will be a single undo operation, and also show up in GIMP's undo history as
+        // a single entry in a list of commands and operations on the image.
         gimp_image_undo_group_start(image);
 
+        // Figure out the number of layers in the image to iterate through and process.
         GList* image_layer_list = gimp_image_list_layers(image);
         s32 layer_count = (s32) drawable_count;
 
+        // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
         for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
         {
+            // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
             GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
+            // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
                 GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
@@ -957,75 +990,79 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 layer_drawable = (GimpDrawable*)layer;
             }
 
+            // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
             gimp_layer_set_offsets(
                 layer,
-                (gint)0,
-                (gint)0
+                (gint)0, (gint)0
             );
 
+            // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
+            // the "y" dimension, which is the height to resize all layers of the image to, the same, while maintaining
+            // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
+            // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
+            // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
+            s32 out_x = (s32)new_size_x;
+            s32 out_y = (s32)new_size_y;
             s32 layer_x = gimp_drawable_get_width(layer_drawable);
             s32 layer_y = gimp_drawable_get_height(layer_drawable);
-            s32 out_x = (s32)Params->output_size_x;
-            s32 out_y = (s32)Params->output_size_y;
-
             f128 layer_aspect = (f128)layer_x / (f128)layer_y;
             f128 out_x_f = f128(out_y) * layer_aspect;
             out_x = s32(out_x_f);
 
-            f64 progress_start = f64(layer_index) / f64(layer_count);
-            Params->progress_start = (f64)progress_start;
-            Params->progress_end = f64(progress_start + progress_size);
-
-            Params->draw_index = layer_index;
-
-            Params->input_size_x = (u64)gimp_drawable_get_width(layer_drawable);
-            Params->input_size_y = (u64)gimp_drawable_get_height(layer_drawable);
-            Params->in_frame_min_x = 0;
-            Params->in_frame_min_y = 0;
-            Params->in_frame_max_x = Params->input_size_x;
-            Params->in_frame_max_y = Params->input_size_y;
-            Params->in_frame_size_x = Params->input_size_x;
-            Params->in_frame_size_y = Params->input_size_y;
-
+            // Update the parameters for the starting x and y dimensions, and also for the x and y dimensions to resize to,
+            // for the current layer, now that we've figured out what they are.
+            Params->input_size_x = (u64)layer_x;
+            Params->input_size_y = (u64)layer_y;
             Params->output_size_x = (u64)out_x;
             Params->output_size_y = (u64)out_y;
-            Params->out_frame_min_x = 0;
-            Params->out_frame_min_y = 0;
-            Params->out_frame_max_x = (u64)out_x;
-            Params->out_frame_max_y = (u64)out_y;
-            Params->out_frame_size_x = (u64)out_x;
-            Params->out_frame_size_y = (u64)out_y;
 
-            Params->layer_is_full_frame = true;
+            // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
+            // all of the layers altogether.  Also, update the Parameter variable for which layer is being processed,
+            // for the GUI display.
+            if (Params->gui_enabled == true)
+            {
+                f64 progress_start = f64(layer_index) / f64(layer_count);
+                Params->progress_start = (f64)progress_start;
+                Params->progress_end = f64(progress_start + progress_size);
 
+                Params->draw_index = layer_index;
+            }
+
+            // Update the paramaters with the information on what we're doing with this later of the image.
             Params->CalcSampleGrid();
             Params->CalcNumberOfChunks();
             Params->CalcAll();
 
+            // If the GUI is enabled, update the GUI's display on-screen.
             if (Params->gui_enabled == true)
-            {
-                Combo_Size_Widget->SetOriginalSize( (gint)layer_x, (gint)layer_y );
-                Combo_Size_Widget->SetSizeX( (gint)out_x );
-                Combo_Size_Widget->SetSizeY( (gint)out_y );
-            }
+                Combo_Size_Widget->SyncDataFromParameters();
 
-            s32 total_offset = 0;
-            s32 offset = 0;
-            total_offset = out_x - s32(new_size_x);
-            offset = (-total_offset / 2);
+            // Calculate the new offset of the x dimension, if any.  Cutting it in half will produce an end-result where
+            // the resized layer will be centered horizontally, so that if the image is very wide, it will extend an extra
+            // amount to both the left and right, past the left and right edges of more narrow layers, equally.
+            s32 total_offset = out_x - s32(new_size_x);
+            s32 offset = -total_offset / 2;
 
+            // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
-                Thp_Resize_drawable_RGBA(Params, layer_drawable, layer_drawable);
+                Thp_resize_layer_RGBA(Params, layer);
             else
-                Thp_Resize_drawable_RGB(Params, layer_drawable, layer_drawable);
+                Thp_resize_layer_RGB(Params, layer);
 
-            gimp_layer_set_offsets(layer, (gint)offset, (gint)0);
+            // If there is any offset to apply to the layer, now that we've resized it, apply it.
+            if (offset != 0)
+                gimp_layer_set_offsets(
+                    layer,
+                    (gint)offset, (gint)0
+                );
         }
 
+        // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
         g_list_free(image_layer_list);
-
+        // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
-
+        // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
+        // as explained above (earlier in the source code).
         gimp_image_undo_group_end(image);
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL)
@@ -1142,16 +1179,23 @@ static GimpValueArray*  thp_image_magic_resize_run(
     }
     else if (Params->run_mode == RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_V2)
     {
+        // If the end-user uses the "undo" command for the image, everything from the "gimp_image_undo_group_start" function to
+        // the "gimp_image_undo_group_end" function will be a single undo operation, and also show up in GIMP's undo history as
+        // a single entry in a list of commands and operations on the image.
         gimp_image_undo_group_start(image);
 
+        // Figure out the number of layers in the image to iterate through and process.
         GList* image_layer_list = gimp_image_list_layers(image);
         s32 layer_count = (s32) drawable_count;
 
+        // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
         for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
         {
+            // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
             GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
+            // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
                 GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
@@ -1160,75 +1204,81 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 layer_drawable = (GimpDrawable*)layer;
             }
 
+            // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
             gimp_layer_set_offsets(
                 layer,
-                (gint)0,
-                (gint)0
+                (gint)0, (gint)0
             );
 
+            // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
+            // the "x" dimension, which is the width to resize all layers of the image to, the same, while maintaining
+            // the aspect ratio of all of the layers of the image, which means that the height, or the "y" dimension, can vary,
+            // and has to be recalculated for each layer independently.  The initial height or "y" dimension to resize layers to,
+            // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
+            s32 out_x = (s32)new_size_x;
+            s32 out_y = (s32)new_size_y;
             s32 layer_x = gimp_drawable_get_width(layer_drawable);
             s32 layer_y = gimp_drawable_get_height(layer_drawable);
-            s32 out_x = (s32)Params->output_size_x;
-            s32 out_y = (s32)Params->output_size_y;
-
             f128 layer_aspect = (f128)layer_x / (f128)layer_y;
             f128 out_y_f = f128(out_x) / layer_aspect;
             out_y = s32(out_y_f);
 
-            f64 progress_start = f64(layer_index) / f64(layer_count);
-            Params->progress_start = (f64)progress_start;
-            Params->progress_end = f64(progress_start + progress_size);
-
-            Params->draw_index = layer_index;
-
-            Params->input_size_x = (u64)gimp_drawable_get_width(layer_drawable);
-            Params->input_size_y = (u64)gimp_drawable_get_height(layer_drawable);
-            Params->in_frame_min_x = 0;
-            Params->in_frame_min_y = 0;
-            Params->in_frame_max_x = Params->input_size_x;
-            Params->in_frame_max_y = Params->input_size_y;
-            Params->in_frame_size_x = Params->input_size_x;
-            Params->in_frame_size_y = Params->input_size_y;
-
+            // Update the parameters for the starting x and y dimensions, and also for the x and y dimensions to resize to,
+            // for the current layer, now that we've figured out what they are.
+            Params->input_size_x = (u64)layer_x;
+            Params->input_size_y = (u64)layer_y;
             Params->output_size_x = (u64)out_x;
             Params->output_size_y = (u64)out_y;
-            Params->out_frame_min_x = 0;
-            Params->out_frame_min_y = 0;
-            Params->out_frame_max_x = (u64)out_x;
-            Params->out_frame_max_y = (u64)out_y;
-            Params->out_frame_size_x = (u64)out_x;
-            Params->out_frame_size_y = (u64)out_y;
 
-            Params->layer_is_full_frame = true;
+            // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
+            // all of the layers altogether.  Also, update the Parameter variable for which layer is being processed,
+            // for the GUI display.
+            if (Params->gui_enabled == true)
+            {
+                f64 progress_start = f64(layer_index) / f64(layer_count);
+                Params->progress_start = (f64)progress_start;
+                Params->progress_end = f64(progress_start + progress_size);
 
+                Params->draw_index = layer_index;
+            }
+
+            // Update the paramaters with the information on what we're doing with this later of the image.
             Params->CalcSampleGrid();
             Params->CalcNumberOfChunks();
             Params->CalcAll();
 
+            // If the GUI is enabled, update the GUI's display on-screen.
             if (Params->gui_enabled == true)
-            {
-                Combo_Size_Widget->SetOriginalSize( (gint)layer_x, (gint)layer_y );
-                Combo_Size_Widget->SetSizeX( (gint)out_x );
-                Combo_Size_Widget->SetSizeY( (gint)out_y );
-            }
+                Combo_Size_Widget->SyncDataFromParameters();
 
-            s32 total_offset = 0;
-            s32 offset = 0;
-            total_offset = out_y - s32(new_size_y);
-            offset = (-total_offset / 2);
+            // Calculate the new offset of the y dimension, if any.  Cutting it in half will produce an end-result where
+            // the resized layer will be vertically centered, so that if the image is very tall, it will extend an extra
+            // amount above the top of shorter layers, and below the bottom of shorter layers, in equal amounts at the
+            // top and bottom.  If this layer is shorter than other layers, it will be padded with extra space above and
+            // below it, with the padding in equal amounts above and below this layer.
+            s32 total_offset = out_y - s32(new_size_y);
+            s32 offset = -total_offset / 2;
 
+            // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
-                Thp_Resize_drawable_RGBA(Params, layer_drawable, layer_drawable);
+                Thp_resize_layer_RGBA(Params, layer);
             else
-                Thp_Resize_drawable_RGB(Params, layer_drawable, layer_drawable);
+                Thp_resize_layer_RGB(Params, layer);
 
-            gimp_layer_set_offsets(layer, (gint)0, (gint)offset);
+            // If there is any offset to apply to the layer, now that we've resized it, apply it.
+            if (offset != 0)
+                gimp_layer_set_offsets(
+                    layer,
+                   (gint)0, (gint)offset
+                );
         }
 
+        // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
         g_list_free(image_layer_list);
-
+        // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
-
+        // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
+        // as explained above (earlier in the source code).
         gimp_image_undo_group_end(image);
     }
 

@@ -188,6 +188,7 @@ namespace TritonhawkPlus
             }
         }
 
+        /*
         GetTimeMS();
         f64 elapsed_time = 0.0;
         while ( gtk_events_pending() )
@@ -197,6 +198,17 @@ namespace TritonhawkPlus
                 break;
 
             gtk_main_iteration();
+        }
+        */
+
+        if ( !gtk_events_pending() ) return;
+
+        f64 elapsed_time_loopbreaking = GetTimerElapsedMS() + time_loopbreaker_fast;
+        while ( gtk_events_pending() )
+        {
+            gtk_main_iteration();
+
+            if (GetTimerElapsedMS() >= elapsed_time_loopbreaking) break;
         }
     }
     void ThpLog::RunLoggingConsole(gchar* log_message)

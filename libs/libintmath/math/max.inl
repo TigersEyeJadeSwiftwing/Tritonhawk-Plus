@@ -23,6 +23,18 @@ that are part of this project, the ones with this copyright notice and such are 
 licensed under the GPL version 3 license. */
 
 static inline __attribute__((always_inline, hot))
+s16 max(const s16 a, const s16 b)
+{
+    return (a > b) ? a : b;
+}
+
+static inline __attribute__((always_inline, hot))
+u16 max(const u16 a, const u16 b)
+{
+    return (a > b) ? a : b;
+}
+
+static inline __attribute__((always_inline, hot))
 s64 max(const s64 a, const s64 b)
 {
     return (a > b) ? a : b;

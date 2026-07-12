@@ -384,7 +384,7 @@ namespace TritonhawkPlus
             ) );
 
             // Threads and thread priority, spinbutton
-            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) min(Params->hardware_max_threads, Params->preferences_max_threads), (gdouble) 1.0);
+            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble)min(Params->hardware_max_threads * (s16)4, Params->preferences_max_threads * (s16)4), (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Threads, cell_r2_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_SpinButton_Threads, FALSE, FALSE, 0);
             gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Threads, (guint) 0u);
@@ -1419,8 +1419,12 @@ namespace TritonhawkPlus
         if (Log && Params)
         {
             Log->Log(false, Params->info_string);
-            while ( gtk_events_pending() ) gtk_main_iteration();
         }
+
+        /*
+        while ( gtk_events_pending() )
+            gtk_main_iteration();
+        */
     }
     void ComboSizeWidget::SyncDataToParameters()
     {
@@ -1615,7 +1619,8 @@ namespace TritonhawkPlus
         }
         else if (button_name == button_pointer_threads_max)
         {
-            threads_enabled = (gint) min(Params->hardware_max_threads, Params->preferences_max_threads);
+            // threads_enabled = (gint) min(Params->hardware_max_threads, Params->preferences_max_threads);
+            threads_enabled = gint (Params->hardware_max_threads * 4);
 
             ignore_auto_changes = true;
             UpdateGUI();

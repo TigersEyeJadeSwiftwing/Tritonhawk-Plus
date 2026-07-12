@@ -80,6 +80,7 @@ namespace TritonhawkPlus
         chunk_size_default = 1000uL * chunk_size_kilo;
         output_size_x = input_size_x;
         output_size_y = input_size_y;
+        layer_is_full_frame = true;
 
         CalcAll();
     }
@@ -130,8 +131,10 @@ namespace TritonhawkPlus
     }
     void ThpParams::CalcThreads()
     {
-        s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
-        number_threads = min(number_threads, max_number_threads);
+        // s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
+        // number_threads = min(number_threads, max_number_threads);
+
+        number_threads = min(number_threads, hardware_max_threads * (s16)4);
 
         omp_set_num_threads( (int)number_threads );
     }

@@ -63,6 +63,13 @@ PLUG_IN_GUI_DIALOG_CAPTION_Image_Resize="(gchar*)(\"Tritonhawk Plus Multi-Thread
 #define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Resize                      "Tritonhawk Plus Image Magical Resize"
 #define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Resize               "Tritonhawk Plus Image Magical Resize"
 
+#define THP_PLUG_IN_PROCESS_Layer_Magic_Resize                                  "tritonhawk-plus-enchanted-layer-magical-resize"
+#define THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize                               "Tritonhawk Plus Layer Magical Resize"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Layer_Magic_Resize                       "Tritonhawk Plus Layer Magical Resize"
+#define THP_PLUG_IN_MENU_PATH_Layer_Magic_Resize                                "<Image>/Layer/Tritonhawk Plus/"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Layer_Magic_Resize                      "Tritonhawk Plus Layer Magical Resize"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Layer_Magic_Resize               "Tritonhawk Plus Layer Magical Resize"
+
 #define THP_PLUG_IN_PROCESS_Image_Magic_Deflate                                 "tritonhawk-plus-enchanted-image-magical-deflate"
 #define THP_PLUG_IN_MENU_LABEL_Image_Magic_Deflate                              "Tritonhawk Plus Image Magical Deflate"
 #define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Deflate                      "Tritonhawk Plus Image Magical Deflate"
