@@ -1436,7 +1436,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000001_q)
+                    else if (sample_interpolation_x < 0.000005_q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -1507,7 +1507,7 @@ namespace TritonhawkPlus
                         lerp_y = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.00005_q)
+                    else if (sample_interpolation_y < 0.000005_q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
@@ -1993,7 +1993,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000001_q)
+                    else if (sample_interpolation_x < 0.000005_q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -2064,7 +2064,7 @@ namespace TritonhawkPlus
                         lerp_y = 0.0_q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.00001_q)
+                    else if (sample_interpolation_y < 0.000005_q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);

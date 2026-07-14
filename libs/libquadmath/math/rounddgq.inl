@@ -76,11 +76,11 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
     constexpr s8 POW10_MAX = 38;
     constexpr s8 POW10_MIN = -38;
 
-    f128 pow10 = 1.q, pow10_x04 = 0.04q;
+    f128 pow10 = f128(1.q), pow10_x00tiny = f128(0.001q);
 
     if ((digits > POW10_MAX) || (digits < POW10_MIN))
     {
-        pow10 = powq(10.q, f128(digits));
+        pow10 = powq( f128(10.q), f128(digits) );
     }
     else if (digits > 0)
     {
@@ -91,13 +91,13 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
         pow10 = POW10_NEG[-digits];
     }
 
-    if (invalidq(pow10)) return 0.q;
+    if (invalidq(pow10)) return 0._q;
 
-    pow10_x04 *= pow10;
+    pow10_x00tiny *= pow10;
 
-    if (invalidq(pow10_x04)) return 0.q;
+    if (invalidq(pow10_x00tiny)) return 0._q;
 
-    f128 result = pow10_x04 + x - fmodq(x, pow10);
+    f128 result = f128(pow10_x00tiny) + f128(x) - (f128)fmodq( f128(x), (f128)pow10 );
 
     if (invalidq(result)) return NANq;
 

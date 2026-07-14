@@ -201,13 +201,13 @@ namespace TritonhawkPlus
 
         bool gui_enabled = false;
 
-        u64 max_image_dimension = 65536uL;
+        u64 max_image_dimension = 65536uLL;
         f64 max_sample_grid_dimension_percent = 10000.0;
-        f64 max_sample_count_modifier = 5000.0;
-        f64 max_sample_interpolation = 5000.0;
-        u64 min_chunk_size = 1uL;
-        u64 max_chunk_size = 5000uL;
-        u64 increment_chunk_size = 1uL;
+        f64 max_sample_count_modifier = 8000.0;
+        f64 max_sample_interpolation = 8000.0;
+        u64 min_chunk_size = 1uLL;
+        u64 max_chunk_size = 6000uLL;
+        u64 increment_chunk_size = 1uLL;
 
         void SetPluginRealtime(bool realtime_active=true);
         void EngagePluginPriority();

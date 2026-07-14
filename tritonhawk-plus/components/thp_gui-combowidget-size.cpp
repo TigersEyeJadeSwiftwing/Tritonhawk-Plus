@@ -384,7 +384,7 @@ namespace TritonhawkPlus
             ) );
 
             // Threads and thread priority, spinbutton
-            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble)min(Params->hardware_max_threads * (s16)4, Params->preferences_max_threads * (s16)4), (gdouble) 1.0);
+            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, gdouble((s32)Params->hardware_max_threads * (s32)4), (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Threads, cell_r2_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_SpinButton_Threads, FALSE, FALSE, 0);
             gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Threads, (guint) 0u);
@@ -718,7 +718,7 @@ namespace TritonhawkPlus
             gtk_widget_set_size_request(Gui_Chunk_Size_Label, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_6), (GtkWidget*)Gui_Chunk_Size_Label, FALSE, FALSE, 0);
             ShowWidget(Gui_Chunk_Size_Label);
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1000uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilopixels\n" "%I64u Kpx, %I64u px"), chunk_size_kilo, chunk_size_kilo * 1000uLL) );
             // Spin Button for kilopixels (chunk size)
             Gui_Chunk_Size_SpinButton = gimp_spin_button_new_with_range((gdouble) Params->min_chunk_size, (gdouble) Params->max_chunk_size, (gdouble) Params->increment_chunk_size);
             gtk_widget_set_size_request(Gui_Chunk_Size_SpinButton, row_4_col_width, cell_height);
@@ -1159,13 +1159,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        f128 value = clampq((f128)val, 0._q, 50._q);
+        f128 value = clampq((f128)val, 0._q, 8000._q);
         // value = rounddgq(value, -3);
         sample_interpolation_x = gdouble(value);
 
-        if (chain_button_sample_interpolation_on == TRUE)
+        if (value < 0.000005)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
+            sample_interpolation_x = gdouble(0.000001);
+
+            if (chain_button_sample_interpolation_on == TRUE)
+            {
+                sample_interpolation_y = gdouble(0.000001);
+                sample_interpolation_locked_ratio_xy = 1._q;
+            }
+        }
+        else if (chain_button_sample_interpolation_on == TRUE)
+        {
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0._q, 8000._q);
             // sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_y = (gdouble)sample_interpolation_f;
         }
@@ -1182,13 +1192,23 @@ namespace TritonhawkPlus
     {
         if (ignore_auto_changes == true) return;
 
-        f128 value = clampq((f128)val, 0._q, 50._q);
+        f128 value = clampq((f128)val, 0._q, 8000._q);
         // value = rounddgq(value, -3);
         sample_interpolation_y = gdouble(value);
 
+        if (value < 0.000005)
+        {
+            sample_interpolation_y = gdouble(0.000001);
+
+            if (chain_button_sample_interpolation_on == TRUE)
+            {
+                sample_interpolation_x = gdouble(0.000001);
+                sample_interpolation_locked_ratio_xy = 1._q;
+            }
+        }
         if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0._q, 50._q);
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0._q, 8000._q);
             // sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_x = (gdouble)sample_interpolation_f;
         }
@@ -1225,8 +1245,8 @@ namespace TritonhawkPlus
     void ComboSizeWidget::SetThreads(gint val)
     {
         threads_enabled = gint(val);
-        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads );
-        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->preferences_max_threads );
+        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads * (gint)4 );
+        // threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->preferences_max_threads );
 
         Params->number_threads = (s16)threads_enabled;
 
@@ -1349,9 +1369,9 @@ namespace TritonhawkPlus
                 g_strdup_printf(_("Sample Interpolation Y" "\n %s"), sample_interpolation_y_text.c_str()) );
         }
         if (Gui_Sample_Interpolation_X_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_x, -3));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_X_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_x, -4));
         if (Gui_Sample_Interpolation_Y_SpinButton)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_y, -3));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_Sample_Interpolation_Y_SpinButton, (gdouble)rounddgq((f128)sample_interpolation_y, -4));
         if (Gui_Sample_Interpolation_ChainButton)
             gimp_chain_button_set_active((GimpChainButton*)Gui_Sample_Interpolation_ChainButton, chain_button_sample_interpolation_on);
 
@@ -1407,7 +1427,7 @@ namespace TritonhawkPlus
 
         if (Gui_Chunk_Size_Label)
         {
-            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1000uL) );
+            gtk_label_set_text((GtkLabel*)Gui_Chunk_Size_Label, g_strdup_printf(_("Chunk Size, Kilosamples\n" "%I64u Ksmp, %I64u smp"), chunk_size_kilo, chunk_size_kilo * 1000uLL) );
         }
         if (Gui_Chunk_Size_SpinButton)
         {
@@ -1922,18 +1942,18 @@ namespace TritonhawkPlus
     }
     string ComboSizeWidget::SetInterpolationString(f64 v)
     {
-        f64 rv = rounddg(v, -5);
+        f64 rv = rounddg(v, -7);
 
-        if (rv < 0.0000005) return "Nearest";
-        if (rv < 1.0000005) return "Linear";
-        if (rv < 2.000000) return "Linear to Quadratic";
-        if (rv < 2.0000005) return "Quadratic";
-        if (rv < 3.000000) return "Quadratic to Cubic";
-        if (rv < 3.0000005) return "Cubic";
-        if (rv < 4.000000) return "Cubic to Quartic";
-        if (rv < 4.0000005) return "Quartic";
-        if (rv < 5.000000) return "Quartic to Quintic";
-        if (rv < 5.0000005) return "Quintic";
+        if (rv < 0.000005) return "Nearest";
+        if (rv < 1.000005) return "Linear";
+        if (rv < 2.00000) return "Linear to Quadratic";
+        if (rv < 2.000005) return "Quadratic";
+        if (rv < 3.00000) return "Quadratic to Cubic";
+        if (rv < 3.000005) return "Cubic";
+        if (rv < 4.00000) return "Cubic to Quartic";
+        if (rv < 4.000005) return "Quartic";
+        if (rv < 5.00000) return "Quartic to Quintic";
+        if (rv < 5.000005) return "Quintic";
         return "Beyond Quintic";
     }
 
