@@ -788,7 +788,6 @@ static GimpValueArray*  thp_image_magic_resize_run(
         GList* image_layer_list = gimp_image_list_layers(image);
         s32 layer_count = (s32) drawable_count;
 
-        /*
         GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
         s32 number_of_image_layers = 0;
         for (int i = 0; i < 5000; i++)
@@ -798,13 +797,13 @@ static GimpValueArray*  thp_image_magic_resize_run(
             else
                 break;
         }
-        */
 
         // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
-        for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
+        for (s32 layer_index = 0; layer_index < number_of_image_layers; layer_index++)
         {
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
-            GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+            // GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+            GimpLayer* layer = image_layers[layer_index];
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
