@@ -160,6 +160,14 @@ static GimpValueArray*  thpimageresize_run(
                             gpointer run_data
                         );
 */
+static GimpValueArray*  thp_layer_magic_resize_run(
+                            GimpProcedure* procedure,
+                            GimpRunMode run_mode,
+                            GimpImage* image,
+                            GimpDrawable** drawables,
+                            GimpProcedureConfig* config,
+                            gpointer run_data
+                        );
 static GimpValueArray*  thp_image_magic_resize_run(
                             GimpProcedure* procedure,
                             GimpRunMode run_mode,

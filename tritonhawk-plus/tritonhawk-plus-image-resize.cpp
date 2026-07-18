@@ -81,7 +81,8 @@ static GList* thpimageresize_query_procedures(GimpPlugIn* plug_in)
     // List = g_list_append(List, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Deflate));
     // List = g_list_append(List, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Enchant));
 
-    GList *List = g_list_append(NULL, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Resize));
+    GList *List = g_list_append(NULL, g_strdup(THP_PLUG_IN_PROCESS_Layer_Magic_Resize));
+    List = g_list_append(List, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Resize));
     List = g_list_append(List, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Deflate));
     List = g_list_append(List, g_strdup(THP_PLUG_IN_PROCESS_Image_Magic_Enchant));
 
@@ -94,7 +95,42 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
 {
     GimpProcedure *procedure = NULL;
 
-    if (g_strcmp0 (name, THP_PLUG_IN_PROCESS_Image_Magic_Resize) == 0)
+    if (g_strcmp0 (name, THP_PLUG_IN_PROCESS_Layer_Magic_Resize) == 0)
+    {
+        procedure = gimp_image_procedure_new(
+            plug_in,
+            name,
+            GIMP_PDB_PROC_TYPE_PLUGIN,
+            thp_layer_magic_resize_run,
+            NULL,
+            NULL
+        );
+
+        gimp_procedure_set_image_types(procedure, "RGB,RGBA");
+        gimp_procedure_set_sensitivity_mask(procedure, 0);
+        gimp_procedure_set_menu_label(procedure, _(THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize));
+        gimp_procedure_set_icon_name(procedure, GIMP_ICON_GEGL);
+        gimp_procedure_add_menu_path(procedure, THP_PLUG_IN_MENU_PATH_Layer_Magic_Resize);
+
+        gimp_procedure_set_documentation(
+            procedure,
+            _(THP_PLUG_IN_DOCUMENTATION_BLURB_Layer_Magic_Resize),
+            g_strdup_printf(
+                _("%s" "\n"
+                  "Uses 128-bit floating-point math for processing, multi-threaded."
+                  ),
+                THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Layer_Magic_Resize
+            ),
+            THP_PLUG_IN_PROCESS_Layer_Magic_Resize
+        );
+        gimp_procedure_set_attribution(
+            procedure,
+            PLUG_IN_AUTHOR,
+            PLUG_IN_COPYRIGHT,
+            PLUG_IN_DATE
+        );
+    }
+    else if (g_strcmp0 (name, THP_PLUG_IN_PROCESS_Image_Magic_Resize) == 0)
     {
         procedure = gimp_image_procedure_new(
             plug_in,
@@ -300,6 +336,7 @@ static GimpProcedure* thpimageresize_create_procedure(GimpPlugIn* plug_in, const
     return procedure;
 }
 
+#include "tritonhawk-plus-layer-magical-resize.hpp"
 #include "tritonhawk-plus-image-magical-resize.hpp"
 #include "tritonhawk-plus-image-magical-deflate.hpp"
 #include "tritonhawk-plus-image-magical-enchant.hpp"

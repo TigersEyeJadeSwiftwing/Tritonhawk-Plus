@@ -456,6 +456,7 @@
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-resize.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-resize.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-layer-magical-resize.hpp" />
 		<Extensions>
 			<DoxyBlocks>
 				<comment_style block="0" line="0" />

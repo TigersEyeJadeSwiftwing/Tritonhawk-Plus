@@ -82,6 +82,7 @@ namespace TritonhawkPlus
         RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_VERTICAL_V2,
         RUN_MODE_RESIZE__KEEP_ASPECT_SAME_HORIZONTAL_V2,
+        RUN_MODE_RESIZE__SINGLE_LAYER_V2,
 
         RUN_MODE__MAX_COUNT
     };
@@ -169,8 +170,8 @@ namespace TritonhawkPlus
         SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
         f128 sample_grid_weighting = 0._q;
-        u64 chunk_size_kilo = 100uL;
-        u64 chunk_size_default = 1000uL * 100uL;
+        u64 chunk_size_kilo = 5uLL;
+        u64 chunk_size_default = 5000uLL;
         u64 chunk_size_samples = 1u;
         u64 chunk_size_pixels = 1u;
         u64 number_chunks = 1u;

@@ -175,16 +175,18 @@ namespace TritonhawkPlus
             sample_grid_shape_x = SAMPLE_GRID_SHAPE_Circle;
             sample_grid_shape_y = SAMPLE_GRID_SHAPE_Circle;
 
-            if (input_size_x > output_size_x)
+            if (input_size_x >= output_size_x)
                 sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
-            if (input_size_y > output_size_y)
+            if (input_size_y >= output_size_y)
                 sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
 
+            /*
             if ((input_size_x == output_size_x) && (input_size_y == output_size_y))
             {
                 sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
                 sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
             }
+            */
         }
         else
         {

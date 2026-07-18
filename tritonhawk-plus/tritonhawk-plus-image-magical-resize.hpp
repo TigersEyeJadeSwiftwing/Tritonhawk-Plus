@@ -21,8 +21,8 @@ https://www.gimp.org/
 that are part of this project, the ones with this copyright notice and such are also
 licensed under the GPL version 3 license. */
 
-#ifndef THP_PLUG_IN_RESIZE
-#define THP_PLUG_IN_RESIZE
+#ifndef THP_PLUG_IN_IMAGE_RESIZE
+#define THP_PLUG_IN_IMAGE_RESIZE
 
 static GimpValueArray*  thp_image_magic_resize_run(
                             GimpProcedure* procedure,
@@ -40,7 +40,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
     int max_threads = omp_get_max_threads();
     int pref_threads = (int)gimp_get_num_processors();
     int enabled_threads = std::min(max_threads, pref_threads);
-    enabled_threads = max_threads * 2;
+    enabled_threads = max_threads;
     omp_set_num_threads(enabled_threads);
 
     gint new_size_x =               gint(256);
@@ -788,6 +788,18 @@ static GimpValueArray*  thp_image_magic_resize_run(
         GList* image_layer_list = gimp_image_list_layers(image);
         s32 layer_count = (s32) drawable_count;
 
+        /*
+        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
+        s32 number_of_image_layers = 0;
+        for (int i = 0; i < 5000; i++)
+        {
+            if (image_layers[i])
+                number_of_image_layers++;
+            else
+                break;
+        }
+        */
+
         // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
         for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
         {
@@ -845,6 +857,9 @@ static GimpValueArray*  thp_image_magic_resize_run(
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
         g_list_free(image_layer_list);
+
+        g_free(image_layers);
+
         // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
         // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
