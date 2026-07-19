@@ -1,25 +1,17 @@
-/*  Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
-    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
-GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
-middle name is "Jade", and "Swiftwing" is one word that is my last name.
-    Tritonhawk-Plus is a creation of Tiger's Eye Jade Swiftwing, also known as
-Tiger J. Swiftwing, Tiger Swiftwing, and a few other versions of my name...
-    This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.  This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-details.  You should have received a copy of the GNU General Public License along
-with this program. If not, see <https://www.gnu.org/licenses/>.
-    This file is part of the open-source Tritonhawk-Plus project(s), located at:
-https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
-    This software is one or more plug-ins for the open-source graphics and image
-software editing and creation programs known as GIMP.  GIMP can be found at:
+/*  Copyright (c) Tiger's Eye Jade Swiftwing, Master Tiger Dragon, Zarakite, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words),
+my middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    Tritonhawk-Plus is a creation of myself, Tiger's Eye Jade Swiftwing, also known as Tiger J. Swiftwing, Tiger Swiftwing, and a few other versions of my name.....
+    I'm an American tiger dragon, SS# 287-74-8719.
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+    This file is part of the open-source Tritonhawk-Plus project(s), located at: https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
+    This software is one or more plug-ins for the open-source graphics and image software editing and creation programs known as GIMP.  GIMP can be found at:
 https://www.gimp.org/
-    If you want to borrow any of the source code from the custom math library .inl files
-that are part of this project, the ones with this copyright notice and such are also
-licensed under the GPL version 3 license. */
+    If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
+are also licensed under the GPL version 3 license.  */
 
 #ifndef THP_PLUG_IN_LAYER_RESIZE
 #define THP_PLUG_IN_LAYER_RESIZE
@@ -85,12 +77,13 @@ static GimpValueArray*  thp_layer_magic_resize_run(
             break;
     }
 
-    // Get the total number of drawables in the image.
-    s32 number_of_drawables = 0;
+    // Get the total number of total layers in the image.
+    GimpLayer** layers = gimp_image_get_layers((GimpImage*)image);
+    s32 number_of_layers = 0;
     for (int i = 0; i < 5000; i++)
     {
-        if (drawables[i])
-            number_of_drawables++;
+        if (layers[i])
+            number_of_layers++;
         else
             break;
     }
@@ -252,7 +245,7 @@ static GimpValueArray*  thp_layer_magic_resize_run(
             else
                 Thp_resize_layer_RGB(Params, layer);
 
-            if (number_of_drawables == 1)
+            if (number_of_layers == 1)
                 gimp_image_resize(
                     image,
                     (gint)Params->output_size_x, (gint)Params->output_size_y,
@@ -432,7 +425,7 @@ static GimpValueArray*  thp_layer_magic_resize_run(
         else
             Thp_resize_layer_RGB(Params, layer);
 
-        if (number_of_drawables == 1)
+        if (number_of_layers == 1)
             gimp_image_resize(
                 image,
                 (gint)Params->output_size_x, (gint)Params->output_size_y,

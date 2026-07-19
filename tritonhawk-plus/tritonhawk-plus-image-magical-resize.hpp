@@ -1,25 +1,17 @@
-/*  Copyright (c) Tiger's Eye Jade Swiftwing, all rights reserved.
-    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the
-GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words), my
-middle name is "Jade", and "Swiftwing" is one word that is my last name.
-    Tritonhawk-Plus is a creation of Tiger's Eye Jade Swiftwing, also known as
-Tiger J. Swiftwing, Tiger Swiftwing, and a few other versions of my name...
-    This program is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free Software
-Foundation, either version 3 of the License, or (at your option) any later
-version.  This program is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
-details.  You should have received a copy of the GNU General Public License along
-with this program. If not, see <https://www.gnu.org/licenses/>.
-    This file is part of the open-source Tritonhawk-Plus project(s), located at:
-https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
-    This software is one or more plug-ins for the open-source graphics and image
-software editing and creation programs known as GIMP.  GIMP can be found at:
+/*  Copyright (c) Tiger's Eye Jade Swiftwing, Master Tiger Dragon, Zarakite, all rights reserved.
+    This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words),
+my middle name is "Jade", and "Swiftwing" is one word that is my last name.
+    Tritonhawk-Plus is a creation of myself, Tiger's Eye Jade Swiftwing, also known as Tiger J. Swiftwing, Tiger Swiftwing, and a few other versions of my name.....
+    I'm an American tiger dragon, SS# 287-74-8719.
+    This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software
+Foundation, either version 3 of the License, or (at your option) any later version.  This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.  You should have received a copy of the GNU General Public License along with this program. If not, see <https://www.gnu.org/licenses/>.
+    This file is part of the open-source Tritonhawk-Plus project(s), located at: https://github.com/TigersEyeJadeSwiftwing/Tritonhawk-Plus
+    This software is one or more plug-ins for the open-source graphics and image software editing and creation programs known as GIMP.  GIMP can be found at:
 https://www.gimp.org/
-    If you want to borrow any of the source code from the custom math library .inl files
-that are part of this project, the ones with this copyright notice and such are also
-licensed under the GPL version 3 license. */
+    If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
+are also licensed under the GPL version 3 license.  */
 
 #ifndef THP_PLUG_IN_IMAGE_RESIZE
 #define THP_PLUG_IN_IMAGE_RESIZE
@@ -80,13 +72,41 @@ static GimpValueArray*  thp_image_magic_resize_run(
     old_size_y = gimp_image_get_height(image);
 
     s32 drawable_count = 0;
-    GList* layer_list_check = gimp_image_list_layers(image);
-    drawable_count = (s32) g_list_length(layer_list_check);
-    g_list_free(layer_list_check);
+    // GList* layer_list_check = gimp_image_list_layers(image);
+    // drawable_count = (s32) g_list_length(layer_list_check);
+    // g_list_free(layer_list_check);
 
     GList* layer_list_image = NULL;
     GList* layer_list_image_copy = NULL;
     GimpImage* image_copy = NULL;
+
+    /*
+    // Get the current, selected layers (not the same thing as visible layers), and find out how many of them there
+    // are.  By the way, it is possible for a layer to be selected and not visible, which also happens.
+    GimpLayer** layers_selected = gimp_image_get_selected_layers((GimpImage*)image);
+    s32 number_of_selected_layers = 0;
+    for (int i = 0; i < 5000; i++)
+    {
+        if (layers_selected[i])
+            number_of_selected_layers++;
+        else
+            break;
+    }
+    */
+
+    // Get the total number of total layers in the image.
+    GimpLayer** layers = gimp_image_get_layers((GimpImage*)image);
+    s32 number_of_layers = 0;
+    for (int i = 0; i < 5000; i++)
+    {
+        if (layers[i])
+            number_of_layers++;
+        else
+            break;
+    }
+
+    drawable_count = number_of_layers;
+    g_free(layers);
 
     Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2;
     Params->hardware_max_threads = (s16)max_threads;
@@ -785,8 +805,8 @@ static GimpValueArray*  thp_image_magic_resize_run(
         gimp_image_undo_group_start(image);
 
         // Figure out the number of layers in the image to iterate through and process.
-        GList* image_layer_list = gimp_image_list_layers(image);
-        s32 layer_count = (s32) drawable_count;
+        // GList* image_layer_list = gimp_image_list_layers(image);
+        // s32 layer_count = (s32) drawable_count;
 
         GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
         s32 number_of_image_layers = 0;
@@ -809,10 +829,12 @@ static GimpValueArray*  thp_image_magic_resize_run(
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
-                GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
-                gimp_rasterizable_rasterize((GimpRasterizable*)layer_text);
-                layer = (GimpLayer*)layer_text;
-                layer_drawable = (GimpDrawable*)layer;
+                // GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+                // GimpTextLayer* layer_text = (GimpTextLayer*)layer;
+                // gimp_rasterizable_rasterize((GimpRasterizable*)layer_text);
+                gimp_rasterizable_rasterize((GimpRasterizable*)layer);
+                // layer = (GimpLayer*)layer_text;
+                // layer_drawable = (GimpDrawable*)layer;
             }
 
             // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
@@ -820,7 +842,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
             // for the GUI display.
             if (Params->gui_enabled == true)
             {
-                f64 progress_start = f64(layer_index) / f64(layer_count);
+                f64 progress_start = f64(layer_index) / f64(number_of_image_layers);
                 Params->progress_start = (f64)progress_start;
                 Params->progress_end = f64(progress_start + progress_size);
 
@@ -855,7 +877,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
         } // END of looping through all layers of the image.
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-        g_list_free(image_layer_list);
+        // g_list_free(image_layer_list);
 
         g_free(image_layers);
 
