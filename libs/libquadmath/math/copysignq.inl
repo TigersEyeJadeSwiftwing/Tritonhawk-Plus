@@ -24,12 +24,12 @@ static HOT_INLINE f128 copysignq(const f128 x, const f128 y) noexcept
 {
     if (invalidq(x) || invalidq(y)) return x;
 
-    if (x < 0._q)
+    if (x < 0.q)
     {
-        return (y < 0._q) ? x : -x;
+        return (y < 0.q) ? x : -x;
     }
     else
     {
-        return (y < 0._q) ? -x : x;
+        return (y < 0.q) ? -x : x;
     }
 }

@@ -24,6 +24,7 @@ using clock_log = std::chrono::steady_clock;
 
 namespace TritonhawkPlus
 {
+    TARGET_CLONES
     f64 ThpLog::GetTimeMS()
     {
         /*
@@ -39,10 +40,12 @@ namespace TritonhawkPlus
         timer_time_point = current_time;
         return time_ms;
     }
+    TARGET_CLONES
     void ThpLog::SetTimerStart()
     {
         timer_procedure_start = clock_log::now();
     }
+    TARGET_CLONES
     f64 ThpLog::GetTimerElapsedMS()
     {
         std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
@@ -76,6 +79,7 @@ namespace TritonhawkPlus
         timer_time_point = clock_log::now();
     }
 
+    TARGET_CLONES
     void ThpLog::Run1(gchar* log_message)
     {
         if (!gui_gtk_textlabel_1) return;
@@ -92,6 +96,7 @@ namespace TritonhawkPlus
             if (elapsed_time >= time_loopbreaker_fast) break;
         }
     }
+    TARGET_CLONES
     void ThpLog::Run2(gchar* log_message, f64 percent_completed)
     {
         if (!gui_gtk_textlabel_1) return;
@@ -142,6 +147,7 @@ namespace TritonhawkPlus
             if (GetTimerElapsedMS() >= elapsed_time_loopbreaking) break;
         }
     }
+    TARGET_CLONES
     void ThpLog::RunLogging(gchar* log_message)
     {
         if (console_logging)

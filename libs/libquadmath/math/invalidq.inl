@@ -14,9 +14,6 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-#include "isnanq.inl"
-#include "isinfq.inl"
-
 /** \brief Determines if a number is NAN or infinity.
  *
  * \param x (f128) The number to check for being NAN and-or infinity.
@@ -25,6 +22,12 @@ are also licensed under the GPL version 3 license.  */
 static HOT_INLINE int invalidq(const f128 x) noexcept
 {
     return (__builtin_isnan(x) || __builtin_isinf(x));
+    /*
+    u64 hi, lo;
+    GET_FLT128_WORDS64(hi, lo, x);
+    int exp = int((hi >> 48) & 0x7FFF);
+    return exp == 0x7FFF;  // ±Inf or NaN
+    */
 }
 
 /** \brief Determines if a number is NAN or infinity.

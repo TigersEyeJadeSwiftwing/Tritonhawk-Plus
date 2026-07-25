@@ -14,9 +14,9 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-#include "roundq.inl"
-#include "fmodq.inl"
-#include "powq.inl"
+// #include "roundq.inl"
+// #include "fmodq.inl"
+// #include "powq.inl"
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
@@ -83,11 +83,11 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
         pow10 = POW10_NEG[-digits];
     }
 
-    if (invalidq(pow10)) return 0._q;
+    if (invalidq(pow10)) return 0.q;
 
     pow10_x00tiny *= pow10;
 
-    if (invalidq(pow10_x00tiny)) return 0._q;
+    if (invalidq(pow10_x00tiny)) return 0.q;
 
     f128 result = f128(pow10_x00tiny) + f128(x) - (f128)fmodq( f128(x), (f128)pow10 );
 

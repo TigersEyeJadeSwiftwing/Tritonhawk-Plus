@@ -159,8 +159,8 @@ static GimpValueArray*  thp_image_magic_deflate_run(
         Params->output_size_x = (u64)1uL;
         Params->output_size_y = (u64)1uL;
         Params->sample_grid_shape = SAMPLE_GRID_SHAPE_Square;
-        Params->sample_interpolation_x = 0.0_q;
-        Params->sample_interpolation_y = 0.0_q;
+        Params->sample_interpolation_x = 0.0q;
+        Params->sample_interpolation_y = 0.0q;
         Combo_Size_Widget->SyncDataFromParameters();
 
         gtk_window_set_default_size(GTK_WINDOW (Program_Dialog), -1, -1);
@@ -251,19 +251,19 @@ static GimpValueArray*  thp_image_magic_deflate_run(
         Params->output_size_y = (u64)1uL;
         Params->seamless_x = false;
         Params->seamless_y = false;
-        Params->sample_count_adjustment = 1.0_q;
+        Params->sample_count_adjustment = 1.0q;
         Params->sample_grid_width_percent = 100.0;
         Params->sample_grid_height_percent = 100.0;
-        Params->image_ratio_x = 1.0_q;
-        Params->image_ratio_y = 1.0_q;
-        Params->sample_grid_scale_x = 1.0_q;
-        Params->sample_grid_scale_y = 1.0_q;
-        Params->sample_interpolation_x = 0.0_q;
-        Params->sample_interpolation_y = 0.0_q;
+        Params->image_ratio_x = 1.0q;
+        Params->image_ratio_y = 1.0q;
+        Params->sample_grid_scale_x = 1.0q;
+        Params->sample_grid_scale_y = 1.0q;
+        Params->sample_interpolation_x = 0.0q;
+        Params->sample_interpolation_y = 0.0q;
         Params->sample_grid_shape = SAMPLE_GRID_SHAPE_Square;
         Params->sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         Params->sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
-        Params->sample_grid_weighting = 0._q;
+        Params->sample_grid_weighting = 0.q;
         Params->chunk_size_kilo = (u64)5uL;
         Params->chunk_size_default = (u64)5000uL;
         Params->layer_is_full_frame = true;
@@ -476,12 +476,12 @@ static GimpValueArray*  thp_image_magic_deflate_run(
                 Params->in_frame_max_x = (u64)offset_x + Params->in_frame_size_x;
                 Params->in_frame_max_y = (u64)offset_y + Params->in_frame_size_y;
 
-                // f128 out_frame_size_x_f = ceilq((f128)Params->in_frame_size_x * (f128)Params->image_ratio_x) + 0.1_q;
-                // f128 out_frame_size_y_f = ceilq((f128)Params->in_frame_size_y * (f128)Params->image_ratio_y) + 0.1_q;
+                // f128 out_frame_size_x_f = ceilq((f128)Params->in_frame_size_x * (f128)Params->image_ratio_x) + 0.1q;
+                // f128 out_frame_size_y_f = ceilq((f128)Params->in_frame_size_y * (f128)Params->image_ratio_y) + 0.1q;
                 f128 out_frame_min_x_f = f128((f128)Params->out_frame_min_x * (f128)Params->image_ratio_x);
-                f128 out_frame_max_x_f = ceilq((f128)Params->out_frame_max_x * (f128)Params->image_ratio_x) + 0.1_q;
+                f128 out_frame_max_x_f = ceilq((f128)Params->out_frame_max_x * (f128)Params->image_ratio_x) + 0.1q;
                 f128 out_frame_min_y_f = f128((f128)Params->out_frame_min_y * (f128)Params->image_ratio_y);
-                f128 out_frame_max_y_f = ceilq((f128)Params->out_frame_max_y * (f128)Params->image_ratio_y) + 0.1_q;
+                f128 out_frame_max_y_f = ceilq((f128)Params->out_frame_max_y * (f128)Params->image_ratio_y) + 0.1q;
 
                 Params->out_frame_min_x = clamp( (u64)out_frame_min_x_f, 0uL, Params->output_size_x );
                 Params->out_frame_max_x = clamp( (u64)out_frame_max_x_f, 0uL, Params->output_size_x );

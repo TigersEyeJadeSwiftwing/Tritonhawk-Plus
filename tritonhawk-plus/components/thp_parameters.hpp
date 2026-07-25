@@ -87,21 +87,21 @@ namespace TritonhawkPlus
 
     struct SampleGridElement
     {
-        f128 x = 0._q;
-        f128 y = 0._q;
-        f128 weight = 1._q;
+        f128 x = 0.q;
+        f128 y = 0.q;
+        f128 weight = 1.q;
 
         SampleGridElement()
         {
-            x = 0._q;
-            y = 0._q;
-            weight = 1._q;
+            x = 0.q;
+            y = 0.q;
+            weight = 1.q;
         }
         SampleGridElement(f128 px, f128 py)
         {
             x = px;
             y = py;
-            weight = 1._q;
+            weight = 1.q;
         }
         SampleGridElement(f128 px, f128 py, f128 pw)
         {
@@ -119,6 +119,7 @@ namespace TritonhawkPlus
         RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
         LAYERS_TO_PROCESS layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
         IMAGES_TO_PROCESS images_to_process = IMAGES_TO_PROCESS__CURRENT;
+        bool multiple_image_layers = false;
         s16 hardware_max_threads = 16;
         s16 preferences_max_threads = 16;
         s16 number_threads = 5000;
@@ -127,26 +128,26 @@ namespace TritonhawkPlus
         s32 draw_count = 0;
         bool seamless_x = false;
         bool seamless_y = false;
-        f128 sample_count_adjustment = 1.0_q;
+        f128 sample_count_adjustment = 1.0q;
         f64 sample_grid_height_percent = 100.0;
         f64 sample_grid_width_percent = 100.0;
         u64 sample_count_x = 1u;
         u64 sample_count_y = 1u;
         u64 sample_count_xy = 1u;
         u64 total_samples = 1u;
-        f128 image_ratio_x = 1.0_q;
-        f128 image_ratio_y = 1.0_q;
-        f128 image_ratio_xy = 1.0_q;
-        f128 sample_grid_scale_x = 1.0_q;
-        f128 sample_grid_scale_y = 1.0_q;
-        f128 sample_grid_offset_x = 0.0_q;
-        f128 sample_grid_offset_y = 0.0_q;
-        f128 sample_interpolation_x = 1.0_q;
-        f128 sample_interpolation_y = 1.0_q;
+        f128 image_ratio_x = 1.0q;
+        f128 image_ratio_y = 1.0q;
+        f128 image_ratio_xy = 1.0q;
+        f128 sample_grid_scale_x = 1.0q;
+        f128 sample_grid_scale_y = 1.0q;
+        f128 sample_grid_offset_x = 0.0q;
+        f128 sample_grid_offset_y = 0.0q;
+        f128 sample_interpolation_x = 1.0q;
+        f128 sample_interpolation_y = 1.0q;
         SAMPLE_GRID_SHAPE sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         SAMPLE_GRID_SHAPE sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         SAMPLE_GRID_SHAPE sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
-        f128 sample_grid_weighting = 0._q;
+        f128 sample_grid_weighting = 0.q;
         u64 chunk_size_kilo = 5uLL;
         u64 chunk_size_default = 5000uLL;
         u64 chunk_size_samples = 1u;

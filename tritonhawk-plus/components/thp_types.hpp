@@ -30,6 +30,10 @@ are also licensed under the GPL version 3 license.  */
     #define HOT_INLINE inline __attribute__((always_inline, hot))
 #endif
 
+#ifndef TARGET_CLONES
+    #define TARGET_CLONES __attribute__((target_clones( "arch=x86-64-v3,arch=x86-64-v4,arch=corei7,arch=corei7-avx,arch=atom,arch=sandybridge,sse2,sse4.1,sse4.2,avx2,default" )))
+#endif // TARGET_CLONES
+
 namespace TritonhawkPlus {};
 namespace quadmath {};
 namespace intmath {};
@@ -79,7 +83,7 @@ namespace TritonhawkPlus
             }
         #endif
 
-        constexpr f128 operator ""_q(long double x)
+        constexpr f128 operator ""q(long double x)
         {
             return static_cast<f128>(x);
         };
@@ -95,10 +99,12 @@ namespace TritonhawkPlus
         // const f128 test1 = 10.q;
         // const f128 test2 = test1 + 5.q;
 
-        constexpr __float128 operator ""_q(long double x)
+        /*
+        constexpr __float128 operator ""q(long double x)
         {
             return static_cast<__float128>(x);
         };
+        */
     #endif
 };
 

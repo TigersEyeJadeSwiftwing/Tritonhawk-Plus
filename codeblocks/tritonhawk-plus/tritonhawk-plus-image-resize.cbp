@@ -8,18 +8,17 @@
 		<Build>
 			<Target title="Clang64 LD128">
 				<Option platforms="Windows;" />
-				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus-image-resize/tritonhawk-plus-image-resize" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/clang64/" />
+				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus/tritonhawk-plus" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/clang64/cpp_long_double/" />
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-m64" />
-					<Add option="-O3" />
+					<Add option="-O2" />
 					<Add option="-Wall" />
-					<Add option="-std=gnu23" />
-					<Add option="-std=gnu++23" />
+					<Add option="-std=gnu26" />
+					<Add option="-std=gnu++26" />
 					<Add option="-march=x86-64-v3" />
-					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
@@ -71,15 +70,15 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
-					<Add option="-std=gnu23" />
-					<Add option="-std=gnu++23" />
+					<Add option="-s" />
+					<Add option="-std=gnu26" />
+					<Add option="-std=gnu++26" />
 					<Add option="-march=x86-64-v3" />
-					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
-					<Add option="-O3" />
+					<Add option="-O2" />
 					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
 					<Add option="-flto" />
@@ -137,18 +136,16 @@
 			</Target>
 			<Target title="Clang64 __float128">
 				<Option platforms="Windows;" />
-				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus-image-resize/tritonhawk-plus-image-resize" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/clang64/" />
+				<Option output="../../Gimp_3/Plug-ins/tritonhawk-plus/tritonhawk-plus" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/clang64/native_float128/" />
 				<Option type="0" />
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-m64" />
-					<Add option="-O3" />
+					<Add option="-O2" />
 					<Add option="-Wall" />
-					<Add option="-std=gnu23" />
-					<Add option="-std=gnu++23" />
+					<Add option="-std=gnu26 -std=gnu++26" />
 					<Add option="-march=x86-64-v3" />
-					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
@@ -200,15 +197,15 @@
 				</Compiler>
 				<Linker>
 					<Add option="-m64" />
-					<Add option="-std=gnu23" />
-					<Add option="-std=gnu++23" />
+					<Add option="-s" />
+					<Add option="-std=gnu26" />
+					<Add option="-std=gnu++26" />
 					<Add option="-march=x86-64-v3" />
-					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
-					<Add option="-O3" />
+					<Add option="-O2" />
 					<Add option="-mlong-double-128" />
 					<Add option="-fopenmp=libomp" />
 					<Add option="-flto" />
@@ -277,7 +274,6 @@
 					<Add option="-std=gnu23" />
 					<Add option="-std=gnu++23" />
 					<Add option="-march=x86-64-v3" />
-					<Add option="-mtune=generic" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
@@ -433,6 +429,8 @@
 		<Unit filename="../../libs/libquadmath/math/sinq.inl" />
 		<Unit filename="../../libs/libquadmath/math/sqrtq.inl" />
 		<Unit filename="../../libs/libquadmath/math/tanq.inl" />
+		<Unit filename="../../libs/libquadmath/math/test_roundddgq.inl" />
+		<Unit filename="../../libs/libquadmath/math/test_roundq.inl" />
 		<Unit filename="../../libs/libquadmath/math/to_intq.inl" />
 		<Unit filename="../../libs/libquadmath/math/truncq.inl" />
 		<Unit filename="../../libs/libquadmath/quadmath-config.hpp" />

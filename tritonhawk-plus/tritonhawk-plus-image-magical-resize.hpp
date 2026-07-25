@@ -108,6 +108,11 @@ static GimpValueArray*  thp_image_magic_resize_run(
     drawable_count = number_of_layers;
     g_free(layers);
 
+    if (number_of_layers == 1)
+        Params->multiple_image_layers = false;
+    else
+        Params->multiple_image_layers = true;
+
     Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_DIMENSIONS_V2;
     Params->hardware_max_threads = (s16)max_threads;
     Params->preferences_max_threads = (s16)pref_threads;
@@ -274,19 +279,19 @@ static GimpValueArray*  thp_image_magic_resize_run(
         Params->output_size_y = (u64)1uL;
         Params->seamless_x = false;
         Params->seamless_y = false;
-        Params->sample_count_adjustment = 1.0_q;
+        Params->sample_count_adjustment = 1.0q;
         Params->sample_grid_width_percent = 100.0;
         Params->sample_grid_height_percent = 100.0;
-        Params->image_ratio_x = 1.0_q;
-        Params->image_ratio_y = 1.0_q;
-        Params->sample_grid_scale_x = 1.0_q;
-        Params->sample_grid_scale_y = 1.0_q;
-        Params->sample_interpolation_x = 0.0_q;
-        Params->sample_interpolation_y = 0.0_q;
+        Params->image_ratio_x = 1.0q;
+        Params->image_ratio_y = 1.0q;
+        Params->sample_grid_scale_x = 1.0q;
+        Params->sample_grid_scale_y = 1.0q;
+        Params->sample_interpolation_x = 0.0q;
+        Params->sample_interpolation_y = 0.0q;
         Params->sample_grid_shape = SAMPLE_GRID_SHAPE_Square;
         Params->sample_grid_shape_x = SAMPLE_GRID_SHAPE_Square;
         Params->sample_grid_shape_y = SAMPLE_GRID_SHAPE_Square;
-        Params->sample_grid_weighting = 0._q;
+        Params->sample_grid_weighting = 0.q;
         Params->chunk_size_kilo = (u64)5uL;
         Params->chunk_size_default = (u64)5000uL;
         Params->layer_is_full_frame = true;
@@ -313,7 +318,76 @@ static GimpValueArray*  thp_image_magic_resize_run(
         Params->CalcAll();
     }
 
-    if (Params->run_mode == RUN_MODE_RESIZE__BASIC_OLD)
+    if (Params->multiple_image_layers == false)
+    {
+        // If the end-user uses the "undo" command for the image, everything from the "gimp_image_undo_group_start" function to
+        // the "gimp_image_undo_group_end" function will be a single undo operation, and also show up in GIMP's undo history as
+        // a single entry in a list of commands and operations on the image.
+        gimp_image_undo_group_start(image);
+
+        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
+
+        // Set pointers for the image's sole, single "layer" and the layer's "drawable", as GIMP calls them.
+        GimpLayer* layer = image_layers[0];
+        GimpDrawable* layer_drawable = (GimpDrawable*)layer;
+
+        gint offset_old_x = (gint) 0;
+        gint offset_old_y = (gint) 0;
+        gint offset_x = (gint) 0;
+        gint offset_y = (gint) 0;
+
+        // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
+        if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
+        {
+            gimp_rasterizable_rasterize((GimpRasterizable*)layer);
+        }
+
+        // Check if the current layer has any x or y dimension offset.  If it has any offset of either or both
+        // dimensions, set both to zero, for now.
+        if ( (offset_old_x != (gint)0) || (offset_old_y != (gint)0) )
+        {
+            gimp_layer_set_offsets(
+                layer,
+                (gint)0, (gint)0
+            );
+
+            offset_x = (gint)(f128( (f128)offset_old_x * (f128)Params->output_size_x / (f128)Params->input_size_x ));
+            offset_y = (gint)(f128( (f128)offset_old_y * (f128)Params->output_size_y / (f128)Params->input_size_y ));
+        }
+
+        // Update the paramaters with the information on what we're doing with this later of the image.
+        Params->draw_index = 0;
+        Params->CalcSampleGrid();
+        Params->CalcNumberOfChunks();
+        Params->CalcAll();
+
+        if (Params->gui_enabled == true)
+            Combo_Size_Widget->SyncDataFromParameters();
+
+        // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
+        if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
+            Thp_resize_layer_RGBA(Params, layer);
+        else
+            Thp_resize_layer_RGB(Params, layer);
+
+        gimp_image_resize(
+            image,
+            (gint)Params->output_size_x + (gint)offset_x, (gint)Params->output_size_y + (gint)offset_y,
+            (gint)0, (gint)0
+        );
+        if ( (offset_x != (gint)0) || (offset_y != (gint)0) )
+            gimp_layer_set_offsets(
+                layer,
+                (gint)offset_x, (gint)offset_y
+            );
+
+        g_free(image_layers);
+
+        // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
+        // as explained above (earlier in the source code).
+        gimp_image_undo_group_end(image);
+    }
+    else if (Params->run_mode == RUN_MODE_RESIZE__BASIC_OLD)
     {
         image_copy = gimp_image_duplicate (image);
         layer_list_image = gimp_image_list_layers(image);
@@ -498,12 +572,12 @@ static GimpValueArray*  thp_image_magic_resize_run(
                 Params->in_frame_max_x = (u64)offset_x + Params->in_frame_size_x;
                 Params->in_frame_max_y = (u64)offset_y + Params->in_frame_size_y;
 
-                // f128 out_frame_size_x_f = ceilq((f128)Params->in_frame_size_x * (f128)Params->image_ratio_x) + 0.1_q;
-                // f128 out_frame_size_y_f = ceilq((f128)Params->in_frame_size_y * (f128)Params->image_ratio_y) + 0.1_q;
+                // f128 out_frame_size_x_f = ceilq((f128)Params->in_frame_size_x * (f128)Params->image_ratio_x) + 0.1q;
+                // f128 out_frame_size_y_f = ceilq((f128)Params->in_frame_size_y * (f128)Params->image_ratio_y) + 0.1q;
                 f128 out_frame_min_x_f = f128((f128)Params->out_frame_min_x * (f128)Params->image_ratio_x);
-                f128 out_frame_max_x_f = ceilq((f128)Params->out_frame_max_x * (f128)Params->image_ratio_x) + 0.1_q;
+                f128 out_frame_max_x_f = ceilq((f128)Params->out_frame_max_x * (f128)Params->image_ratio_x) + 0.1q;
                 f128 out_frame_min_y_f = f128((f128)Params->out_frame_min_y * (f128)Params->image_ratio_y);
-                f128 out_frame_max_y_f = ceilq((f128)Params->out_frame_max_y * (f128)Params->image_ratio_y) + 0.1_q;
+                f128 out_frame_max_y_f = ceilq((f128)Params->out_frame_max_y * (f128)Params->image_ratio_y) + 0.1q;
 
                 Params->out_frame_min_x = clamp( (u64)out_frame_min_x_f, 0uL, Params->output_size_x );
                 Params->out_frame_max_x = clamp( (u64)out_frame_max_x_f, 0uL, Params->output_size_x );
@@ -570,13 +644,20 @@ static GimpValueArray*  thp_image_magic_resize_run(
         gimp_image_undo_group_start(image);
 
         // Figure out the number of layers in the image to iterate through and process.
-        GList* image_layer_list = gimp_image_list_layers(image);
-        s32 layer_count = (s32) drawable_count;
+        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
+        s32 number_of_image_layers = 0;
+        for (int i = 0; i < 5000; i++)
+        {
+            if (image_layers[i])
+                number_of_image_layers++;
+            else
+                break;
+        }
 
         // If the image isn't being resized from the original in either x or y dimensions, or both, this detects it and
         // takes it into account, to simplify the image processing.
-        f128 scale_x_f = 1.0_q;
-        f128 scale_y_f = 1.0_q;
+        f128 scale_x_f = 1.0q;
+        f128 scale_y_f = 1.0q;
         bool resize_equal_x = true;
         bool resize_equal_y = true;
         if (Params->output_size_x != Params->input_size_x)
@@ -591,19 +672,16 @@ static GimpValueArray*  thp_image_magic_resize_run(
         }
 
         // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
-        for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
+        for (s32 layer_index = 0; layer_index < number_of_image_layers; layer_index++)
         {
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
-            GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+            GimpLayer* layer = image_layers[layer_index];
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
-                GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
-                gimp_rasterizable_rasterize((GimpRasterizable*)layer_text);
-                layer = (GimpLayer*)layer_text;
-                layer_drawable = (GimpDrawable*)layer;
+                gimp_rasterizable_rasterize((GimpRasterizable*)layer);
             }
 
             // If the GUI is enabled, update the progress percentages completed, for both the current layer, and also
@@ -611,7 +689,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
             // for the GUI display.
             if (Params->gui_enabled == true)
             {
-                f64 progress_start = f64(layer_index) / f64(layer_count);
+                f64 progress_start = f64(layer_index) / f64(number_of_image_layers);
                 Params->progress_start = (f64)progress_start;
                 Params->progress_end = f64(progress_start + progress_size);
 
@@ -668,9 +746,6 @@ static GimpValueArray*  thp_image_magic_resize_run(
             if (Params->gui_enabled == true)
             {
                 Combo_Size_Widget->SyncDataFromParameters();
-                // Combo_Size_Widget->SetOriginalSize( (gint)Params->input_size_x, (gint)Params->input_size_y );
-                // Combo_Size_Widget->SetSizeX( new_size_x );
-                // Combo_Size_Widget->SetSizeY( new_size_y );
             }
 
             // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
@@ -703,7 +778,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
         } // END of looping through all layers of the image.
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-        g_list_free(image_layer_list);
+        g_free(image_layers);
         // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
         // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -822,7 +897,6 @@ static GimpValueArray*  thp_image_magic_resize_run(
         for (s32 layer_index = 0; layer_index < number_of_image_layers; layer_index++)
         {
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
-            // GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
             GimpLayer* layer = image_layers[layer_index];
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
@@ -877,10 +951,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
         } // END of looping through all layers of the image.
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-        // g_list_free(image_layer_list);
-
         g_free(image_layers);
-
         // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
         // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -1007,23 +1078,27 @@ static GimpValueArray*  thp_image_magic_resize_run(
         gimp_image_undo_group_start(image);
 
         // Figure out the number of layers in the image to iterate through and process.
-        GList* image_layer_list = gimp_image_list_layers(image);
-        s32 layer_count = (s32) drawable_count;
+        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
+        s32 number_of_image_layers = 0;
+        for (int i = 0; i < 5000; i++)
+        {
+            if (image_layers[i])
+                number_of_image_layers++;
+            else
+                break;
+        }
 
         // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
-        for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
+        for (s32 layer_index = 0; layer_index < number_of_image_layers; layer_index++)
         {
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
-            GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+            GimpLayer* layer = image_layers[layer_index];
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
-                GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
-                gimp_rasterizable_rasterize((GimpRasterizable*)layer_text);
-                layer = (GimpLayer*)layer_text;
-                layer_drawable = (GimpDrawable*)layer;
+                gimp_rasterizable_rasterize((GimpRasterizable*)layer);
             }
 
             // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
@@ -1057,7 +1132,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
             // for the GUI display.
             if (Params->gui_enabled == true)
             {
-                f64 progress_start = f64(layer_index) / f64(layer_count);
+                f64 progress_start = f64(layer_index) / f64(number_of_image_layers);
                 Params->progress_start = (f64)progress_start;
                 Params->progress_end = f64(progress_start + progress_size);
 
@@ -1094,7 +1169,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
         }
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-        g_list_free(image_layer_list);
+        g_free(image_layers);
         // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
         // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -1221,23 +1296,27 @@ static GimpValueArray*  thp_image_magic_resize_run(
         gimp_image_undo_group_start(image);
 
         // Figure out the number of layers in the image to iterate through and process.
-        GList* image_layer_list = gimp_image_list_layers(image);
-        s32 layer_count = (s32) drawable_count;
+        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)image);
+        s32 number_of_image_layers = 0;
+        for (int i = 0; i < 5000; i++)
+        {
+            if (image_layers[i])
+                number_of_image_layers++;
+            else
+                break;
+        }
 
         // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
-        for (s32 layer_index = 0; layer_index < layer_count; layer_index++)
+        for (s32 layer_index = 0; layer_index < number_of_image_layers; layer_index++)
         {
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
-            GimpLayer* layer = (GimpLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
+            GimpLayer* layer = image_layers[layer_index];
             GimpDrawable* layer_drawable = (GimpDrawable*)layer;
 
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
             {
-                GimpTextLayer* layer_text = (GimpTextLayer*)g_list_nth_data(image_layer_list, (guint)layer_index);
-                gimp_rasterizable_rasterize((GimpRasterizable*)layer_text);
-                layer = (GimpLayer*)layer_text;
-                layer_drawable = (GimpDrawable*)layer;
+                gimp_rasterizable_rasterize((GimpRasterizable*)layer);
             }
 
             // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
@@ -1271,7 +1350,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
             // for the GUI display.
             if (Params->gui_enabled == true)
             {
-                f64 progress_start = f64(layer_index) / f64(layer_count);
+                f64 progress_start = f64(layer_index) / f64(number_of_image_layers);
                 Params->progress_start = (f64)progress_start;
                 Params->progress_end = f64(progress_start + progress_size);
 
@@ -1310,7 +1389,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
         }
 
         // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-        g_list_free(image_layer_list);
+        g_free(image_layers);
         // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
         gimp_image_resize_to_layers(image);
         // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,

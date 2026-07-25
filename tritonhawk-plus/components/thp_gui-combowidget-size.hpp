@@ -173,6 +173,7 @@ namespace TritonhawkPlus
             // Bottom Row, master controls
             GtkWidget* Gui_Box_H_Row_Bottom = NULL;
                 GtkWidget* Gui_Button_Plugin_Run = NULL;
+                GtkWidget* Gui_Button_Plugin_Run_Single_Layer = NULL;
                 GtkWidget* Gui_Button_Plugin_Reset = NULL;
                 GtkWidget* Gui_Button_Plugin_Cancel = NULL;
             GtkWidget* Gui_Box_H_Row_Bottom_2 = NULL;
@@ -213,6 +214,7 @@ namespace TritonhawkPlus
         u16* button_pointer_seamless_x = NULL;
         u16* button_pointer_seamless_y = NULL;
         u16* button_pointer_run_plugin = NULL;
+        u16* button_pointer_run_plugin_single_layer = NULL;
         u16* button_pointer_cancel_plugin = NULL;
         u16* button_pointer_reset_plugin = NULL;
         u16* button_pointer_run_plugin_same_dimensions = NULL;
@@ -223,8 +225,8 @@ namespace TritonhawkPlus
 
         bool                    ignore_auto_changes = false;
         gboolean                chain_button_on = (gboolean) TRUE;
-        f128                    original_ratio_xy = 1.0_q;
-        f128                    locked_ratio_xy = 1.0_q;
+        f128                    original_ratio_xy = 1.0q;
+        f128                    locked_ratio_xy = 1.0q;
         gint                    original_x = (gint) 256;
         gint                    original_y = (gint) 256;
         gint                    size_x = (gint) 256;
@@ -235,7 +237,7 @@ namespace TritonhawkPlus
         gint                    threads_enabled = (gint) 16;
         gboolean                seamless_x = (gboolean) FALSE;
         gboolean                seamless_y = (gboolean) FALSE;
-        f128                    sample_grid_scale_locked_ratio_xy = 1.0_q;
+        f128                    sample_grid_scale_locked_ratio_xy = 1.0q;
         gdouble                 sample_grid_scale_x = (gdouble) 1.0;
         gdouble                 sample_grid_scale_y = (gdouble) 1.0;
         gboolean                chain_button_sample_interpolation_on = (gboolean) TRUE;
@@ -243,10 +245,10 @@ namespace TritonhawkPlus
         gdouble                 sample_interpolation_y = (gdouble) 1.0;
         string                  sample_interpolation_x_text = "";
         string                  sample_interpolation_y_text = "";
-        f128                    sample_interpolation_locked_ratio_xy = 1.0_q;
+        f128                    sample_interpolation_locked_ratio_xy = 1.0q;
         SAMPLE_GRID_SHAPE       sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
-        f128                    sample_grid_weighting = 0._q;
-        f128                    sample_count_adjustment = 1._q;
+        f128                    sample_grid_weighting = 0.q;
+        f128                    sample_count_adjustment = 1.q;
         u64                     chunk_size_kilo = 5uL;
 
         s8                     choices_done_result = 0;

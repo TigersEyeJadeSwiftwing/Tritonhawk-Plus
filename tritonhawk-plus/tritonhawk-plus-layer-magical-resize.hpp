@@ -189,8 +189,8 @@ static GimpValueArray*  thp_layer_magic_resize_run(
         Params->sample_grid_height_percent = (f64)100.0;
         Params->chunk_size_default = (u64)5000uLL;
         Params->chunk_size_kilo = (u64)10uLL;
-        Params->sample_interpolation_x = 0.0_q;
-        Params->sample_interpolation_y = 0.0_q;
+        Params->sample_interpolation_x = 0.0q;
+        Params->sample_interpolation_y = 0.0q;
         Params->CalcAll();
 
         if ( (Params->input_size_x == (u64)10uLL) && (Params->input_size_y == (u64)10uLL) )
@@ -428,7 +428,7 @@ static GimpValueArray*  thp_layer_magic_resize_run(
         if (number_of_layers == 1)
             gimp_image_resize(
                 image,
-                (gint)Params->output_size_x, (gint)Params->output_size_y,
+                (gint)Params->output_size_x + (gint)offset_x, (gint)Params->output_size_y + (gint)offset_y,
                 (gint)0, (gint)0
             );
         else if ( (offset_x != (gint)0) || (offset_y != (gint)0) )

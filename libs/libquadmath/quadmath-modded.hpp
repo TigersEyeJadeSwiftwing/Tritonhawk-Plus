@@ -99,6 +99,8 @@ namespace quadmath
 
     #include "isnanq.inl"
     #include "isinfq.inl"
+    // static HOT_INLINE f128 isnanq(const f128 x) noexcept { return (f128) __builtin_isnan(f128(x)); }
+    // static HOT_INLINE f128 isinfq(const f128 x) noexcept { return (f128) __builtin_isinf(f128(x)); }
     #include "invalidq.inl"
 
     // two-term split of 2/π = 0.636619772367581343075535053490057448137838582975…
@@ -116,6 +118,7 @@ namespace quadmath
       = 0x1.736cc9801a5bc01bbc775ed214f44bea8p-225q;
 
     #include "fmaq.inl"
+    // static HOT_INLINE f128 fmaq(const f128 x, const f128 y, const f128 z) noexcept { return (f128) fmal( f128(x), f128(y), f128(z) ); }
 
     //------------------------------------------------------------------------------
     // Polynomial kernels on |r| ≤ π/4
@@ -166,6 +169,27 @@ namespace quadmath
 
     #include "quadmath-imp.hpp"
 
+    #include "cosq.inl"
+    #include "fminq.inl"
+    #include "fmaxq.inl"
+    #include "sqrtq.inl"
+    #include "sinq.inl"
+    // static HOT_INLINE f128 cosq(const f128 x) noexcept { return (f128) sinq(f128(x) + M_PI_2q); }
+
+    /*
+    static HOT_INLINE f128 sinq(const f128 x) noexcept { return (f128) sinl(f128(x)); }
+    static HOT_INLINE f128 cosq(const f128 x) noexcept { return (f128) cosl(f128(x)); }
+    static HOT_INLINE f128 fminq(const f128 a, const f128 b) noexcept { return (f128) fminl( f128(a), f128(b) ); }
+    static HOT_INLINE f128 fmaxq(const f128 a, const f128 b) noexcept { return (f128) fmaxl( f128(a), f128(b) ); }
+    static HOT_INLINE f128 sqrtq(const f128 x) noexcept { return (f128) sqrtl( f128(x) ); }
+    static HOT_INLINE f128 powq(const f128 a, const f128 b) noexcept { return (f128) powl( f128(a), f128(b) ); }
+    static HOT_INLINE f128 roundq(const f128 x) noexcept { return (f128) roundl( f128(x) ); }
+    static HOT_INLINE f128 fmodq(const f128 a, const f128 b) noexcept { return (f128) fmodl( f128(a), f128(b) ); }
+    static HOT_INLINE f128 truncq(const f128 x) noexcept { return (f128) truncl(f128(x)); }
+    static HOT_INLINE f128 fabsq(const f128 x) noexcept { return (f128) fabsl(f128(x)); }
+    */
+
+    /*
     #include "ceilq.inl"
     #include "copysignq.inl"
     #include "cosq.inl"
@@ -192,6 +216,7 @@ namespace quadmath
 
     #include "tanq.inl"
     #include "truncq.inl"
+    */
 
     static HOT_INLINE f16 ceilfs(const f16 x) noexcept { return (f16) ceil(f64(x)); }
     static HOT_INLINE f16 copysignfs(const f16 x, const f16 y) noexcept { return (f16) copysignf(f32(x), f32(y)); }
@@ -216,6 +241,8 @@ namespace quadmath
     static HOT_INLINE f16 scalbnfs(const f16 a, const s64 exp) noexcept { return (f16) scalbn(f64(a), exp); }
     static HOT_INLINE f16 sinfs(const f16 x) noexcept { return (f16) sin(f64(x)); }
     static HOT_INLINE f16 sqrtfs(const f16 x) noexcept { return (f16) sqrt(f64(x)); }
+
+    // using namespace std;
 
     #include "clampq.inl"
     #include "distwarpq.inl"

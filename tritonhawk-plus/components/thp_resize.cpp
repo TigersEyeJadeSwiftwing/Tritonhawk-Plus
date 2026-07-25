@@ -35,6 +35,7 @@ extern ThpLog* Log;
 
 namespace TritonhawkPlus
 {
+    TARGET_CLONES
     void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
@@ -256,7 +257,7 @@ namespace TritonhawkPlus
                 u64 p1_y = pixel_index / new_x;
                 f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
                 f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
-                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_a = 0.0_q, s_accum_weight = 0.0_q;
+                f128 s_accum_r = 0.0q, s_accum_g = 0.0q, s_accum_b = 0.0q, s_accum_a = 0.0q, s_accum_weight = 0.0q;
 
                 #pragma omp parallel for \
                     shared( \
@@ -272,9 +273,9 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
                 for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
-                    f128 smp_grid_x = 0.0_q,
-                         smp_grid_y = 0.0_q,
-                         smp_weight = 1.0_q;
+                    f128 smp_grid_x = 0.0q,
+                         smp_grid_y = 0.0q,
+                         smp_weight = 1.0q;
 
                     #pragma omp atomic read
                     smp_grid_x = sample_grid_data.at(s_xy).x;
@@ -287,75 +288,75 @@ namespace TritonhawkPlus
                     f128 sample_position_y = sample_grid_center_y + smp_grid_y;
 
                     s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
-                    f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
+                    f128 lerp_x = 0.0q, lerp_y = 0.0q;
 
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oxs == 1)
                     {
-                        sample_position_x = 0.5_q;
+                        sample_position_x = 0.5q;
                         pos_x0 = 0;
                         pos_x1 = 0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000001_q)
+                    else if (sample_interpolation_x < 0.000001q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
                         pos_x1 = pos_x0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_x == true)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
-                        f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_x1 = (oxs + pos_x0 - 1) % oxs;
-                            lerp_x = 0.5_q - offcenter;
+                            lerp_x = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_x1 = (oxs + pos_x0 + 1) % oxs;
-                            lerp_x = offcenter - 0.5_q;
+                            lerp_x = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_x = clampq(sample_position_x, 0._q, oxf);
+                        sample_position_x = clampq(sample_position_x, 0.q, oxf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_x < 0.5_q)
+                        if (sample_position_x < 0.5q)
                         {
                             pos_x0 = 0;
                             pos_x1 = 0;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_x > oxf - 0.5_q)
+                        else if (sample_position_x > oxf - 0.5q)
                         {
                             pos_x0 = oxs - 1;
                             pos_x1 = oxs - 1;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         else
                         {
                             pos_x0 = to_intq(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
-                                lerp_x = 0.5_q - offcenter;
+                                lerp_x = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
-                                lerp_x = offcenter - 0.5_q;
+                                lerp_x = offcenter - 0.5q;
                             }
                         }
                     }
@@ -363,18 +364,18 @@ namespace TritonhawkPlus
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oys == 1)
                     {
-                        sample_position_y = 0.5_q;
+                        sample_position_y = 0.5q;
                         pos_y0 = 0;
                         pos_y1 = 0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.00005_q)
+                    else if (sample_interpolation_y < 0.00005q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
                         pos_y1 = pos_y0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_y == true)
@@ -382,62 +383,62 @@ namespace TritonhawkPlus
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
 
                         pos_y0 = to_intq(sample_position_y);
-                        f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_y1 = (oys + pos_y0 - 1) % oys;
-                            lerp_y = 0.5_q - offcenter;
+                            lerp_y = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_y1 = (oys + pos_y0 + 1) % oys;
-                            lerp_y = offcenter - 0.5_q;
+                            lerp_y = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_y = clampq(sample_position_y, 0._q, oyf);
+                        sample_position_y = clampq(sample_position_y, 0.q, oyf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_y < 0.5_q)
+                        if (sample_position_y < 0.5q)
                         {
                             pos_y0 = 0;
                             pos_y1 = 0;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_y > oyf - 0.5_q)
+                        else if (sample_position_y > oyf - 0.5q)
                         {
                             pos_y0 = oys - 1;
                             pos_y1 = oys - 1;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         else
                         {
                             pos_y0 = to_intq(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
-                                lerp_y = 0.5_q - offcenter;
+                                lerp_y = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
-                                lerp_y = offcenter - 0.5_q;
+                                lerp_y = offcenter - 0.5q;
                             }
                         }
                     }
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                        lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
+                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                        lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.
@@ -627,7 +628,7 @@ namespace TritonhawkPlus
                 } // END OpenMP-enabled for loop
 
                 // Calculate the final color values for the output pixel, from all of the samples that were added together and weighted.
-                if (s_accum_weight > 0.0_q)
+                if (s_accum_weight > 0.0q)
                 {
                     s_accum_r /= s_accum_weight;
                     s_accum_g /= s_accum_weight;
@@ -675,6 +676,7 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGBA()
 
 
+    TARGET_CLONES
     void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
@@ -865,7 +867,7 @@ namespace TritonhawkPlus
                 u64 p1_y = pixel_index / new_x;
                 f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
                 f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
-                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_weight = 0.0_q;
+                f128 s_accum_r = 0.0q, s_accum_g = 0.0q, s_accum_b = 0.0q, s_accum_weight = 0.0q;
 
                 #pragma omp parallel for \
                     shared( \
@@ -881,9 +883,9 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_weight)
                 for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
-                    f128 smp_grid_x = 0.0_q,
-                         smp_grid_y = 0.0_q,
-                         smp_weight = 1.0_q;
+                    f128 smp_grid_x = 0.0q,
+                         smp_grid_y = 0.0q,
+                         smp_weight = 1.0q;
 
                     #pragma omp atomic read
                     smp_grid_x = sample_grid_data.at(s_xy).x;
@@ -896,75 +898,75 @@ namespace TritonhawkPlus
                     f128 sample_position_y = sample_grid_center_y + smp_grid_y;
 
                     s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
-                    f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
+                    f128 lerp_x = 0.0q, lerp_y = 0.0q;
 
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oxs == 1)
                     {
-                        sample_position_x = 0.5_q;
+                        sample_position_x = 0.5q;
                         pos_x0 = 0;
                         pos_x1 = 0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000001_q)
+                    else if (sample_interpolation_x < 0.000001q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
                         pos_x1 = pos_x0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_x == true)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
-                        f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_x1 = (oxs + pos_x0 - 1) % oxs;
-                            lerp_x = 0.5_q - offcenter;
+                            lerp_x = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_x1 = (oxs + pos_x0 + 1) % oxs;
-                            lerp_x = offcenter - 0.5_q;
+                            lerp_x = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_x = clampq(sample_position_x, 0._q, oxf);
+                        sample_position_x = clampq(sample_position_x, 0.q, oxf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_x < 0.5_q)
+                        if (sample_position_x < 0.5q)
                         {
                             pos_x0 = 0;
                             pos_x1 = 0;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_x > oxf - 0.5_q)
+                        else if (sample_position_x > oxf - 0.5q)
                         {
                             pos_x0 = oxs - 1;
                             pos_x1 = oxs - 1;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         else
                         {
                             pos_x0 = to_intq(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
-                                lerp_x = 0.5_q - offcenter;
+                                lerp_x = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
-                                lerp_x = offcenter - 0.5_q;
+                                lerp_x = offcenter - 0.5q;
                             }
                         }
                     }
@@ -972,18 +974,18 @@ namespace TritonhawkPlus
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oys == 1)
                     {
-                        sample_position_y = 0.5_q;
+                        sample_position_y = 0.5q;
                         pos_y0 = 0;
                         pos_y1 = 0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.00001_q)
+                    else if (sample_interpolation_y < 0.00001q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
                         pos_y1 = pos_y0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_y == true)
@@ -991,62 +993,62 @@ namespace TritonhawkPlus
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
 
                         pos_y0 = to_intq(sample_position_y);
-                        f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_y1 = (oys + pos_y0 - 1) % oys;
-                            lerp_y = 0.5_q - offcenter;
+                            lerp_y = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_y1 = (oys + pos_y0 + 1) % oys;
-                            lerp_y = offcenter - 0.5_q;
+                            lerp_y = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_y = clampq(sample_position_y, 0._q, oyf);
+                        sample_position_y = clampq(sample_position_y, 0.q, oyf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_y < 0.5_q)
+                        if (sample_position_y < 0.5q)
                         {
                             pos_y0 = 0;
                             pos_y1 = 0;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_y > oyf - 0.5_q)
+                        else if (sample_position_y > oyf - 0.5q)
                         {
                             pos_y0 = oys - 1;
                             pos_y1 = oys - 1;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         else
                         {
                             pos_y0 = to_intq(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
-                                lerp_y = 0.5_q - offcenter;
+                                lerp_y = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
-                                lerp_y = offcenter - 0.5_q;
+                                lerp_y = offcenter - 0.5q;
                             }
                         }
                     }
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                        lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
+                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                        lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.
@@ -1203,7 +1205,7 @@ namespace TritonhawkPlus
                 } // END OpenMP-enabled for loop
 
                 // Calculate the final color values for the output pixel, from all of the samples that were added together and weighted.
-                if (s_accum_weight > 0.0_q)
+                if (s_accum_weight > 0.0q)
                 {
                     s_accum_r /= s_accum_weight;
                     s_accum_g /= s_accum_weight;
@@ -1247,6 +1249,7 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGB()
 
 
+    TARGET_CLONES
     void Thp_resize_layer_RGBA(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
@@ -1386,7 +1389,7 @@ namespace TritonhawkPlus
                 u64 p1_y = pixel_index / new_x;
                 f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
                 f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
-                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_a = 0.0_q, s_accum_weight = 0.0_q;
+                f128 s_accum_r = 0.0q, s_accum_g = 0.0q, s_accum_b = 0.0q, s_accum_a = 0.0q, s_accum_weight = 0.0q;
 
                 #pragma omp parallel for \
                     shared( \
@@ -1402,9 +1405,9 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_a, s_accum_weight)
                 for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
-                    f128 smp_grid_x = 0.0_q,
-                         smp_grid_y = 0.0_q,
-                         smp_weight = 1.0_q;
+                    f128 smp_grid_x = 0.0q,
+                         smp_grid_y = 0.0q,
+                         smp_weight = 1.0q;
 
                     #pragma omp atomic read
                     smp_grid_x = sample_grid_data.at(s_xy).x;
@@ -1417,75 +1420,75 @@ namespace TritonhawkPlus
                     f128 sample_position_y = sample_grid_center_y + smp_grid_y;
 
                     s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
-                    f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
+                    f128 lerp_x = 0.0q, lerp_y = 0.0q;
 
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oxs == 1)
                     {
-                        sample_position_x = 0.5_q;
+                        sample_position_x = 0.5q;
                         pos_x0 = 0;
                         pos_x1 = 0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000005_q)
+                    else if (sample_interpolation_x < 0.000005q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
                         pos_x1 = pos_x0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_x == true)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
-                        f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_x1 = (oxs + pos_x0 - 1) % oxs;
-                            lerp_x = 0.5_q - offcenter;
+                            lerp_x = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_x1 = (oxs + pos_x0 + 1) % oxs;
-                            lerp_x = offcenter - 0.5_q;
+                            lerp_x = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_x = clampq(sample_position_x, 0._q, oxf);
+                        sample_position_x = clampq(sample_position_x, 0.q, oxf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_x < 0.5_q)
+                        if (sample_position_x < 0.5q)
                         {
                             pos_x0 = 0;
                             pos_x1 = 0;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_x > oxf - 0.5_q)
+                        else if (sample_position_x > oxf - 0.5q)
                         {
                             pos_x0 = oxs - 1;
                             pos_x1 = oxs - 1;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         else
                         {
                             pos_x0 = to_intq(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
-                                lerp_x = 0.5_q - offcenter;
+                                lerp_x = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
-                                lerp_x = offcenter - 0.5_q;
+                                lerp_x = offcenter - 0.5q;
                             }
                         }
                     }
@@ -1493,18 +1496,18 @@ namespace TritonhawkPlus
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oys == 1)
                     {
-                        sample_position_y = 0.5_q;
+                        sample_position_y = 0.5q;
                         pos_y0 = 0;
                         pos_y1 = 0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.000005_q)
+                    else if (sample_interpolation_y < 0.000005q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
                         pos_y1 = pos_y0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_y == true)
@@ -1512,62 +1515,62 @@ namespace TritonhawkPlus
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
 
                         pos_y0 = to_intq(sample_position_y);
-                        f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_y1 = (oys + pos_y0 - 1) % oys;
-                            lerp_y = 0.5_q - offcenter;
+                            lerp_y = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_y1 = (oys + pos_y0 + 1) % oys;
-                            lerp_y = offcenter - 0.5_q;
+                            lerp_y = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_y = clampq(sample_position_y, 0._q, oyf);
+                        sample_position_y = clampq(sample_position_y, 0.q, oyf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_y < 0.5_q)
+                        if (sample_position_y < 0.5q)
                         {
                             pos_y0 = 0;
                             pos_y1 = 0;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_y > oyf - 0.5_q)
+                        else if (sample_position_y > oyf - 0.5q)
                         {
                             pos_y0 = oys - 1;
                             pos_y1 = oys - 1;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         else
                         {
                             pos_y0 = to_intq(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
-                                lerp_y = 0.5_q - offcenter;
+                                lerp_y = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
-                                lerp_y = offcenter - 0.5_q;
+                                lerp_y = offcenter - 0.5q;
                             }
                         }
                     }
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                        lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
+                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                        lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.
@@ -1757,7 +1760,7 @@ namespace TritonhawkPlus
                 } // END OpenMP-enabled for loop
 
                 // Calculate the final color values for the output pixel, from all of the samples that were added together and weighted.
-                if (s_accum_weight > 0.0_q)
+                if (s_accum_weight > 0.0q)
                 {
                     s_accum_r /= s_accum_weight;
                     s_accum_g /= s_accum_weight;
@@ -1803,7 +1806,7 @@ namespace TritonhawkPlus
         }
     } // END void Thp_resize_layer_RGBA()
 
-
+    TARGET_CLONES
     void Thp_resize_layer_RGB(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
@@ -1943,7 +1946,7 @@ namespace TritonhawkPlus
                 u64 p1_y = pixel_index / new_x;
                 f128 sample_grid_center_x = oxf * f128(p1_x) / f128(new_x);
                 f128 sample_grid_center_y = oyf * f128(p1_y) / f128(new_y);
-                f128 s_accum_r = 0.0_q, s_accum_g = 0.0_q, s_accum_b = 0.0_q, s_accum_weight = 0.0_q;
+                f128 s_accum_r = 0.0q, s_accum_g = 0.0q, s_accum_b = 0.0q, s_accum_weight = 0.0q;
 
                 #pragma omp parallel for \
                     shared( \
@@ -1959,9 +1962,9 @@ namespace TritonhawkPlus
                     reduction(+:s_accum_r, s_accum_g, s_accum_b, s_accum_weight)
                 for (u64 s_xy = 0uLL; s_xy < samples_total; s_xy++)
                 {
-                    f128 smp_grid_x = 0.0_q,
-                         smp_grid_y = 0.0_q,
-                         smp_weight = 1.0_q;
+                    f128 smp_grid_x = 0.0q,
+                         smp_grid_y = 0.0q,
+                         smp_weight = 1.0q;
 
                     #pragma omp atomic read
                     smp_grid_x = sample_grid_data.at(s_xy).x;
@@ -1974,75 +1977,75 @@ namespace TritonhawkPlus
                     f128 sample_position_y = sample_grid_center_y + smp_grid_y;
 
                     s32 pos_x0 = 0, pos_x1 = 0, pos_y0 = 0, pos_y1 = 0;
-                    f128 lerp_x = 0.0_q, lerp_y = 0.0_q;
+                    f128 lerp_x = 0.0q, lerp_y = 0.0q;
 
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oxs == 1)
                     {
-                        sample_position_x = 0.5_q;
+                        sample_position_x = 0.5q;
                         pos_x0 = 0;
                         pos_x1 = 0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000005_q)
+                    else if (sample_interpolation_x < 0.000005q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
                         pos_x1 = pos_x0;
-                        lerp_x = 0.0_q;
+                        lerp_x = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_x == true)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
-                        f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_x1 = (oxs + pos_x0 - 1) % oxs;
-                            lerp_x = 0.5_q - offcenter;
+                            lerp_x = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_x1 = (oxs + pos_x0 + 1) % oxs;
-                            lerp_x = offcenter - 0.5_q;
+                            lerp_x = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_x = clampq(sample_position_x, 0._q, oxf);
+                        sample_position_x = clampq(sample_position_x, 0.q, oxf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_x < 0.5_q)
+                        if (sample_position_x < 0.5q)
                         {
                             pos_x0 = 0;
                             pos_x1 = 0;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_x > oxf - 0.5_q)
+                        else if (sample_position_x > oxf - 0.5q)
                         {
                             pos_x0 = oxs - 1;
                             pos_x1 = oxs - 1;
-                            lerp_x = 0.0_q;
+                            lerp_x = 0.0q;
                         }
                         else
                         {
                             pos_x0 = to_intq(sample_position_x);
-                            f128 offcenter = fmodq(sample_position_x, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_x, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_x1 = clamp(pos_x0 - 1, 0, oxs - 1);
-                                lerp_x = 0.5_q - offcenter;
+                                lerp_x = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_x1 = clamp(pos_x0 + 1, 0, oxs - 1);
-                                lerp_x = offcenter - 0.5_q;
+                                lerp_x = offcenter - 0.5q;
                             }
                         }
                     }
@@ -2050,18 +2053,18 @@ namespace TritonhawkPlus
                     // If the original image dimension is only one pixel, this should be short, simple, and quick.
                     if (oys == 1)
                     {
-                        sample_position_y = 0.5_q;
+                        sample_position_y = 0.5q;
                         pos_y0 = 0;
                         pos_y1 = 0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.000005_q)
+                    else if (sample_interpolation_y < 0.000005q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
                         pos_y1 = pos_y0;
-                        lerp_y = 0.0_q;
+                        lerp_y = 0.0q;
                     }
                     // If we're wrapping seamlessly at the border, the sample position might loop around, and we interpolate.
                     else if (seamless_y == true)
@@ -2069,62 +2072,62 @@ namespace TritonhawkPlus
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
 
                         pos_y0 = to_intq(sample_position_y);
-                        f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                        f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                        if (offcenter < 0.5_q)
+                        if (offcenter < 0.5q)
                         {
                             pos_y1 = (oys + pos_y0 - 1) % oys;
-                            lerp_y = 0.5_q - offcenter;
+                            lerp_y = 0.5q - offcenter;
                         }
                         else
                         {
                             pos_y1 = (oys + pos_y0 + 1) % oys;
-                            lerp_y = offcenter - 0.5_q;
+                            lerp_y = offcenter - 0.5q;
                         }
                     }
                     // If we clamp to the borders and not wrap around, here we still interpolate.
                     else
                     {
-                        sample_position_y = clampq(sample_position_y, 0._q, oyf);
+                        sample_position_y = clampq(sample_position_y, 0.q, oyf);
 
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        if (sample_position_y < 0.5_q)
+                        if (sample_position_y < 0.5q)
                         {
                             pos_y0 = 0;
                             pos_y1 = 0;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         // If the sample is at the edge or close enough to it, clamp and simplify.
-                        else if (sample_position_y > oyf - 0.5_q)
+                        else if (sample_position_y > oyf - 0.5q)
                         {
                             pos_y0 = oys - 1;
                             pos_y1 = oys - 1;
-                            lerp_y = 0.0_q;
+                            lerp_y = 0.0q;
                         }
                         else
                         {
                             pos_y0 = to_intq(sample_position_y);
-                            f128 offcenter = fmodq(sample_position_y, 1.0_q);
+                            f128 offcenter = fmodq(sample_position_y, 1.0q);
 
-                            if (offcenter < 0.5_q)
+                            if (offcenter < 0.5q)
                             {
                                 pos_y1 = clamp(pos_y0 - 1, 0, oys - 1);
-                                lerp_y = 0.5_q - offcenter;
+                                lerp_y = 0.5q - offcenter;
                             }
                             else
                             {
                                 pos_y1 = clamp(pos_y0 + 1, 0, oys - 1);
-                                lerp_y = offcenter - 0.5_q;
+                                lerp_y = offcenter - 0.5q;
                             }
                         }
                     }
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005_q) && (pos_x0 != pos_x1))
-                        lerp_x = lerp_exp_inq(0.0_q, 1.0_q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005_q) && (pos_y0 != pos_y1))
-                        lerp_y = lerp_exp_inq(0.0_q, 1.0_q, lerp_y, sample_interpolation_y);
+                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                        lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
+                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                        lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
                     //   the "accum" or accumulation variables is simple and fast.
@@ -2281,7 +2284,7 @@ namespace TritonhawkPlus
                 } // END OpenMP-enabled for loop
 
                 // Calculate the final color values for the output pixel, from all of the samples that were added together and weighted.
-                if (s_accum_weight > 0.0_q)
+                if (s_accum_weight > 0.0q)
                 {
                     s_accum_r /= s_accum_weight;
                     s_accum_g /= s_accum_weight;

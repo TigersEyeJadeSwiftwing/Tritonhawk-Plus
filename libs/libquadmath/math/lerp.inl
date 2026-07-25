@@ -14,8 +14,6 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-#include "powq.inl"
-
 /** \brief Lerp function, basic, linear version that calculates a blend of one floating point number and another.
  *
  * \param a f128 Value to have all, none, or some of determine the output value.
