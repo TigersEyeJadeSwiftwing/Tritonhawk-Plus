@@ -26,7 +26,8 @@ static GimpValueArray*  thp_image_magic_deflate_run(
                         )
 {
     Log = new ThpLog();
-    ThpParams* Params = new ThpParams();
+    // ThpParams* Params = new ThpParams();
+    Params = new ThpParams();
     Params->process_name = (string)THP_PLUG_IN_PROCESS_Image_Magic_Deflate;
 
     int max_threads = omp_get_max_threads();

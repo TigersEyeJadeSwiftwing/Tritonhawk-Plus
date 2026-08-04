@@ -78,7 +78,7 @@ namespace TritonhawkPlus
     enum IMAGES_TO_PROCESS : u8
     {
         IMAGES_TO_PROCESS__CURRENT,
-        IMAGES_TO_PROCESS__ALL,
+        IMAGES_TO_PROCESS__ALL_OPEN_FILES,
         IMAGES_TO_PROCESS__FILE,
         IMAGES_TO_PROCESS__FILES_IN_FOLDER,
 
@@ -114,12 +114,20 @@ namespace TritonhawkPlus
     class ThpParams
     {
     public:
-        string process_name = "";
-        string info_string = "";
+        GimpProcedure* procedure = 0;
+        bool run_mode_interactive = false;
+        GimpImage* image = 0;
+        GimpDrawable** drawables = 0;
+        GimpProcedureConfig* config = 0;
+        gpointer run_data = 0;
+        string process_name = "(No process name in Parameters defined.)";
+        string info_string = "(No information text string in Parameters set.)";
+        string operation_result_string = "(No process result text string in Parameters set.)";
         RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
         LAYERS_TO_PROCESS layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
         IMAGES_TO_PROCESS images_to_process = IMAGES_TO_PROCESS__CURRENT;
         bool multiple_image_layers = false;
+        bool sample_grid_is_for_all_layers = true;
         s16 hardware_max_threads = 16;
         s16 preferences_max_threads = 16;
         s16 number_threads = 5000;
@@ -129,8 +137,8 @@ namespace TritonhawkPlus
         bool seamless_x = false;
         bool seamless_y = false;
         f128 sample_count_adjustment = 1.0q;
-        f64 sample_grid_height_percent = 100.0;
-        f64 sample_grid_width_percent = 100.0;
+        f128 sample_grid_height_percent = 100.0q;
+        f128 sample_grid_width_percent = 100.0q;
         u64 sample_count_x = 1u;
         u64 sample_count_y = 1u;
         u64 sample_count_xy = 1u;
@@ -138,6 +146,9 @@ namespace TritonhawkPlus
         f128 image_ratio_x = 1.0q;
         f128 image_ratio_y = 1.0q;
         f128 image_ratio_xy = 1.0q;
+        f128 layer_ratio_x = 1.0q;
+        f128 layer_ratio_y = 1.0q;
+        f128 layer_ratio_xy = 1.0q;
         f128 sample_grid_scale_x = 1.0q;
         f128 sample_grid_scale_y = 1.0q;
         f128 sample_grid_offset_x = 0.0q;
@@ -156,9 +167,21 @@ namespace TritonhawkPlus
         u64 input_size_x = 256uL;
         u64 input_size_y = 256uL;
         u64 input_size_xy = 256uL * 256uL;
+        u64 image_input_size_x = 256uL;
+        u64 image_input_size_y = 256uL;
+        u64 image_input_size_xy = 256uL * 256uL;
+        u64 layer_input_size_x = 256uL;
+        u64 layer_input_size_y = 256uL;
+        u64 layer_input_size_xy = 256uL * 256uL;
         u64 output_size_x = 256uL;
         u64 output_size_y = 256uL;
         u64 output_size_xy = 256uL * 256uL;
+        u64 image_output_size_x = 256uL;
+        u64 image_output_size_y = 256uL;
+        u64 image_output_size_xy = 256uL * 256uL;
+        u64 layer_output_size_x = 256uL;
+        u64 layer_output_size_y = 256uL;
+        u64 layer_output_size_xy = 256uL * 256uL;
         f64 progress_start = 0.0;
         f64 progress_end = 1.0;
         f64 progress_increment = 0.0;

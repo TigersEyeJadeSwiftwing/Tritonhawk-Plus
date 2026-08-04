@@ -65,13 +65,17 @@ namespace TritonhawkPlus
         sample_interpolation_y = 1.0q;
         sample_grid_shape = SAMPLE_GRID_SHAPE_Auto;
         sample_grid_weighting = 0.q;
-        run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
-        layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
-        images_to_process = IMAGES_TO_PROCESS__CURRENT;
+        // run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
+        // layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
+        // images_to_process = IMAGES_TO_PROCESS__CURRENT;
         chunk_size_kilo = 5uL;
         chunk_size_default = 1000uL * chunk_size_kilo;
         output_size_x = input_size_x;
         output_size_y = input_size_y;
+        image_output_size_x = image_input_size_x;
+        image_output_size_y = image_input_size_y;
+        layer_output_size_x = layer_input_size_x;
+        layer_output_size_y = layer_input_size_y;
         layer_is_full_frame = true;
 
         CalcAll();
@@ -79,13 +83,15 @@ namespace TritonhawkPlus
     void ThpParams::CalcAll()
     {
         CalcThreads();
+
         CalcNumberOfChunks();
         CalcSampleGrid();
         CalcNumberOfChunks();
         CalcSampleGrid();
         CalcNumberOfChunks();
+
         CalcInfoString();
-        CalcInfoString();
+        // CalcInfoString();
     }
     void ThpParams::CalcInfoString()
     {
@@ -97,8 +103,10 @@ namespace TritonhawkPlus
                 "\n"
                 "Enabled threads for multi-threading: %i, %s" "\n"
                 "Number of drawables to process in image: %i" "\n"
-                "   Original size: %I64u x %I64u px, %I64u total pixels" "\n"
-                "   New size: %I64u x %I64u px, %I64u total pixels" "\n"
+                "   Image input size: %I64u x %I64u px, %I64u total pixels" "\n"
+                "   Image output size: %I64u x %I64u px, %I64u total pixels" "\n"
+                "   Layer input size: %I64u x %I64u px, %I64u total pixels" "\n"
+                "   Layer output size: %I64u x %I64u px, %I64u total pixels" "\n"
                 "Seamless tiling X: %s, Seamless tiling Y: %s" "\n"
                 "Sample size adjustment level: %%%9.2lf" "\n"
                 "   Sample grid size: %I64u x %I64u, total samples: %I64u" "\n"
@@ -110,8 +118,10 @@ namespace TritonhawkPlus
             process_name.c_str(),
             number_threads, plugin_priority_realtime ? "Realtime" : "Background",
             draw_count,
-            input_size_x, input_size_y, input_size_xy,
-            output_size_x, output_size_y, output_size_xy,
+            image_input_size_x, image_input_size_y, image_input_size_xy,
+            image_output_size_x, image_output_size_y, image_output_size_xy,
+            layer_input_size_x, layer_input_size_y, layer_input_size_xy,
+            layer_output_size_x, layer_output_size_y, layer_output_size_xy,
             seamless_x ? "Enabled" : "Inactive", seamless_y ? "Enabled" : "Inactive",
             f64(sample_count_adjustment * 100.q),
             sample_count_x, sample_count_y, sample_count_xy,
@@ -132,15 +142,71 @@ namespace TritonhawkPlus
     }
     void ThpParams::CalcSampleGrid()
     {
+        /*
         input_size_x = min(max(input_size_x, 1), max_image_dimension);
         input_size_y = min(max(input_size_y, 1), max_image_dimension);
         input_size_xy = input_size_x * input_size_y;
         output_size_x = min(max(output_size_x, 1), max_image_dimension);
         output_size_y = min(max(output_size_y, 1), max_image_dimension);
         output_size_xy = output_size_x * output_size_y;
+
         image_ratio_x = f128(input_size_x) / f128(output_size_x);
         image_ratio_y = f128(input_size_y) / f128(output_size_y);
         image_ratio_xy = f128(input_size_xy) / f128(output_size_xy);
+        */
+
+        // Temporary
+        {
+            image_input_size_x = input_size_x;
+            image_input_size_y = input_size_y;
+            layer_input_size_x = input_size_x;
+            layer_input_size_y = input_size_y;
+
+            image_output_size_x = output_size_x;
+            image_output_size_y = output_size_y;
+            layer_output_size_x = output_size_x;
+            layer_output_size_y = output_size_y;
+        }
+
+        image_input_size_x = clamp(image_input_size_x, 1uLL, max_image_dimension);
+        image_input_size_y = clamp(image_input_size_y, 1uLL, max_image_dimension);
+        image_input_size_xy = image_input_size_x * image_input_size_y;
+        image_output_size_x = clamp(image_output_size_x, 1uLL, max_image_dimension);
+        image_output_size_y = clamp(image_output_size_y, 1uLL, max_image_dimension);
+        image_output_size_xy = image_output_size_x * image_output_size_y;
+
+        layer_input_size_x = clamp(layer_input_size_x, 1uLL, max_image_dimension);
+        layer_input_size_y = clamp(layer_input_size_y, 1uLL, max_image_dimension);
+        layer_input_size_xy = layer_input_size_x * layer_input_size_y;
+        layer_output_size_x = clamp(layer_output_size_x, 1uLL, max_image_dimension);
+        layer_output_size_y = clamp(layer_output_size_y, 1uLL, max_image_dimension);
+        layer_output_size_xy = layer_output_size_x * layer_output_size_y;
+
+        image_ratio_x = f128(image_input_size_x) / f128(image_output_size_x);
+        image_ratio_y = f128(image_input_size_y) / f128(image_output_size_y);
+        image_ratio_xy = f128(image_input_size_xy) / f128(image_output_size_xy);
+        layer_ratio_x = f128(layer_input_size_x) / f128(layer_output_size_x);
+        layer_ratio_y = f128(layer_input_size_y) / f128(layer_output_size_y);
+        layer_ratio_xy = f128(layer_input_size_xy) / f128(layer_output_size_xy);
+
+        if (sample_grid_is_for_all_layers == true)
+        {
+            input_size_x = image_input_size_x;
+            input_size_y = image_input_size_y;
+            input_size_xy = image_input_size_xy;
+            output_size_x = image_output_size_x;
+            output_size_y = image_output_size_y;
+            output_size_xy = image_output_size_xy;
+        }
+        else
+        {
+            input_size_x = layer_input_size_x;
+            input_size_y = layer_input_size_y;
+            input_size_xy = layer_input_size_xy;
+            output_size_x = layer_output_size_x;
+            output_size_y = layer_output_size_y;
+            output_size_xy = layer_output_size_xy;
+        }
 
         sample_count_x = 1;
         sample_count_y = 1;

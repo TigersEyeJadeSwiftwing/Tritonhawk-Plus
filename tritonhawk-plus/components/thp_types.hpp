@@ -31,7 +31,7 @@ are also licensed under the GPL version 3 license.  */
 #endif
 
 #ifndef TARGET_CLONES
-    #define TARGET_CLONES __attribute__((target_clones( "arch=x86-64-v3,arch=x86-64-v4,arch=corei7,arch=corei7-avx,arch=atom,arch=sandybridge,sse2,sse4.1,sse4.2,avx2,default" )))
+    #define TARGET_CLONES __attribute__((target_clones( "arch=x86-64-v3,arch=x86-64-v4,arch=corei7,arch=corei7-avx,arch=atom,arch=sandybridge,sse2,ssse3,sse4.1,sse4.2,avx2,default" )))
 #endif // TARGET_CLONES
 
 namespace TritonhawkPlus {};
@@ -106,6 +106,8 @@ namespace TritonhawkPlus
         };
         */
     #endif
+
+    #include "inline/clean.inl"
 };
 
 #include "lib_int_math.hpp"

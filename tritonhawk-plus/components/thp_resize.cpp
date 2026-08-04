@@ -35,7 +35,6 @@ extern ThpLog* Log;
 
 namespace TritonhawkPlus
 {
-    TARGET_CLONES
     void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
@@ -676,7 +675,6 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGBA()
 
 
-    TARGET_CLONES
     void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
@@ -1249,7 +1247,6 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGB()
 
 
-    TARGET_CLONES
     void Thp_resize_layer_RGBA(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
@@ -1806,7 +1803,6 @@ namespace TritonhawkPlus
         }
     } // END void Thp_resize_layer_RGBA()
 
-    TARGET_CLONES
     void Thp_resize_layer_RGB(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
