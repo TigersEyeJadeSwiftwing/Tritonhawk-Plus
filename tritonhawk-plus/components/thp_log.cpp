@@ -24,8 +24,7 @@ using clock_log = std::chrono::steady_clock;
 
 namespace TritonhawkPlus
 {
-    TARGET_CLONES
-    f64 ThpLog::GetTimeMS()
+    TARGET_CLONES f64 ThpLog::GetTimeMS()
     {
         /*
         std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
@@ -40,13 +39,11 @@ namespace TritonhawkPlus
         timer_time_point = current_time;
         return time_ms;
     }
-    TARGET_CLONES
-    void ThpLog::SetTimerStart()
+    TARGET_CLONES void ThpLog::SetTimerStart()
     {
         timer_procedure_start = clock_log::now();
     }
-    TARGET_CLONES
-    f64 ThpLog::GetTimerElapsedMS()
+    TARGET_CLONES f64 ThpLog::GetTimerElapsedMS()
     {
         std::chrono::time_point<std::chrono::steady_clock> current_time = clock_log::now();
         // auto diff = current_time - timer_procedure_start;
@@ -79,8 +76,20 @@ namespace TritonhawkPlus
         timer_time_point = clock_log::now();
     }
 
-    TARGET_CLONES
-    void ThpLog::Run1(gchar* log_message)
+    TARGET_CLONES bool ThpLog::Run_CheckIfShouldUpdate()
+    {
+        f64 time_elapsed = GetTimerElapsedMS();
+
+        if (time_elapsed < time_loopbreaker_fast)
+            return false;
+        if ((time_elapsed - time_elapsed_1) < 200.0)
+            return false;
+
+        time_elapsed_1 = time_elapsed;
+
+        return true;
+    }
+    TARGET_CLONES void ThpLog::Run1(gchar* log_message)
     {
         if (!gui_gtk_textlabel_1) return;
 
@@ -96,8 +105,7 @@ namespace TritonhawkPlus
             if (elapsed_time >= time_loopbreaker_fast) break;
         }
     }
-    TARGET_CLONES
-    void ThpLog::Run2(gchar* log_message, f64 percent_completed)
+    TARGET_CLONES void ThpLog::Run2(gchar* log_message, f64 percent_completed)
     {
         if (!gui_gtk_textlabel_1) return;
 
@@ -105,7 +113,7 @@ namespace TritonhawkPlus
 
         time_elapsed_2 = time_elapsed_1;
         // time_elapsed_1 = time_elapsed;
-        time_elapsed_1 = GetTimerElapsedMS();
+        // time_elapsed_1 = GetTimerElapsedMS();
         percent_completed_2 = percent_completed_1;
         percent_completed_1 = percent_completed * 0.01;
 
@@ -147,8 +155,7 @@ namespace TritonhawkPlus
             if (GetTimerElapsedMS() >= elapsed_time_loopbreaking) break;
         }
     }
-    TARGET_CLONES
-    void ThpLog::RunLogging(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLogging(gchar* log_message)
     {
         if (console_logging)
         {
@@ -209,7 +216,7 @@ namespace TritonhawkPlus
             if (GetTimerElapsedMS() >= elapsed_time_loopbreaking) break;
         }
     }
-    void ThpLog::RunLoggingConsole(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingConsole(gchar* log_message)
     {
         if (console_logging)
         {
@@ -219,7 +226,7 @@ namespace TritonhawkPlus
             gimp_message_set_handler(old_message_handler);
         }
     }
-    void ThpLog::RunLoggingError(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingError(gchar* log_message)
     {
         if (error_console_logging)
         {
@@ -229,7 +236,7 @@ namespace TritonhawkPlus
             gimp_message_set_handler(old_message_handler);
         }
     }
-    void ThpLog::RunLoggingGui(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingGui(gchar* log_message)
     {
         if (gui_logging)
         {
@@ -264,7 +271,7 @@ namespace TritonhawkPlus
             gtk_main_iteration();
         }
     }
-    void ThpLog::RunLoggingGuiTextBox(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingGuiTextBox(gchar* log_message)
     {
         if (gui_logging)
         {
@@ -286,7 +293,7 @@ namespace TritonhawkPlus
             gtk_main_iteration();
         }
     }
-    void ThpLog::RunLoggingGuiBusyBox(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingGuiBusyBox(gchar* log_message)
     {
         if (gui_logging)
         {
@@ -311,7 +318,7 @@ namespace TritonhawkPlus
             gtk_main_iteration();
         }
     }
-    void ThpLog::RunLoggingGuiProgressBar(gchar* log_message)
+    TARGET_CLONES void ThpLog::RunLoggingGuiProgressBar(gchar* log_message)
     {
         if (gui_logging)
         {
@@ -333,7 +340,7 @@ namespace TritonhawkPlus
             gtk_main_iteration();
         }
     }
-    void ThpLog::RunLoggingAuto()
+    TARGET_CLONES void ThpLog::RunLoggingAuto()
     {
         gchar* log_txt = g_strdup_printf (_("%s"), text_data.c_str());
         gchar* log_long = g_strdup_printf (_("%s"), text_accumulated.c_str());
@@ -391,52 +398,52 @@ namespace TritonhawkPlus
         g_free(log_progress);
     }
 
-    void ThpLog::SetConsoleLogging(gboolean enable)
+    TARGET_CLONES void ThpLog::SetConsoleLogging(gboolean enable)
     {
         console_logging = enable;
     }
-    void ThpLog::SetErrorConsoleLogging(gboolean enable)
+    TARGET_CLONES void ThpLog::SetErrorConsoleLogging(gboolean enable)
     {
         error_console_logging = enable;
     }
-    void ThpLog::SetGuiLogging(gboolean enable)
+    TARGET_CLONES void ThpLog::SetGuiLogging(gboolean enable)
     {
         gui_logging = enable;
     }
-    void ThpLog::SetGuiDialog(GtkWidget* dialog_input)
+    TARGET_CLONES void ThpLog::SetGuiDialog(GtkWidget* dialog_input)
     {
         gui_dialog = dialog_input;
     }
-    void ThpLog::SetBusyBox(GtkWidget* busy_box_input)
+    TARGET_CLONES void ThpLog::SetBusyBox(GtkWidget* busy_box_input)
     {
         gui_busy_box = busy_box_input;
     }
-    void ThpLog::SetTextLabel(GtkWidget* gtk_text_label_input, u32 index)
+    TARGET_CLONES void ThpLog::SetTextLabel(GtkWidget* gtk_text_label_input, u32 index)
     {
         if (index == 0u)
             gui_gtk_textlabel_0 = gtk_text_label_input;
         else if (index == 1u)
             gui_gtk_textlabel_1 = gtk_text_label_input;
     }
-    void ThpLog::SetGuiTextWidget(GtkWidget* widget_input)
+    TARGET_CLONES void ThpLog::SetGuiTextWidget(GtkWidget* widget_input)
     {
         gui_text_widget = widget_input;
     }
-    void ThpLog::SetTextBuffer(GtkTextBuffer *text_buffer_input)
+    TARGET_CLONES void ThpLog::SetTextBuffer(GtkTextBuffer *text_buffer_input)
     {
         gui_text_buffer = text_buffer_input;
     }
-    void ThpLog::SetTextBufferWidget(GtkWidget *scrolled_text_widget_input)
+    TARGET_CLONES void ThpLog::SetTextBufferWidget(GtkWidget *scrolled_text_widget_input)
     {
         gui_scrolled_text_widget = scrolled_text_widget_input;
     }
 
-    void ThpLog::SetInsideCritical(bool inside)
+    TARGET_CLONES void ThpLog::SetInsideCritical(bool inside)
     {
         inside_multithread_critical = inside;
     }
 
-    void ThpLog::Log(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::Log(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -450,7 +457,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::Log(bool inside_omp_critical, string log_message)
+    TARGET_CLONES void ThpLog::Log(bool inside_omp_critical, string log_message)
     {
         gchar* log_m = g_strdup_printf( _("%s"), log_message.c_str());
 
@@ -466,7 +473,7 @@ namespace TritonhawkPlus
 
         g_free(log_m);
     }
-    void ThpLog::Log(gchar* log_message)
+    TARGET_CLONES void ThpLog::Log(gchar* log_message)
     {
         if (!inside_multithread_critical)
         {
@@ -480,7 +487,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::Log(string log_message)
+    TARGET_CLONES void ThpLog::Log(string log_message)
     {
         gchar* log_m = g_strdup_printf( _("%s"), log_message.c_str());
 
@@ -497,7 +504,7 @@ namespace TritonhawkPlus
         g_free(log_m);
     }
 
-    void ThpLog::LogConsole(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogConsole(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -509,7 +516,7 @@ namespace TritonhawkPlus
             RunLoggingConsole(log_message);
         }
     }
-    void ThpLog::LogError(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogError(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -521,7 +528,7 @@ namespace TritonhawkPlus
             RunLoggingError(log_message);
         }
     }
-    void ThpLog::LogGui(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogGui(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -533,7 +540,7 @@ namespace TritonhawkPlus
             RunLoggingGui(log_message);
         }
     }
-    void ThpLog::LogGuiTextBox(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogGuiTextBox(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -545,7 +552,7 @@ namespace TritonhawkPlus
             RunLoggingGuiTextBox(log_message);
         }
     }
-    void ThpLog::LogGuiBusyBox(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogGuiBusyBox(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -557,7 +564,7 @@ namespace TritonhawkPlus
             RunLoggingGuiBusyBox(log_message);
         }
     }
-    void ThpLog::LogGuiProgressBar(bool inside_omp_critical, gchar* log_message)
+    TARGET_CLONES void ThpLog::LogGuiProgressBar(bool inside_omp_critical, gchar* log_message)
     {
         if (!inside_omp_critical)
         {
@@ -570,7 +577,7 @@ namespace TritonhawkPlus
         }
     }
 
-    void ThpLog::AutoLog()
+    TARGET_CLONES void ThpLog::AutoLog()
     {
         if (!inside_multithread_critical)
         {
@@ -582,7 +589,7 @@ namespace TritonhawkPlus
             RunLoggingAuto();
         }
     }
-    void ThpLog::AutoLog(bool is_inside_omp_critical)
+    TARGET_CLONES void ThpLog::AutoLog(bool is_inside_omp_critical)
     {
         if (!is_inside_omp_critical)
         {
@@ -594,7 +601,7 @@ namespace TritonhawkPlus
             RunLoggingAuto();
         }
     }
-    void ThpLog::AutoLogConsole()
+    TARGET_CLONES void ThpLog::AutoLogConsole()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_data.c_str());
 
@@ -610,7 +617,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::AutoLogError()
+    TARGET_CLONES void ThpLog::AutoLogError()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_data.c_str());
 
@@ -626,7 +633,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::AutoLogGui()
+    TARGET_CLONES void ThpLog::AutoLogGui()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_data.c_str());
 
@@ -642,7 +649,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::AutoLogGuiTextBox()
+    TARGET_CLONES void ThpLog::AutoLogGuiTextBox()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_accumulated.c_str());
 
@@ -658,7 +665,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::AutoLogGuiBusyBox()
+    TARGET_CLONES void ThpLog::AutoLogGuiBusyBox()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_data.c_str());
 
@@ -674,7 +681,7 @@ namespace TritonhawkPlus
 
         g_free(log_message);
     }
-    void ThpLog::AutoLogGuiProgressBar()
+    TARGET_CLONES void ThpLog::AutoLogGuiProgressBar()
     {
         gchar* log_message = g_strdup_printf (_("%s"), text_progress_bar.c_str());
 
@@ -691,22 +698,22 @@ namespace TritonhawkPlus
         g_free(log_message);
     }
 
-    void ThpLog::SetStringProgressBar(string txt)
+    TARGET_CLONES void ThpLog::SetStringProgressBar(string txt)
     {
         text_progress_bar = txt;
     }
-    void ThpLog::SetStringProgressBar(gchar* txt)
+    TARGET_CLONES void ThpLog::SetStringProgressBar(gchar* txt)
     {
         text_progress_bar = string(txt);
         g_free(txt);
     }
-    void ThpLog::SetString(string txt)
+    TARGET_CLONES void ThpLog::SetString(string txt)
     {
         text_data = txt;
         if (gui_logging_text_box && gui_text_buffer)
             text_accumulated.append(txt);
     }
-    void ThpLog::SetString(gchar* txt)
+    TARGET_CLONES void ThpLog::SetString(gchar* txt)
     {
         text_data = string(txt);
         if (gui_logging_text_box && gui_text_buffer)

@@ -14,7 +14,7 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-static HOT_INLINE void clean(auto class_object)
+static HOT_INLINE_SIMPLE void clean(auto class_object)
 {
     if (class_object)
     {

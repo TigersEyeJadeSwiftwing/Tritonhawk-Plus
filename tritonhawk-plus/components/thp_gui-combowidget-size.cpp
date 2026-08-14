@@ -105,7 +105,7 @@ namespace TritonhawkPlus
         ((ComboSizeWidget*)(user_data))->SetButtonClicked(name);
     };
 
-    void ComboSizeWidget::ShowWidget(GtkWidget* gw)
+    TARGET_CLONES void ComboSizeWidget::ShowWidget(GtkWidget* gw)
     {
         if (!gw) return;
 
@@ -573,7 +573,7 @@ namespace TritonhawkPlus
             ShowWidget(Gui_Sample_Count_Label);
             gtk_label_set_text((GtkLabel*)Gui_Sample_Count_Label, g_strdup_printf(_("Sample Count\n" "Adjustment%s"), "") );
             // Spin Button for sample count adjustment
-            Gui_SpinButton_Sample_Count = gimp_spin_button_new_with_range((gdouble) 100.0, (gdouble) Params->max_sample_count_modifier, (gdouble) 1.0);
+            Gui_SpinButton_Sample_Count = gimp_spin_button_new_with_range((gdouble) 1.0, (gdouble) Params->max_sample_count_modifier, (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Sample_Count, row_4_col_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_4), (GtkWidget*)Gui_SpinButton_Sample_Count, FALSE, FALSE, 0);
             gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Sample_Count, (guint) 2u);
@@ -992,7 +992,7 @@ namespace TritonhawkPlus
         self = NULL;
     }
 
-    void ComboSizeWidget::SetSizeX(gint val)
+    TARGET_CLONES void ComboSizeWidget::SetSizeX(gint val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1021,7 +1021,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetSizeY(gint val)
+    TARGET_CLONES void ComboSizeWidget::SetSizeY(gint val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1050,7 +1050,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetScaleX(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetScaleX(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1079,7 +1079,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetScaleY(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetScaleY(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1108,7 +1108,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetScale_SampleGridScaleX(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetScale_SampleGridScaleX(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1134,7 +1134,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetScale_SampleGridScaleY(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetScale_SampleGridScaleY(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1157,7 +1157,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetSampleGridWeighting(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetSampleGridWeighting(gdouble val)
     {
         sample_grid_weighting = clamp01q((f128)val);
         // sample_grid_weighting = rounddgq(sample_grid_weighting, -5);
@@ -1166,20 +1166,20 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetSampleCountAdj(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetSampleCountAdj(gdouble val)
     {
-        sample_count_adjustment = clampq((f128)val * 0.01q, 1.0q, 16.0q);
+        sample_count_adjustment = clampq((f128)val * 0.01q, 0.00005q, 50.0q);
         // sample_count_adjustment = rounddgq(sample_count_adjustment, -5);
 
         ignore_auto_changes = true;
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetSampleInterpolationX(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetSampleInterpolationX(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
-        f128 value = clampq((f128)val, 0.q, 8000.q);
+        f128 value = clampq((f128)val, 0.q, 5000.q);
         // value = rounddgq(value, -3);
         sample_interpolation_x = gdouble(value);
 
@@ -1195,7 +1195,7 @@ namespace TritonhawkPlus
         }
         else if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0.q, 8000.q);
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0.q, 5000.q);
             // sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_y = (gdouble)sample_interpolation_f;
         }
@@ -1208,11 +1208,11 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetSampleInterpolationY(gdouble val)
+    TARGET_CLONES void ComboSizeWidget::SetSampleInterpolationY(gdouble val)
     {
         if (ignore_auto_changes == true) return;
 
-        f128 value = clampq((f128)val, 0.q, 8000.q);
+        f128 value = clampq((f128)val, 0.q, 5000.q);
         // value = rounddgq(value, -3);
         sample_interpolation_y = gdouble(value);
 
@@ -1228,7 +1228,7 @@ namespace TritonhawkPlus
         }
         if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0.q, 8000.q);
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0.q, 5000.q);
             // sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_x = (gdouble)sample_interpolation_f;
         }
@@ -1241,7 +1241,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetKilopixels(gint kpx)
+    TARGET_CLONES void ComboSizeWidget::SetKilopixels(gint kpx)
     {
         chunk_size_kilo = u64 (kpx);
 
@@ -1249,7 +1249,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetChainButton(gboolean val)
+    TARGET_CLONES void ComboSizeWidget::SetChainButton(gboolean val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1262,7 +1262,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetThreads(gint val)
+    TARGET_CLONES void ComboSizeWidget::SetThreads(gint val)
     {
         threads_enabled = gint(val);
         threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads * (gint)4 );
@@ -1280,7 +1280,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetChainButton_SampleGridScale(gboolean val)
+    TARGET_CLONES void ComboSizeWidget::SetChainButton_SampleGridScale(gboolean val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1293,7 +1293,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetChainButton_SampleInterpolation(gboolean val)
+    TARGET_CLONES void ComboSizeWidget::SetChainButton_SampleInterpolation(gboolean val)
     {
         if (ignore_auto_changes == true) return;
 
@@ -1306,7 +1306,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::ToggleChainButton()
+    TARGET_CLONES void ComboSizeWidget::ToggleChainButton()
     {
         if (ignore_auto_changes == true) return;
 
@@ -1323,7 +1323,7 @@ namespace TritonhawkPlus
         UpdateGUI();
         ignore_auto_changes = false;
     }
-    void ComboSizeWidget::SetOriginalSize(gint val_x, gint val_y)
+    TARGET_CLONES void ComboSizeWidget::SetOriginalSize(gint val_x, gint val_y)
     {
         original_x = (gint) max((gint)val_x, (gint)1);
         original_y = (gint) max((gint)val_y, (gint)1);
@@ -1340,7 +1340,7 @@ namespace TritonhawkPlus
         ignore_auto_changes = false;
     }
 
-    void ComboSizeWidget::UpdateGUI()
+    TARGET_CLONES void ComboSizeWidget::UpdateGUI()
     {
         if (Gui_Text_Size_Original_X)
             gtk_label_set_text((GtkLabel*)Gui_Text_Size_Original_X, g_strdup_printf(_("Width: %i" "%s"), original_x, "\n") );
@@ -1466,7 +1466,7 @@ namespace TritonhawkPlus
             gtk_main_iteration();
         */
     }
-    void ComboSizeWidget::SyncDataToParameters()
+    TARGET_CLONES void ComboSizeWidget::SyncDataToParameters()
     {
         if (Params)
         {
@@ -1489,7 +1489,7 @@ namespace TritonhawkPlus
             Params->CalcAll();
         }
     }
-    void ComboSizeWidget::SyncDataFromParameters()
+    TARGET_CLONES void ComboSizeWidget::SyncDataFromParameters()
     {
         if (Params)
         {
@@ -1525,7 +1525,7 @@ namespace TritonhawkPlus
             ignore_auto_changes = false;
         }
     }
-    void ComboSizeWidget::SetButtonClicked(u16* button_name)
+    TARGET_CLONES void ComboSizeWidget::SetButtonClicked(u16* button_name)
     {
         if (button_name == button_pointer_Size_Reset)
         {

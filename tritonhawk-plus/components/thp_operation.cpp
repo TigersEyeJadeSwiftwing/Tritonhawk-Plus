@@ -37,30 +37,7 @@ extern ThpParams* Params;
 
 namespace TritonhawkPlus
 {
-    bool Thp_Operation__Resize_Image()
-    {
-        if (!Params)
-            return false;
-
-        if (Params->draw_count == 0)
-        {
-            Params->operation_result_string = "Error: No layers to resize.";
-            return false;
-        }
-
-        return true;
-    }
-
-    bool Thp_Operation__Resize_Layer()
-    {
-        if (!Params)
-            return false;
-
-        return true;
-    }
-
-    TARGET_CLONES
-    bool Thp_Operation__Resize()
+    TARGET_CLONES bool Thp_Operation__Resize()
     {
         if (!Params)
             return false;
@@ -159,19 +136,30 @@ namespace TritonhawkPlus
             &offset_old_x, &offset_old_y
         );
 
-        layer_size_x -= offset_old_x;
-        layer_size_y -= offset_old_y;
+        // layer_size_x += offset_old_x;
+        // layer_size_y += offset_old_y;
 
         Params->layer_input_size_x = layer_size_x;
         Params->layer_input_size_y = layer_size_y;
         Params->layer_input_size_xy = layer_size_x * layer_size_y;
 
+        /*
         Params->input_size_x = (u64)layer_size_x;
         Params->input_size_y = (u64)layer_size_y;
         Params->output_size_x = Params->input_size_x;
         Params->output_size_y = Params->input_size_y;
+        */
         Params->chunk_size_default = (u64)5000uLL;
         Params->chunk_size_kilo = (u64)10uLL;
+
+        Params->image_output_size_x = Params->image_input_size_x;
+        Params->image_output_size_y = Params->image_input_size_y;
+        Params->image_output_size_xy = Params->image_input_size_xy;
+        Params->layer_output_size_x = Params->layer_input_size_x;
+        Params->layer_output_size_y = Params->layer_input_size_y;
+        Params->layer_output_size_xy = Params->layer_input_size_xy;
+
+        Params->SetOutputSizeDefaults();
         Params->CalcAll();
 
         Log = new ThpLog();
@@ -251,11 +239,13 @@ namespace TritonhawkPlus
 
         if (Combo_Size_Widget->GetChoicesDoneResult() == -1)
         {
-            delete Log;
-            delete Params;
+            // delete Log;
+            // delete Params;
             if (Combo_Size_Widget) delete Combo_Size_Widget;
 
-            return gimp_procedure_new_return_values (Params->procedure, GIMP_PDB_CANCEL, NULL);
+            return true;
+
+            // return gimp_procedure_new_return_values (Params->procedure, GIMP_PDB_CANCEL, NULL);
         }
 
         gimp_context_push ();
@@ -295,8 +285,8 @@ namespace TritonhawkPlus
 
             // Update the paramaters with the information on what we're doing with this later of the image.
             Params->draw_index = 0;
-            Params->CalcSampleGrid();
-            Params->CalcNumberOfChunks();
+            // Params->CalcSampleGrid();
+            // Params->CalcNumberOfChunks();
             Params->CalcAll();
 
             Combo_Size_Widget->SyncDataFromParameters();
@@ -306,6 +296,14 @@ namespace TritonhawkPlus
                 Thp_resize_layer_RGBA(Params, layer);
             else
                 Thp_resize_layer_RGB(Params, layer);
+
+            if ( (offset_old_x != (gint)0) || (offset_old_y != (gint)0) )
+            {
+                gimp_layer_set_offsets(
+                    layer,
+                    (gint)offset_x, (gint)offset_y
+                );
+            }
 
             if (total_layer_count == 1)
                 gimp_image_resize(
@@ -338,10 +336,12 @@ namespace TritonhawkPlus
             // a single entry in a list of commands and operations on the image.
             gimp_image_undo_group_start(image);
 
+            /*
             Params->input_size_x = Params->image_input_size_x;
             Params->input_size_y = Params->image_input_size_y;
             Params->output_size_x = Params->image_output_size_x;
             Params->output_size_y = Params->image_output_size_y;
+            */
 
             // If the image isn't being resized from the original in either x or y dimensions, or both, this detects it and
             // takes it into account, to simplify the image processing.
@@ -490,10 +490,12 @@ namespace TritonhawkPlus
             // a single entry in a list of commands and operations on the image.
             gimp_image_undo_group_start(image);
 
+            /*
             Params->input_size_x = Params->image_input_size_x;
             Params->input_size_y = Params->image_input_size_y;
             Params->output_size_x = Params->image_output_size_x;
             Params->output_size_y = Params->image_output_size_y;
+            */
 
             // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
             for (s32 layer_index = 0; layer_index < number_of_layers; layer_index++)
@@ -573,10 +575,12 @@ namespace TritonhawkPlus
             // a single entry in a list of commands and operations on the image.
             gimp_image_undo_group_start(image);
 
+            /*
             Params->input_size_x = Params->image_input_size_x;
             Params->input_size_y = Params->image_input_size_y;
             Params->output_size_x = Params->image_output_size_x;
             Params->output_size_y = Params->image_output_size_y;
+            */
 
             // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
             for (s32 layer_index = 0; layer_index < number_of_layers; layer_index++)
@@ -684,10 +688,12 @@ namespace TritonhawkPlus
             // a single entry in a list of commands and operations on the image.
             gimp_image_undo_group_start(image);
 
+            /*
             Params->input_size_x = Params->image_input_size_x;
             Params->input_size_y = Params->image_input_size_y;
             Params->output_size_x = Params->image_output_size_x;
             Params->output_size_y = Params->image_output_size_y;
+            */
 
             // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
             for (s32 layer_index = 0; layer_index < number_of_layers; layer_index++)

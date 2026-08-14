@@ -74,14 +74,14 @@ namespace TritonhawkPlus
         string                              text_data;
         string                              text_accumulated;
 
-        void RunLogging                     (gchar* log_message);
-        void RunLoggingConsole              (gchar* log_message);
-        void RunLoggingError                (gchar* log_message);
-        void RunLoggingGui                  (gchar* log_message);
-        void RunLoggingGuiTextBox           (gchar* log_message);
-        void RunLoggingGuiBusyBox           (gchar* log_message);
-        void RunLoggingGuiProgressBar       (gchar* log_message);
-        void RunLoggingAuto                 ();
+        TARGET_CLONES void RunLogging                     (gchar* log_message);
+        TARGET_CLONES void RunLoggingConsole              (gchar* log_message);
+        TARGET_CLONES void RunLoggingError                (gchar* log_message);
+        TARGET_CLONES void RunLoggingGui                  (gchar* log_message);
+        TARGET_CLONES void RunLoggingGuiTextBox           (gchar* log_message);
+        TARGET_CLONES void RunLoggingGuiBusyBox           (gchar* log_message);
+        TARGET_CLONES void RunLoggingGuiProgressBar       (gchar* log_message);
+        TARGET_CLONES void RunLoggingAuto                 ();
 
     public:
         bool                                inside_multithread_critical;
@@ -91,51 +91,52 @@ namespace TritonhawkPlus
 
         ThpLog();
 
-        f64 GetTimeMS                       ();
-        f64 GetTimeMSwithEstimate           ();
-        void SetTimerStart                  ();
-        f64 GetTimerElapsedMS               ();
+        TARGET_CLONES f64 GetTimeMS                       ();
+        TARGET_CLONES f64 GetTimeMSwithEstimate           ();
+        TARGET_CLONES void SetTimerStart                  ();
+        TARGET_CLONES f64 GetTimerElapsedMS               ();
 
-        void Run1                           (gchar* log_message);
-        void Run2                           (gchar* log_message, f64 percent_completed);
+        TARGET_CLONES bool Run_CheckIfShouldUpdate        ();
+        TARGET_CLONES void Run1                           (gchar* log_message);
+        TARGET_CLONES void Run2                           (gchar* log_message, f64 percent_completed);
 
-        void SetConsoleLogging              (gboolean enable=TRUE);
-        void SetErrorConsoleLogging         (gboolean enable=TRUE);
-        void SetGuiLogging                  (gboolean enable=TRUE);
+        TARGET_CLONES void SetConsoleLogging              (gboolean enable=TRUE);
+        TARGET_CLONES void SetErrorConsoleLogging         (gboolean enable=TRUE);
+        TARGET_CLONES void SetGuiLogging                  (gboolean enable=TRUE);
 
-        void SetGuiDialog                   (GtkWidget* dialog_input);
-        void SetBusyBox                     (GtkWidget* busy_box_input);
-        void SetTextLabel                   (GtkWidget* gtk_text_label_input, u32 index = 0u);
-        void SetGuiTextWidget               (GtkWidget* widget_input);
-        void SetTextBuffer                  (GtkTextBuffer* text_buffer_input);
-        void SetTextBufferWidget            (GtkWidget* scrolled_text_widget_input);
+        TARGET_CLONES void SetGuiDialog                   (GtkWidget* dialog_input);
+        TARGET_CLONES void SetBusyBox                     (GtkWidget* busy_box_input);
+        TARGET_CLONES void SetTextLabel                   (GtkWidget* gtk_text_label_input, u32 index = 0u);
+        TARGET_CLONES void SetGuiTextWidget               (GtkWidget* widget_input);
+        TARGET_CLONES void SetTextBuffer                  (GtkTextBuffer* text_buffer_input);
+        TARGET_CLONES void SetTextBufferWidget            (GtkWidget* scrolled_text_widget_input);
 
-        void SetInsideCritical              (bool inside=true);
+        TARGET_CLONES void SetInsideCritical              (bool inside=true);
 
-        void Log                            (bool inside_omp_critical, gchar* log_message);
-        void Log                            (bool inside_omp_critical, string log_message);
-        void Log                            (gchar* log_message);
-        void Log                            (string log_message);
+        TARGET_CLONES void Log                            (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void Log                            (bool inside_omp_critical, string log_message);
+        TARGET_CLONES void Log                            (gchar* log_message);
+        TARGET_CLONES void Log                            (string log_message);
 
-        void LogConsole                     (bool inside_omp_critical, gchar* log_message);
-        void LogError                       (bool inside_omp_critical, gchar* log_message);
-        void LogGui                         (bool inside_omp_critical, gchar* log_message);
-        void LogGuiTextBox                  (bool inside_omp_critical, gchar* log_message);
-        void LogGuiBusyBox                  (bool inside_omp_critical, gchar* log_message);
-        void LogGuiProgressBar              (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogConsole                     (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogError                       (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogGui                         (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogGuiTextBox                  (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogGuiBusyBox                  (bool inside_omp_critical, gchar* log_message);
+        TARGET_CLONES void LogGuiProgressBar              (bool inside_omp_critical, gchar* log_message);
 
-        void AutoLog                        ();
-        void AutoLog                        (bool is_inside_omp_critical);
-        void AutoLogConsole                 ();
-        void AutoLogError                   ();
-        void AutoLogGui                     ();
-        void AutoLogGuiTextBox              ();
-        void AutoLogGuiBusyBox              ();
-        void AutoLogGuiProgressBar          ();
+        TARGET_CLONES void AutoLog                        ();
+        TARGET_CLONES void AutoLog                        (bool is_inside_omp_critical);
+        TARGET_CLONES void AutoLogConsole                 ();
+        TARGET_CLONES void AutoLogError                   ();
+        TARGET_CLONES void AutoLogGui                     ();
+        TARGET_CLONES void AutoLogGuiTextBox              ();
+        TARGET_CLONES void AutoLogGuiBusyBox              ();
+        TARGET_CLONES void AutoLogGuiProgressBar          ();
 
-        void SetStringProgressBar           (string txt);
-        void SetStringProgressBar           (gchar* txt);
-        void SetString                      (string txt);
-        void SetString                      (gchar* txt);
+        TARGET_CLONES void SetStringProgressBar           (string txt);
+        TARGET_CLONES void SetStringProgressBar           (gchar* txt);
+        TARGET_CLONES void SetString                      (string txt);
+        TARGET_CLONES void SetString                      (gchar* txt);
     };
 };

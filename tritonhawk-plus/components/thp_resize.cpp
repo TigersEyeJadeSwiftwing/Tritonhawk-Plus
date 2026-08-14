@@ -35,7 +35,7 @@ extern ThpLog* Log;
 
 namespace TritonhawkPlus
 {
-    void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
+    TARGET_CLONES void Thp_Resize_drawable_RGBA(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
         u64 progress_steps = Params->number_chunks;
@@ -77,15 +77,15 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        f64 progress_end = Params->progress_end;
+        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        u64 samples_x = Params->sample_count_x;
-        u64 samples_y = Params->sample_count_y;
+        // u64 samples_x = Params->sample_count_x;
+        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        f128 sample_grid_width = Params->sample_grid_scale_x;
-        f128 sample_grid_height = Params->sample_grid_scale_y;
-        f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        f128 sample_grid_offset_y = Params->sample_grid_offset_y;
+        // f128 sample_grid_width = Params->sample_grid_scale_x;
+        // f128 sample_grid_height = Params->sample_grid_scale_y;
+        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
+        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -186,9 +186,9 @@ namespace TritonhawkPlus
             firstprivate( \
                 gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height,\
-                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_end, progress_increment, \
+                samples_total,\
+                sample_interpolation_x, sample_interpolation_y, \
+                progress_steps, progress_start, progress_increment, \
                 seamless_x, seamless_y \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
@@ -245,8 +245,8 @@ namespace TritonhawkPlus
                 ) \
                 firstprivate( \
                     new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
+                    samples_total, \
+                    sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
@@ -264,7 +264,7 @@ namespace TritonhawkPlus
                     ) \
                     firstprivate( \
                         oxs, oys, oxf, oyf, \
-                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
+                        samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \
@@ -675,7 +675,7 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGBA()
 
 
-    void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
+    TARGET_CLONES void Thp_Resize_drawable_RGB(ThpParams* Params, GimpDrawable* draw_0, GimpDrawable* draw_1)
     {
         if ((!draw_0) || (!draw_1) || (!Params)) return;
         u64 progress_steps = Params->number_chunks;
@@ -715,15 +715,15 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        f64 progress_end = Params->progress_end;
+        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        u64 samples_x = Params->sample_count_x;
-        u64 samples_y = Params->sample_count_y;
+        // u64 samples_x = Params->sample_count_x;
+        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        f128 sample_grid_width = Params->sample_grid_scale_x;
-        f128 sample_grid_height = Params->sample_grid_scale_y;
-        f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        f128 sample_grid_offset_y = Params->sample_grid_offset_y;
+        // f128 sample_grid_width = Params->sample_grid_scale_x;
+        // f128 sample_grid_height = Params->sample_grid_scale_y;
+        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
+        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -791,9 +791,9 @@ namespace TritonhawkPlus
             firstprivate( \
                 gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_end, progress_increment, \
+                samples_total, \
+                sample_interpolation_x, sample_interpolation_y, \
+                progress_steps, progress_start, progress_increment, \
                 seamless_x, seamless_y \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
@@ -854,8 +854,8 @@ namespace TritonhawkPlus
                 ) \
                 firstprivate( \
                     new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
+                    samples_total, \
+                    sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
@@ -873,7 +873,7 @@ namespace TritonhawkPlus
                     ) \
                     firstprivate( \
                         oxs, oys, oxf, oyf, \
-                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
+                        samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \
@@ -1247,7 +1247,7 @@ namespace TritonhawkPlus
     } // END void Thp_Resize_drawable_RGB()
 
 
-    void Thp_resize_layer_RGBA(ThpParams* Params, GimpLayer* layer_0)
+    TARGET_CLONES void Thp_resize_layer_RGBA(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
         u64 progress_steps = Params->number_chunks;
@@ -1268,15 +1268,15 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        f64 progress_end = Params->progress_end;
+        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        u64 samples_x = Params->sample_count_x;
-        u64 samples_y = Params->sample_count_y;
+        // u64 samples_x = Params->sample_count_x;
+        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        f128 sample_grid_width = Params->sample_grid_scale_x;
-        f128 sample_grid_height = Params->sample_grid_scale_y;
-        f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        f128 sample_grid_offset_y = Params->sample_grid_offset_y;
+        // f128 sample_grid_width = Params->sample_grid_scale_x;
+        // f128 sample_grid_height = Params->sample_grid_scale_y;
+        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
+        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -1299,6 +1299,9 @@ namespace TritonhawkPlus
                 drawable_name.c_str()
             );
         }
+
+        if (!Log)
+            gui_active = false;
 
         vector<f64> old_pixelarray(old_total * 4uLL, 0.0);
         vector<f64> new_pixelarray(new_total * 4uLL, 0.0);
@@ -1331,9 +1334,9 @@ namespace TritonhawkPlus
             firstprivate( \
                 gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height,\
-                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_end, progress_increment, \
+                samples_total, \
+                sample_interpolation_x, sample_interpolation_y, \
+                progress_steps, progress_start, progress_increment, \
                 seamless_x, seamless_y \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
@@ -1349,7 +1352,7 @@ namespace TritonhawkPlus
 
             if ((omp_get_thread_num() == 0) && (gui_active == true))
             {
-                if (process_text_base.empty() == false)
+                if (Log->Run_CheckIfShouldUpdate() == true)
                 {
                     u64 progress_chunks = (u64)0uLL;
                     #pragma omp atomic read
@@ -1375,8 +1378,8 @@ namespace TritonhawkPlus
                 ) \
                 firstprivate( \
                     new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
+                    samples_total, \
+                    sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
@@ -1394,7 +1397,7 @@ namespace TritonhawkPlus
                     ) \
                     firstprivate( \
                         oxs, oys, oxf, oyf, \
-                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
+                        samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \
@@ -1803,7 +1806,7 @@ namespace TritonhawkPlus
         }
     } // END void Thp_resize_layer_RGBA()
 
-    void Thp_resize_layer_RGB(ThpParams* Params, GimpLayer* layer_0)
+    TARGET_CLONES void Thp_resize_layer_RGB(ThpParams* Params, GimpLayer* layer_0)
     {
         if ( (!layer_0) || (!Params) ) return;
         u64 progress_steps = Params->number_chunks;
@@ -1824,15 +1827,15 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        f64 progress_end = Params->progress_end;
+        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        u64 samples_x = Params->sample_count_x;
-        u64 samples_y = Params->sample_count_y;
+        // u64 samples_x = Params->sample_count_x;
+        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        f128 sample_grid_width = Params->sample_grid_scale_x;
-        f128 sample_grid_height = Params->sample_grid_scale_y;
-        f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        f128 sample_grid_offset_y = Params->sample_grid_offset_y;
+        // f128 sample_grid_width = Params->sample_grid_scale_x;
+        // f128 sample_grid_height = Params->sample_grid_scale_y;
+        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
+        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -1855,6 +1858,9 @@ namespace TritonhawkPlus
                 drawable_name.c_str()
             );
         }
+
+        if (!Log)
+            gui_active = false;
 
         vector<f64> old_pixelarray(old_total * 3uLL, 0.0);
         vector<f64> new_pixelarray(new_total * 3uLL, 0.0);
@@ -1887,9 +1893,9 @@ namespace TritonhawkPlus
             firstprivate( \
                 gui_active, process_text_base, \
                 new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_end, progress_increment, \
+                samples_total, \
+                sample_interpolation_x, sample_interpolation_y, \
+                progress_steps, progress_start, progress_increment, \
                 seamless_x, seamless_y \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
@@ -1905,7 +1911,7 @@ namespace TritonhawkPlus
 
             if ((omp_get_thread_num() == 0) && (gui_active == true))
             {
-                if (process_text_base.empty() == false)
+                if (Log->Run_CheckIfShouldUpdate() == true)
                 {
                     u64 progress_chunks = (u64)0uLL;
                     #pragma omp atomic read
@@ -1931,8 +1937,8 @@ namespace TritonhawkPlus
                 ) \
                 firstprivate( \
                     new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
-                    sample_grid_offset_x, sample_grid_offset_y, sample_interpolation_x, sample_interpolation_y, \
+                    samples_total, \
+                    sample_interpolation_x, sample_interpolation_y, \
                     seamless_x, seamless_y, \
                     pixel_start, pixel_end \
                 )
@@ -1950,7 +1956,7 @@ namespace TritonhawkPlus
                     ) \
                     firstprivate( \
                         oxs, oys, oxf, oyf, \
-                        samples_total, samples_x, samples_y, sample_grid_width, sample_grid_height, \
+                        samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
                         seamless_x, seamless_y, \
                         sample_grid_center_x, sample_grid_center_y \

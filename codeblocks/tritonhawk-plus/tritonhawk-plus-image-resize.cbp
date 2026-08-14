@@ -142,16 +142,17 @@
 				<Option compiler="clang" />
 				<Compiler>
 					<Add option="-m64" />
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-Wall" />
-					<Add option="-std=gnu26 -std=gnu++26" />
+					<Add option="-std=gnu26" />
+					<Add option="-std=gnu++26" />
 					<Add option="-march=x86-64-v3" />
 					<Add option="-ftree-vectorize" />
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
 					<Add option="-mlong-double-128" />
-					<Add option="-fopenmp=libomp" />
+					<Add option="-fopenmp-extensions" />
 					<Add option="-flto" />
 					<Add option="-fno-math-errno" />
 					<Add option="-fno-trapping-math" />
@@ -205,9 +206,9 @@
 					<Add option="-fvectorize" />
 					<Add option="-fslp-vectorize" />
 					<Add option="-funroll-loops" />
-					<Add option="-O2" />
+					<Add option="-O3" />
 					<Add option="-mlong-double-128" />
-					<Add option="-fopenmp=libomp" />
+					<Add option="-fopenmp-extensions" />
 					<Add option="-flto" />
 					<Add option="-fno-math-errno" />
 					<Add option="-fno-trapping-math" />

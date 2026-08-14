@@ -40,36 +40,36 @@ namespace TritonhawkPlus
         ComboSizeWidget(GtkWidget* Program_Dialog_in, ThpParams* Params_in=NULL, ThpLog* Log_in=NULL);
         ~ComboSizeWidget();
 
-        void SetSizeX(gint val);
-        void SetSizeY(gint val);
-        void SetScaleX(gdouble val);
-        void SetScaleY(gdouble val);
-        void SetChainButton(gboolean val);
-        void ToggleChainButton();
-        void SetOriginalSize(gint val_x, gint val_y);
-        void SetThreads(gint val);
-        void SetScale_SampleGridScaleX(gdouble val);
-        void SetScale_SampleGridScaleY(gdouble val);
-        void SetChainButton_SampleGridScale(gboolean val);
-        void SetSampleGridWeighting(gdouble val);
-        void SetSampleCountAdj(gdouble val);
-        void SetSampleInterpolationX(gdouble val);
-        void SetSampleInterpolationY(gdouble val);
-        void SetChainButton_SampleInterpolation(gboolean val);
-        void SetKilopixels(gint kpx);
-        void SetButtonClicked(u16* button_name);
-        s8 GetChoicesDoneResult();
+        TARGET_CLONES void SetSizeX(gint val);
+        TARGET_CLONES void SetSizeY(gint val);
+        TARGET_CLONES void SetScaleX(gdouble val);
+        TARGET_CLONES void SetScaleY(gdouble val);
+        TARGET_CLONES void SetChainButton(gboolean val);
+        TARGET_CLONES void ToggleChainButton();
+        TARGET_CLONES void SetOriginalSize(gint val_x, gint val_y);
+        TARGET_CLONES void SetThreads(gint val);
+        TARGET_CLONES void SetScale_SampleGridScaleX(gdouble val);
+        TARGET_CLONES void SetScale_SampleGridScaleY(gdouble val);
+        TARGET_CLONES void SetChainButton_SampleGridScale(gboolean val);
+        TARGET_CLONES void SetSampleGridWeighting(gdouble val);
+        TARGET_CLONES void SetSampleCountAdj(gdouble val);
+        TARGET_CLONES void SetSampleInterpolationX(gdouble val);
+        TARGET_CLONES void SetSampleInterpolationY(gdouble val);
+        TARGET_CLONES void SetChainButton_SampleInterpolation(gboolean val);
+        TARGET_CLONES void SetKilopixels(gint kpx);
+        TARGET_CLONES void SetButtonClicked(u16* button_name);
+        TARGET_CLONES s8 GetChoicesDoneResult();
 
-        void SyncDataToParameters();
-        void SyncDataFromParameters();
+        TARGET_CLONES void SyncDataToParameters();
+        TARGET_CLONES void SyncDataFromParameters();
 
     private:
-        void ShowWidget(GtkWidget* gw);
-        void UpdateGUI();
-        f128 SetRatio(gint vx, gint vy);
-        f128 SetRatio(f64 vx, f64 vy);
-        f128 SetRatio(f128 vx, f128 vy);
-        string SetInterpolationString(f64 v);
+        TARGET_CLONES void ShowWidget(GtkWidget* gw);
+        TARGET_CLONES void UpdateGUI();
+        TARGET_CLONES f128 SetRatio(gint vx, gint vy);
+        TARGET_CLONES f128 SetRatio(f64 vx, f64 vy);
+        TARGET_CLONES f128 SetRatio(f128 vx, f128 vy);
+        TARGET_CLONES string SetInterpolationString(f64 v);
 
         GtkWidget* Program_Dialog = NULL;
         ThpParams* Params = NULL;

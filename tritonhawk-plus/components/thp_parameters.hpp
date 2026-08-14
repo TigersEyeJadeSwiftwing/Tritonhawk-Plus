@@ -91,19 +91,19 @@ namespace TritonhawkPlus
         f128 y = 0.q;
         f128 weight = 1.q;
 
-        SampleGridElement()
+        HOT_INLINE_SIMPLE SampleGridElement()
         {
             x = 0.q;
             y = 0.q;
             weight = 1.q;
         }
-        SampleGridElement(f128 px, f128 py)
+        HOT_INLINE_SIMPLE SampleGridElement(f128 px, f128 py)
         {
             x = px;
             y = py;
             weight = 1.q;
         }
-        SampleGridElement(f128 px, f128 py, f128 pw)
+        HOT_INLINE_SIMPLE SampleGridElement(f128 px, f128 py, f128 pw)
         {
             x = px;
             y = py;
@@ -205,21 +205,22 @@ namespace TritonhawkPlus
 
         u64 max_image_dimension = 65536uLL;
         f64 max_sample_grid_dimension_percent = 10000.0;
-        f64 max_sample_count_modifier = 8000.0;
-        f64 max_sample_interpolation = 8000.0;
+        f64 max_sample_count_modifier = 5000.0;
+        f64 max_sample_interpolation = 10000.0;
         u64 min_chunk_size = 1uLL;
-        u64 max_chunk_size = 6000uLL;
+        u64 max_chunk_size = 5000uLL;
         u64 increment_chunk_size = 1uLL;
 
-        void SetPluginRealtime(bool realtime_active=true);
-        void EngagePluginPriority();
-        void DisengagePluginPriority();
-        void Reset();
-        void CalcAll();
-        void CalcInfoString();
-        void CalcThreads();
-        void CalcSampleGrid();
-        void CalcNumberOfChunks();
-        void GetSampleGridVectors(vector<SampleGridElement> *grid);
+        TARGET_CLONES void SetPluginRealtime(bool realtime_active=true);
+        TARGET_CLONES void EngagePluginPriority();
+        TARGET_CLONES void DisengagePluginPriority();
+        TARGET_CLONES void Reset();
+        TARGET_CLONES void SetOutputSizeDefaults();
+        TARGET_CLONES void CalcAll();
+        TARGET_CLONES void CalcInfoString();
+        TARGET_CLONES void CalcThreads();
+        TARGET_CLONES void CalcSampleGrid();
+        TARGET_CLONES void CalcNumberOfChunks();
+        TARGET_CLONES void GetSampleGridVectors(vector<SampleGridElement> *grid);
     };
 };

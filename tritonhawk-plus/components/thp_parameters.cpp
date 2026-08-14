@@ -33,11 +33,11 @@ using namespace quadmath;
 
 namespace TritonhawkPlus
 {
-    void ThpParams::SetPluginRealtime(bool realtime_active)
+    TARGET_CLONES void ThpParams::SetPluginRealtime(bool realtime_active)
     {
         plugin_priority_realtime = realtime_active;
     }
-    void ThpParams::EngagePluginPriority()
+    TARGET_CLONES void ThpParams::EngagePluginPriority()
     {
         if (plugin_priority_realtime == true)
         {
@@ -48,12 +48,12 @@ namespace TritonhawkPlus
             SetPriorityClass(GetCurrentProcess(), BELOW_NORMAL_PRIORITY_CLASS);
         }
     }
-    void ThpParams::DisengagePluginPriority()
+    TARGET_CLONES void ThpParams::DisengagePluginPriority()
     {
         // SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
         SetPriorityClass(GetCurrentProcess(), NORMAL_PRIORITY_CLASS);
     }
-    void ThpParams::Reset()
+    TARGET_CLONES void ThpParams::Reset()
     {
         plugin_priority_realtime = true;
         seamless_x = false;
@@ -80,20 +80,46 @@ namespace TritonhawkPlus
 
         CalcAll();
     }
-    void ThpParams::CalcAll()
+    TARGET_CLONES void ThpParams::SetOutputSizeDefaults()
+    {
+        if (sample_grid_is_for_all_layers == true)
+        {
+            input_size_x = image_input_size_x;
+            input_size_y = image_input_size_y;
+            input_size_xy = image_input_size_xy;
+            output_size_x = image_output_size_x;
+            output_size_y = image_output_size_y;
+            output_size_xy = image_output_size_xy;
+        }
+        else
+        {
+            input_size_x = layer_input_size_x;
+            input_size_y = layer_input_size_y;
+            input_size_xy = layer_input_size_xy;
+            output_size_x = layer_output_size_x;
+            output_size_y = layer_output_size_y;
+            output_size_xy = layer_output_size_xy;
+        }
+    }
+    TARGET_CLONES void ThpParams::CalcAll()
     {
         CalcThreads();
 
+        CalcSampleGrid();
+        CalcNumberOfChunks();
+
+        /*
         CalcNumberOfChunks();
         CalcSampleGrid();
         CalcNumberOfChunks();
         CalcSampleGrid();
         CalcNumberOfChunks();
+        */
 
         CalcInfoString();
         // CalcInfoString();
     }
-    void ThpParams::CalcInfoString()
+    TARGET_CLONES void ThpParams::CalcInfoString()
     {
         info_string = (string) g_strdup_printf (
             _(
@@ -131,18 +157,17 @@ namespace TritonhawkPlus
             number_chunks, total_samples
         );
     }
-    void ThpParams::CalcThreads()
+    TARGET_CLONES void ThpParams::CalcThreads()
     {
         // s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
         // number_threads = min(number_threads, max_number_threads);
 
-        number_threads = min(number_threads, hardware_max_threads * (s16)4);
+        number_threads = min(number_threads, hardware_max_threads);
 
         omp_set_num_threads( (int)number_threads );
     }
-    void ThpParams::CalcSampleGrid()
+    TARGET_CLONES void ThpParams::CalcSampleGrid()
     {
-        /*
         input_size_x = min(max(input_size_x, 1), max_image_dimension);
         input_size_y = min(max(input_size_y, 1), max_image_dimension);
         input_size_xy = input_size_x * input_size_y;
@@ -150,12 +175,12 @@ namespace TritonhawkPlus
         output_size_y = min(max(output_size_y, 1), max_image_dimension);
         output_size_xy = output_size_x * output_size_y;
 
-        image_ratio_x = f128(input_size_x) / f128(output_size_x);
-        image_ratio_y = f128(input_size_y) / f128(output_size_y);
-        image_ratio_xy = f128(input_size_xy) / f128(output_size_xy);
-        */
+        f128 ratio_x = f128(input_size_x) / f128(output_size_x);
+        f128 ratio_y = f128(input_size_y) / f128(output_size_y);
+        // f128 ratio_xy = f128(input_size_xy) / f128(output_size_xy);
 
         // Temporary
+        /*
         {
             image_input_size_x = input_size_x;
             image_input_size_y = input_size_y;
@@ -167,6 +192,7 @@ namespace TritonhawkPlus
             layer_output_size_x = output_size_x;
             layer_output_size_y = output_size_y;
         }
+        */
 
         image_input_size_x = clamp(image_input_size_x, 1uLL, max_image_dimension);
         image_input_size_y = clamp(image_input_size_y, 1uLL, max_image_dimension);
@@ -189,6 +215,9 @@ namespace TritonhawkPlus
         layer_ratio_y = f128(layer_input_size_y) / f128(layer_output_size_y);
         layer_ratio_xy = f128(layer_input_size_xy) / f128(layer_output_size_xy);
 
+        // f128 ratio_x = 1.0q, ratio_y = 1.0q;
+
+        /*
         if (sample_grid_is_for_all_layers == true)
         {
             input_size_x = image_input_size_x;
@@ -197,6 +226,9 @@ namespace TritonhawkPlus
             output_size_x = image_output_size_x;
             output_size_y = image_output_size_y;
             output_size_xy = image_output_size_xy;
+
+            ratio_x = image_ratio_x;
+            ratio_y = image_ratio_y;
         }
         else
         {
@@ -206,7 +238,11 @@ namespace TritonhawkPlus
             output_size_x = layer_output_size_x;
             output_size_y = layer_output_size_y;
             output_size_xy = layer_output_size_xy;
+
+            ratio_x = layer_ratio_x;
+            ratio_y = layer_ratio_y;
         }
+        */
 
         sample_count_x = 1;
         sample_count_y = 1;
@@ -259,12 +295,12 @@ namespace TritonhawkPlus
         if (input_size_x > output_size_x)
         {
 
-            f128 scale_factor = f128 (grid_scale_x * image_ratio_x * shape_scale_factor_x) / 2.0q;
+            f128 scale_factor = f128 (grid_scale_x * ratio_x * shape_scale_factor_x) / 2.0q;
             u64 additional_samples = u64 (scale_factor) * 2u;
             sample_count_x = 3u + additional_samples;
-            sample_grid_scale_x = grid_scale_x * image_ratio_x * shape_scale_factor_x;
+            sample_grid_scale_x = grid_scale_x * ratio_x * shape_scale_factor_x;
 
-            sample_grid_offset_x = 0.5q * image_ratio_x;
+            sample_grid_offset_x = 0.5q * ratio_x;
         }
         // Growing
         else if (input_size_x < output_size_x)
@@ -282,7 +318,7 @@ namespace TritonhawkPlus
                 sample_grid_scale_x = 0.0q;
             }
 
-            sample_grid_offset_x = 0.5q * image_ratio_x;
+            sample_grid_offset_x = 0.5q * ratio_x;
         }
         // No change
         else
@@ -306,12 +342,12 @@ namespace TritonhawkPlus
         // Shrinking
         if (input_size_y > output_size_y)
         {
-            f128 scale_factor = f128 (grid_scale_y * image_ratio_y * shape_scale_factor_y) / 2.0q;
+            f128 scale_factor = f128 (grid_scale_y * ratio_y * shape_scale_factor_y) / 2.0q;
             u64 additional_samples = u64 (scale_factor) * 2u;
             sample_count_y = 3u + additional_samples;
-            sample_grid_scale_y = grid_scale_y * image_ratio_y * shape_scale_factor_y;
+            sample_grid_scale_y = grid_scale_y * ratio_y * shape_scale_factor_y;
 
-            sample_grid_offset_y = 0.5q * image_ratio_y;
+            sample_grid_offset_y = 0.5q * ratio_y;
         }
         // Growing
         else if (input_size_y < output_size_y)
@@ -329,7 +365,7 @@ namespace TritonhawkPlus
                 sample_grid_scale_y = 0.0q;
             }
 
-            sample_grid_offset_y = 0.5q * image_ratio_y;
+            sample_grid_offset_y = 0.5q * ratio_y;
         }
         // No change
         else
@@ -350,18 +386,18 @@ namespace TritonhawkPlus
             sample_grid_offset_y = 0.5q;
         }
 
-        if (sample_count_adjustment > 1.0005q)
+        if ((sample_count_adjustment > 1.0005q) || (sample_count_adjustment < 0.9995q))
         {
             f128 s_c_xf = fmaxq(f128(sample_count_x) * sample_count_adjustment, 1.00005q);
             f128 s_c_yf = fmaxq(f128(sample_count_y) * sample_count_adjustment, 1.00005q);
-            sample_count_x = (u64) to_intq(s_c_xf);
-            sample_count_y = (u64) to_intq(s_c_yf);
+            sample_count_x = (u64) max((u64)to_intq(s_c_xf), 1u);
+            sample_count_y = (u64) max((u64)to_intq(s_c_yf), 1u);
         }
 
         sample_count_xy = sample_count_x * sample_count_y;
     }
 
-    void ThpParams::GetSampleGridVectors(vector<SampleGridElement> *grid)
+    TARGET_CLONES void ThpParams::GetSampleGridVectors(vector<SampleGridElement> *grid)
     {
         grid->clear();
         grid->resize(sample_count_xy, SampleGridElement());
@@ -453,7 +489,7 @@ namespace TritonhawkPlus
         }
     }
 
-    void ThpParams::CalcNumberOfChunks()
+    TARGET_CLONES void ThpParams::CalcNumberOfChunks()
     {
         sample_count_xy = max(sample_count_xy, 1uLL);
         chunk_size_default = max(1000uL * chunk_size_kilo, 1000uL);
