@@ -1329,15 +1329,8 @@ namespace TritonhawkPlus
         // Process Chunks
         #pragma omp parallel for \
             shared( \
-                chunk_accum, old_pixelarray, new_pixelarray, Log \
-            ) \
-            firstprivate( \
-                gui_active, process_text_base, \
-                new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, \
-                sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_increment, \
-                seamless_x, seamless_y \
+                new_total, chunk_size, \
+                gui_active \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
         {
@@ -1374,13 +1367,7 @@ namespace TritonhawkPlus
 
             #pragma omp parallel for \
                 shared( \
-                    old_pixelarray, new_pixelarray \
-                ) \
-                firstprivate( \
-                    new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, \
-                    sample_interpolation_x, sample_interpolation_y, \
-                    seamless_x, seamless_y, \
+                    new_x, new_y, oxf, oyf, \
                     pixel_start, pixel_end \
                 )
             for (u64 pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
@@ -1393,9 +1380,6 @@ namespace TritonhawkPlus
 
                 #pragma omp parallel for \
                     shared( \
-                        old_pixelarray, sample_grid_data \
-                    ) \
-                    firstprivate( \
                         oxs, oys, oxf, oyf, \
                         samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
@@ -1888,15 +1872,8 @@ namespace TritonhawkPlus
         // Process Chunks
         #pragma omp parallel for \
             shared( \
-                chunk_accum, old_pixelarray, new_pixelarray, Log \
-            ) \
-            firstprivate( \
-                gui_active, process_text_base, \
-                new_x, new_y, new_total, old_total, chunk_size, \
-                samples_total, \
-                sample_interpolation_x, sample_interpolation_y, \
-                progress_steps, progress_start, progress_increment, \
-                seamless_x, seamless_y \
+                new_total, chunk_size, \
+                gui_active \
             )
         for (u64 chunk_index = 0u; chunk_index <= progress_steps; chunk_index++)
         {
@@ -1933,13 +1910,7 @@ namespace TritonhawkPlus
 
             #pragma omp parallel for \
                 shared( \
-                    old_pixelarray, new_pixelarray \
-                ) \
-                firstprivate( \
-                    new_x, new_y, oxs, oys, oxf, oyf, \
-                    samples_total, \
-                    sample_interpolation_x, sample_interpolation_y, \
-                    seamless_x, seamless_y, \
+                    new_x, new_y, oxf, oyf, \
                     pixel_start, pixel_end \
                 )
             for (u64 pixel_index = pixel_start; pixel_index < pixel_end; pixel_index++)
@@ -1952,9 +1923,6 @@ namespace TritonhawkPlus
 
                 #pragma omp parallel for \
                     shared( \
-                        old_pixelarray, sample_grid_data \
-                    ) \
-                    firstprivate( \
                         oxs, oys, oxf, oyf, \
                         samples_total, \
                         sample_interpolation_x, sample_interpolation_y, \
