@@ -126,6 +126,7 @@ namespace TritonhawkPlus
         RUN_MODE run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
         LAYERS_TO_PROCESS layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
         IMAGES_TO_PROCESS images_to_process = IMAGES_TO_PROCESS__CURRENT;
+        bool whole_image_mode = false;
         bool multiple_image_layers = false;
         bool sample_grid_is_for_all_layers = true;
         s16 hardware_max_threads = 16;
@@ -216,6 +217,7 @@ namespace TritonhawkPlus
         TARGET_CLONES void DisengagePluginPriority();
         TARGET_CLONES void Reset();
         TARGET_CLONES void SetOutputSizeDefaults();
+        TARGET_CLONES void CopySizesToLayerSizes();
         TARGET_CLONES void CalcAll();
         TARGET_CLONES void CalcInfoString();
         TARGET_CLONES void CalcThreads();

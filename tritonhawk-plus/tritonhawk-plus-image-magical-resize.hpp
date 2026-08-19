@@ -45,6 +45,7 @@ static GimpValueArray*  thp_image_magic_resize_run(
     Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
     Params->multiple_image_layers = true;
     Params->sample_grid_is_for_all_layers = true;
+    Params->whole_image_mode = true;
 
     bool result = Thp_Operation__Resize();
 

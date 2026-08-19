@@ -54,28 +54,97 @@ namespace TritonhawkPlus
             return false;
         }
 
-        GimpLayer** image_layers = gimp_image_get_layers((GimpImage*)Params->image);
+        GimpLayer** image_layers = 0;
         s32 number_of_layers = 0;
+        s32 number_of_layers_to_process = 0;
+        bool image_layers_gfree_needed = false;
+
+        if (Params->layers_to_process == LAYERS_TO_PROCESS__ACTIVE_SELECTION)
+            image_layers = (GimpLayer**)Params->drawables;
+        else if (Params->layers_to_process == LAYERS_TO_PROCESS__ACTIVE_LAYER)
+            image_layers = (GimpLayer**)Params->drawables;
+        else if (Params->layers_to_process == LAYERS_TO_PROCESS__ALL_VISIBLE_LAYERS)
+        {
+            image_layers = gimp_image_get_layers((GimpImage*)Params->image);
+            image_layers_gfree_needed = true;
+        }
+        else if (Params->layers_to_process == LAYERS_TO_PROCESS__ALL_LAYERS)
+        {
+            image_layers = gimp_image_get_layers((GimpImage*)Params->image);
+            image_layers_gfree_needed = true;
+        }
+        else
+            image_layers = (GimpLayer**)Params->drawables;
+
+        GimpLayer* layer = 0;
+
         for (int i = 0; i < 5000; i++)
         {
             if (image_layers[i])
-                number_of_layers++;
+            {
+                if (Params->layers_to_process == LAYERS_TO_PROCESS__ALL_LAYERS)
+                {
+                    number_of_layers++;
+                    number_of_layers_to_process++;
+                    layer = image_layers[i];
+                }
+                else if (Params->layers_to_process == LAYERS_TO_PROCESS__ALL_VISIBLE_LAYERS)
+                {
+                    number_of_layers++;
+
+                    if (gimp_item_get_visible( (GimpItem*)image_layers[i] ) == TRUE)
+                    {
+                        number_of_layers_to_process++;
+                        layer = image_layers[i];
+                    }
+                }
+                else
+                {
+                    number_of_layers++;
+                    number_of_layers_to_process++;
+                    layer = image_layers[i];
+                }
+            }
             else
                 break;
         }
+
+        if (number_of_layers_to_process < 1)
+        {
+            Params->operation_result_string = "Error: No visible layers to resize.";
+            return false;
+        }
+        if (number_of_layers_to_process > 1)
+        {
+            layer = image_layers[0];
+        }
+
         Params->draw_count = number_of_layers;
-        s32 total_layer_count = number_of_layers;
+
+        bool image_has_multiple_layers = false;
+        if (number_of_layers > 1)
+            image_has_multiple_layers = true;
+        else
+        {
+            GimpLayer** layer_list = gimp_image_get_layers(Params->image);
+            if (layer_list[1])
+                image_has_multiple_layers = true;
+
+            g_free(layer_list);
+        }
 
         if (Params->draw_count == 0)
         {
             Params->operation_result_string = "Error: No layers to resize.";
             return false;
         }
-        if (Params->draw_count == 1)
+        else if (Params->draw_count == 1)
             Params->multiple_image_layers = false;
+        else
+            Params->multiple_image_layers = true;
 
         GimpImage* image = Params->image;
-        GimpLayer* layer = image_layers[0];
+        // GimpLayer* layer = image_layers[0];
         GimpDrawable* drawable = (GimpDrawable*)layer;
 
         if (Params->multiple_image_layers == false)
@@ -255,7 +324,7 @@ namespace TritonhawkPlus
 
         gimp_context_set_interpolation (GIMP_INTERPOLATION_NONE);
 
-        Log->SetTimerStart();
+        // Log->SetTimerStart();
 
         if (number_of_layers == 1)
         {
@@ -285,11 +354,12 @@ namespace TritonhawkPlus
 
             // Update the paramaters with the information on what we're doing with this later of the image.
             Params->draw_index = 0;
-            // Params->CalcSampleGrid();
-            // Params->CalcNumberOfChunks();
+            Params->CopySizesToLayerSizes();
             Params->CalcAll();
 
             Combo_Size_Widget->SyncDataFromParameters();
+
+            Log->SetTimerStart();
 
             // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(drawable) == TRUE)
@@ -305,7 +375,7 @@ namespace TritonhawkPlus
                 );
             }
 
-            if (total_layer_count == 1)
+            if (image_has_multiple_layers == false)
                 gimp_image_resize(
                     image,
                     (gint)Params->output_size_x + (gint)offset_x, (gint)Params->output_size_y + (gint)offset_y,
@@ -313,7 +383,8 @@ namespace TritonhawkPlus
                 );
 
             // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-            g_free(image_layers);
+            if (image_layers_gfree_needed == true)
+                g_free(image_layers);
             // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
             // as explained above (earlier in the source code).
             gimp_image_undo_group_end(image);
@@ -425,8 +496,7 @@ namespace TritonhawkPlus
                 }
 
                 // Update the paramaters with the information on what we're doing with this later of the image.
-                Params->CalcSampleGrid();
-                Params->CalcNumberOfChunks();
+                Params->CopySizesToLayerSizes();
                 Params->CalcAll();
 
                 // If the GUI is enabled, update the GUI's display on-screen.
@@ -434,6 +504,9 @@ namespace TritonhawkPlus
                 {
                     Combo_Size_Widget->SyncDataFromParameters();
                 }
+
+                if (layer_index == 0)
+                    Log->SetTimerStart();
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -465,7 +538,8 @@ namespace TritonhawkPlus
             } // END of looping through all layers of the image.
 
             // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-            g_free(image_layers);
+            if (image_layers_gfree_needed == true)
+                g_free(image_layers);
             // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
             gimp_image_resize_to_layers(image);
             // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -522,6 +596,14 @@ namespace TritonhawkPlus
                     Params->draw_index = layer_index;
                 }
 
+                if (Params->whole_image_mode == false)
+                {
+                    gimp_drawable_get_offsets(
+                        drawable,
+                        &offset_old_x, &offset_old_y
+                    );
+                }
+
                 // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
                 gimp_layer_set_offsets(
                     layer,
@@ -533,13 +615,15 @@ namespace TritonhawkPlus
                 Params->input_size_y = (u64)gimp_drawable_get_height(layer_drawable);
 
                 // Update the paramaters with the information on what we're doing with this later of the image.
-                Params->CalcSampleGrid();
-                Params->CalcNumberOfChunks();
+                Params->CopySizesToLayerSizes();
                 Params->CalcAll();
 
                 // If the GUI is enabled, update the GUI's display on-screen.
                 if (Params->gui_enabled == true)
                     Combo_Size_Widget->SyncDataFromParameters();
+
+                if (layer_index == 0)
+                    Log->SetTimerStart();
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -547,10 +631,21 @@ namespace TritonhawkPlus
                 else
                     Thp_resize_layer_RGB(Params, layer);
 
+                if (Params->whole_image_mode == false)
+                {
+                    // If there is any offset to apply to the layer, now that we've resized it, apply it.
+                    if ((offset_old_x != 0) || (offset_old_y != 0))
+                        gimp_layer_set_offsets(
+                            layer,
+                            (gint)offset_old_x, (gint)offset_old_y
+                        );
+                }
+
             } // END of looping through all layers of the image.
 
             // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-            g_free(image_layers);
+            if (image_layers_gfree_needed == true)
+                g_free(image_layers);
             // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
             gimp_image_resize_to_layers(image);
             // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -582,6 +677,9 @@ namespace TritonhawkPlus
             Params->output_size_y = Params->image_output_size_y;
             */
 
+            s32 output_size_param_x = (s32)Params->output_size_x;
+            s32 output_size_param_y = (s32)Params->output_size_y;
+
             // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
             for (s32 layer_index = 0; layer_index < number_of_layers; layer_index++)
             {
@@ -595,24 +693,48 @@ namespace TritonhawkPlus
                     gimp_rasterizable_rasterize((GimpRasterizable*)layer);
                 }
 
+                if (Params->whole_image_mode == false)
+                {
+                    gimp_drawable_get_offsets(
+                        drawable,
+                        &offset_old_x, &offset_old_y
+                    );
+                }
+
                 // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
                 gimp_layer_set_offsets(
                     layer,
                     (gint)0, (gint)0
                 );
 
-                // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
-                // the "y" dimension, which is the height to resize all layers of the image to, the same, while maintaining
-                // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
-                // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
-                // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
-                s32 out_x = (s32)Params->image_output_size_x;
-                s32 out_y = (s32)Params->image_output_size_y;
-                s32 layer_x = gimp_drawable_get_width(layer_drawable);
-                s32 layer_y = gimp_drawable_get_height(layer_drawable);
-                f128 layer_aspect = (f128)layer_x / (f128)layer_y;
-                f128 out_x_f = f128(out_y) * layer_aspect;
-                out_x = s32(out_x_f);
+                s32 out_x, out_y, layer_x, layer_y;
+                f128 layer_aspect, out_x_f;
+
+                if (Params->whole_image_mode == true)
+                {
+                    // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
+                    // the "y" dimension, which is the height to resize all layers of the image to, the same, while maintaining
+                    // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
+                    // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
+                    // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
+                    out_x = (s32)Params->image_output_size_x;
+                    out_y = (s32)Params->image_output_size_y;
+                    layer_x = (s32)gimp_drawable_get_width(layer_drawable);
+                    layer_y = (s32)gimp_drawable_get_height(layer_drawable);
+                    layer_aspect = (f128)layer_x / (f128)layer_y;
+                    out_x_f = f128(out_y) * layer_aspect;
+                    out_x = s32(out_x_f);
+                }
+                else
+                {
+                    out_x = output_size_param_x;
+                    out_y = output_size_param_y;
+                    layer_x = (s32)gimp_drawable_get_width(layer_drawable);
+                    layer_y = (s32)gimp_drawable_get_height(layer_drawable);
+                    layer_aspect = (f128)layer_x / (f128)layer_y;
+                    out_x_f = f128(out_y) * layer_aspect;
+                    out_x = s32(out_x_f);
+                }
 
                 // Update the parameters for the starting x and y dimensions, and also for the x and y dimensions to resize to,
                 // for the current layer, now that we've figured out what they are.
@@ -634,8 +756,7 @@ namespace TritonhawkPlus
                 }
 
                 // Update the paramaters with the information on what we're doing with this later of the image.
-                Params->CalcSampleGrid();
-                Params->CalcNumberOfChunks();
+                Params->CopySizesToLayerSizes();
                 Params->CalcAll();
 
                 // If the GUI is enabled, update the GUI's display on-screen.
@@ -648,22 +769,39 @@ namespace TritonhawkPlus
                 s32 total_offset = out_x - s32(Params->image_output_size_x);
                 s32 offset = -total_offset / 2;
 
+                if (layer_index == 0)
+                    Log->SetTimerStart();
+
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
                     Thp_resize_layer_RGBA(Params, layer);
                 else
                     Thp_resize_layer_RGB(Params, layer);
 
-                // If there is any offset to apply to the layer, now that we've resized it, apply it.
-                if (offset != 0)
-                    gimp_layer_set_offsets(
-                        layer,
-                        (gint)offset, (gint)0
-                    );
+                if (Params->whole_image_mode == true)
+                {
+                    // If there is any offset to apply to the layer, now that we've resized it, apply it.
+                    if (offset != 0)
+                        gimp_layer_set_offsets(
+                            layer,
+                            (gint)offset, (gint)0
+                        );
+                }
+                else
+                {
+                    // If there is any offset to apply to the layer, now that we've resized it, apply it.
+                    if ((offset_old_x != 0) || (offset_old_y != 0))
+                        gimp_layer_set_offsets(
+                            layer,
+                            (gint)offset_old_x, (gint)offset_old_y
+                        );
+                }
+
             }
 
             // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-            g_free(image_layers);
+            if (image_layers_gfree_needed == true)
+                g_free(image_layers);
             // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
             gimp_image_resize_to_layers(image);
             // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,
@@ -695,6 +833,9 @@ namespace TritonhawkPlus
             Params->output_size_y = Params->image_output_size_y;
             */
 
+            s32 output_size_param_x = (s32)Params->output_size_x;
+            s32 output_size_param_y = (s32)Params->output_size_y;
+
             // Iterate through (Go one-by-one, in-order, through) all of the layers of the image, and resize them.
             for (s32 layer_index = 0; layer_index < number_of_layers; layer_index++)
             {
@@ -708,24 +849,48 @@ namespace TritonhawkPlus
                     gimp_rasterizable_rasterize((GimpRasterizable*)layer);
                 }
 
+                if (Params->whole_image_mode == false)
+                {
+                    gimp_drawable_get_offsets(
+                        drawable,
+                        &offset_old_x, &offset_old_y
+                    );
+                }
+
                 // Set the current layer to have an offset of zero pixels, in both x and y dimensions.
                 gimp_layer_set_offsets(
                     layer,
                     (gint)0, (gint)0
                 );
 
-                // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
-                // the "x" dimension, which is the width to resize all layers of the image to, the same, while maintaining
-                // the aspect ratio of all of the layers of the image, which means that the height, or the "y" dimension, can vary,
-                // and has to be recalculated for each layer independently.  The initial height or "y" dimension to resize layers to,
-                // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
-                s32 out_x = (s32)Params->image_output_size_x;
-                s32 out_y = (s32)Params->image_output_size_y;
-                s32 layer_x = gimp_drawable_get_width(layer_drawable);
-                s32 layer_y = gimp_drawable_get_height(layer_drawable);
-                f128 layer_aspect = (f128)layer_x / (f128)layer_y;
-                f128 out_y_f = f128(out_x) / layer_aspect;
-                out_y = s32(out_y_f);
+                s32 out_x, out_y, layer_x, layer_y;
+                f128 layer_aspect, out_y_f;
+
+                if (Params->whole_image_mode == true)
+                {
+                    // Grab the values of the new height and width, or x and y dimensions, of what to resize layers to, and keep
+                    // the "y" dimension, which is the height to resize all layers of the image to, the same, while maintaining
+                    // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
+                    // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
+                    // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
+                    out_x = (s32)Params->image_output_size_x;
+                    out_y = (s32)Params->image_output_size_y;
+                    layer_x = (s32)gimp_drawable_get_width(layer_drawable);
+                    layer_y = (s32)gimp_drawable_get_height(layer_drawable);
+                    layer_aspect = (f128)layer_x / (f128)layer_y;
+                    out_y_f = f128(out_x) / layer_aspect;
+                    out_y = s32(out_y_f);
+                }
+                else
+                {
+                    out_x = output_size_param_x;
+                    out_y = output_size_param_y;
+                    layer_x = (s32)gimp_drawable_get_width(layer_drawable);
+                    layer_y = (s32)gimp_drawable_get_height(layer_drawable);
+                    layer_aspect = (f128)layer_x / (f128)layer_y;
+                    out_y_f = f128(out_x) / layer_aspect;
+                    out_y = s32(out_y_f);
+                }
 
                 // Update the parameters for the starting x and y dimensions, and also for the x and y dimensions to resize to,
                 // for the current layer, now that we've figured out what they are.
@@ -747,8 +912,7 @@ namespace TritonhawkPlus
                 }
 
                 // Update the paramaters with the information on what we're doing with this later of the image.
-                Params->CalcSampleGrid();
-                Params->CalcNumberOfChunks();
+                Params->CopySizesToLayerSizes();
                 Params->CalcAll();
 
                 // If the GUI is enabled, update the GUI's display on-screen.
@@ -763,22 +927,39 @@ namespace TritonhawkPlus
                 s32 total_offset = out_y - s32(Params->image_output_size_y);
                 s32 offset = -total_offset / 2;
 
+                if (layer_index == 0)
+                    Log->SetTimerStart();
+
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
                     Thp_resize_layer_RGBA(Params, layer);
                 else
                     Thp_resize_layer_RGB(Params, layer);
 
-                // If there is any offset to apply to the layer, now that we've resized it, apply it.
-                if (offset != 0)
-                    gimp_layer_set_offsets(
-                        layer,
-                       (gint)0, (gint)offset
-                    );
+                if (Params->whole_image_mode == true)
+                {
+                    // If there is any offset to apply to the layer, now that we've resized it, apply it.
+                    if (offset != 0)
+                        gimp_layer_set_offsets(
+                            layer,
+                            (gint)0, (gint)offset
+                        );
+                }
+                else
+                {
+                    // If there is any offset to apply to the layer, now that we've resized it, apply it.
+                    if ((offset_old_x != 0) || (offset_old_y != 0))
+                        gimp_layer_set_offsets(
+                            layer,
+                            (gint)offset_old_x, (gint)offset_old_y
+                        );
+                }
+
             }
 
             // We don't need the list of image layers anymore, so we free up memory by getting rid of it.
-            g_free(image_layers);
+            if (image_layers_gfree_needed == true)
+                g_free(image_layers);
             // Resize the image so that the image's size (width and height dimensions) can fit all of the layers inside of it.
             gimp_image_resize_to_layers(image);
             // If the end-user chooses to "undo" all the work we did, it does it to all the stuff before this line as one operation,

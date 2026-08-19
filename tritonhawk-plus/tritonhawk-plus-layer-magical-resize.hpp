@@ -43,10 +43,11 @@ static GimpValueArray*  thp_layer_magic_resize_run(
     Params->config = config;
 
     Params->images_to_process = IMAGES_TO_PROCESS__CURRENT;
-    Params->layers_to_process = LAYERS_TO_PROCESS__ALL_LAYERS;
+    Params->layers_to_process = LAYERS_TO_PROCESS__ACTIVE_SELECTION;
     Params->run_mode = RUN_MODE_RESIZE__ALL_LAYERS_SAME_RATIO_V2;
     Params->multiple_image_layers = false;
     Params->sample_grid_is_for_all_layers = false;
+    Params->whole_image_mode = false;
 
     bool result = Thp_Operation__Resize();
 

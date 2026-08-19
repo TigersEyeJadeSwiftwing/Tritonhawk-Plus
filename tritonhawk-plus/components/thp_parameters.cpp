@@ -101,6 +101,19 @@ namespace TritonhawkPlus
             output_size_xy = layer_output_size_xy;
         }
     }
+    TARGET_CLONES void ThpParams::CopySizesToLayerSizes()
+    {
+        layer_input_size_x = input_size_x;
+        layer_input_size_y = input_size_y;
+        layer_input_size_xy = input_size_xy;
+        layer_output_size_x = output_size_x;
+        layer_output_size_y = output_size_y;
+        layer_output_size_xy = output_size_xy;
+
+        layer_ratio_x = f128(layer_input_size_x) / f128(layer_output_size_x);
+        layer_ratio_y = f128(layer_input_size_y) / f128(layer_output_size_y);
+        layer_ratio_xy = f128(layer_input_size_xy) / f128(layer_output_size_xy);
+    }
     TARGET_CLONES void ThpParams::CalcAll()
     {
         CalcThreads();
@@ -162,7 +175,7 @@ namespace TritonhawkPlus
         // s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
         // number_threads = min(number_threads, max_number_threads);
 
-        number_threads = min(number_threads, hardware_max_threads);
+        number_threads = min(number_threads, hardware_max_threads * s16(4));
 
         omp_set_num_threads( (int)number_threads );
     }

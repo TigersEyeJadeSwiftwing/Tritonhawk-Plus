@@ -109,53 +109,54 @@ namespace TritonhawkPlus
     {
         if (!gui_gtk_textlabel_1) return;
 
-        // f64 time_elapsed = GetTimerElapsedMS();
-
         time_elapsed_2 = time_elapsed_1;
-        // time_elapsed_1 = time_elapsed;
-        // time_elapsed_1 = GetTimerElapsedMS();
         percent_completed_2 = percent_completed_1;
         percent_completed_1 = percent_completed * 0.01;
 
+        f64 estimate_ms = 0.0;
+
         if (time_elapsed_2 > 0.00001)
         {
-            // f64 estimate_ms_1 = (time_elapsed_1 - time_elapsed) / fmax(percent_completed_1 - percent_completed, 0.0001);
-            // f64 estimate_ms_2 = (time_elapsed_2 - time_elapsed_1) / fmax(percent_completed_2 - percent_completed_1, 0.0001);
             f64 estimate_ms_1 = time_elapsed_1 / fmax(percent_completed_1, 0.00001);
             f64 estimate_ms_2 = time_elapsed_2 / fmax(percent_completed_2, 0.00001);
-            f64 estimate_ms = (estimate_ms_1 + estimate_ms_2) * 0.5;
+            estimate_ms = (estimate_ms_1 + estimate_ms_2) * 0.5;
             f64 portion_left = 1.0 - ((percent_completed_1 + percent_completed_2) * 0.5);
 
             estimated_time_seconds_f = estimate_ms * portion_left * 0.001;
             estimated_time_minutes_f = estimated_time_seconds_f / 60.0;
             estimated_time_hours_f = estimated_time_minutes_f / 60.0;
             estimated_time_hours = u64(estimated_time_hours_f);
-            estimated_time_minutes = u64(estimated_time_minutes_f) % 60;
-            estimated_time_seconds = u64(estimated_time_seconds_f) % 60;
+            estimated_time_minutes = u64(estimated_time_minutes_f) % 60u;
+            estimated_time_seconds = u64(estimated_time_seconds_f) % 60u;
         }
         else if (time_elapsed_1 > 0.00001)
         {
-            // f64 estimate_ms_1 = (time_elapsed_1 - time_elapsed) / fmax(percent_completed_1 - percent_completed, 0.0001);
-            // f64 estimate_ms_2 = (time_elapsed_2 - time_elapsed_1) / fmax(percent_completed_2 - percent_completed_1, 0.0001);
-            f64 estimate_ms = time_elapsed_1 / fmax(percent_completed_1, 0.00001);
+            estimate_ms = time_elapsed_1 / fmax(percent_completed_1, 0.00001);
             f64 portion_left = 1.0 - percent_completed_1;
 
             estimated_time_seconds_f = estimate_ms * portion_left * 0.001;
             estimated_time_minutes_f = estimated_time_seconds_f / 60.0;
             estimated_time_hours_f = estimated_time_minutes_f / 60.0;
             estimated_time_hours = u64(estimated_time_hours_f);
-            estimated_time_minutes = u64(estimated_time_minutes_f) % 60;
-            estimated_time_seconds = u64(estimated_time_seconds_f) % 60;
+            estimated_time_minutes = u64(estimated_time_minutes_f) % 60u;
+            estimated_time_seconds = u64(estimated_time_seconds_f) % 60u;
         }
         else
             return;
+
+        f64 total_time_seconds_f = estimate_ms * 0.001;
+        f64 total_time_minutes_f = total_time_seconds_f / 60.0;
+        f64 total_time_hours_f = total_time_minutes_f / 60.0;
+        u64 total_time_hours = u64(total_time_hours_f);
+        u64 total_time_minutes = u64(total_time_minutes_f) % 60u;
+        u64 total_time_seconds = u64(total_time_seconds_f) % 60u;
 
         f64 elapsed_time_seconds_f = time_elapsed_1 * 0.001;
         f64 elapsed_time_minutes_f = elapsed_time_seconds_f / 60.0;
         f64 elapsed_time_hours_f = elapsed_time_minutes_f / 60.0;
         u64 elapsed_time_hours = u64(elapsed_time_hours_f);
-        u64 elapsed_time_minutes = u64(elapsed_time_minutes_f) % 60;
-        u64 elapsed_time_seconds = u64(elapsed_time_seconds_f) % 60;
+        u64 elapsed_time_minutes = u64(elapsed_time_minutes_f) % 60u;
+        u64 elapsed_time_seconds = u64(elapsed_time_seconds_f) % 60u;
 
         f64 elapsed_percent_per_second = (percent_completed > 0.00001) ? percent_completed / fmax(elapsed_time_seconds_f, 0.001) : 0.0;
 
@@ -163,14 +164,17 @@ namespace TritonhawkPlus
             (GtkLabel*)gui_gtk_textlabel_1,
             g_strdup_printf (_(
                 "%s" "\n"
-                "Estimated Total Time Left:" "\n"
+                "Estimated total time to process:" "\n"
                 "   %I64u Hours, %I64u Minutes, %I64u Seconds" "\n"
-                "Total Time Elapsed:" "\n"
+                "Estimated total time remaining:" "\n"
+                "   %I64u Hours, %I64u Minutes, %I64u Seconds" "\n"
+                "Total time elapsed:" "\n"
                 "   %I64u Hours, %I64u Minutes, %I64u Seconds" "\n"
                 "\n"
                 "Progress / Second: %%%3.5lf"
             ),
                 log_message,
+                (total_time_hours), (total_time_minutes), (total_time_seconds),
                 (estimated_time_hours), (estimated_time_minutes), (estimated_time_seconds),
                 (elapsed_time_hours), (elapsed_time_minutes), (elapsed_time_seconds),
                 elapsed_percent_per_second
