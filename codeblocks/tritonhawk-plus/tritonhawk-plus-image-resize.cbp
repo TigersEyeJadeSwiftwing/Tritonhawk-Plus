@@ -443,8 +443,9 @@
 		<Unit filename="../../tritonhawk-plus/components/thp_gui-combowidget-size.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_log.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_log.hpp" />
-		<Unit filename="../../tritonhawk-plus/components/thp_operation.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_operation.hpp" />
+		<Unit filename="../../tritonhawk-plus/components/thp_operation__complete_image__magic_shrink.cpp" />
+		<Unit filename="../../tritonhawk-plus/components/thp_operation__dynamic_parameters__resize.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_parameters.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_parameters.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_resize.cpp" />
@@ -456,6 +457,7 @@
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-deflate.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-enchant.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-resize.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-shrink.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-layer-magical-resize.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus.hpp" />

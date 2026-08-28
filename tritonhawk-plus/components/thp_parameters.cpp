@@ -175,7 +175,7 @@ namespace TritonhawkPlus
         // s16 max_number_threads = min(hardware_max_threads, preferences_max_threads);
         // number_threads = min(number_threads, max_number_threads);
 
-        number_threads = min(number_threads, hardware_max_threads * s16(4));
+        number_threads = min(number_threads, hardware_max_threads * s16(16));
 
         omp_set_num_threads( (int)number_threads );
     }

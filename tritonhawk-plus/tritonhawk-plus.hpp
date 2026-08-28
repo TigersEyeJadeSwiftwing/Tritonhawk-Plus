@@ -49,18 +49,32 @@ PLUG_IN_GUI_DIALOG_CAPTION_Image_Resize="(gchar*)(\"Tritonhawk Plus Multi-Thread
 #define THP_PLUG_IN_ROLE "tritonhawk-plus-enchanted"
 
 #define THP_PLUG_IN_PROCESS_Image_Magic_Resize                                  "tritonhawk-plus-enchanted-image-magical-resize"
-#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Resize                               "Tritonhawk Plus Image Magical Resize"
-#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Resize                       "Tritonhawk Plus Image Magical Resize"
+#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Resize                               "Tritonhawk Plus Magically Resize Image"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Resize                       "Tritonhawk Plus Magically Resize Image"
 #define THP_PLUG_IN_MENU_PATH_Image_Magic_Resize                                "<Image>/Image/Tritonhawk Plus/"
-#define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Resize                      "Tritonhawk Plus Image Magical Resize"
-#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Resize               "Tritonhawk Plus Image Magical Resize"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Resize                      "Tritonhawk Plus Magically Resize Image"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Resize               "Tritonhawk Plus Magically Resize Image"
 
 #define THP_PLUG_IN_PROCESS_Layer_Magic_Resize                                  "tritonhawk-plus-enchanted-layer-magical-resize"
-#define THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize                               "Tritonhawk Plus Layer Magical Resize"
-#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Layer_Magic_Resize                       "Tritonhawk Plus Layer Magical Resize"
+#define THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize                               "Tritonhawk Plus Magically Resize Layer"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Layer_Magic_Resize                       "Tritonhawk Plus Magically Resize Layer"
 #define THP_PLUG_IN_MENU_PATH_Layer_Magic_Resize                                "<Image>/Layer/Tritonhawk Plus/"
-#define THP_PLUG_IN_DOCUMENTATION_BLURB_Layer_Magic_Resize                      "Tritonhawk Plus Layer Magical Resize"
-#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Layer_Magic_Resize               "Tritonhawk Plus Layer Magical Resize"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Layer_Magic_Resize                      "Tritonhawk Plus Magically Resize Layer"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Layer_Magic_Resize               "Tritonhawk Plus Magically Resize Layer"
+
+#define THP_PLUG_IN_PROCESS_Image_Magic_Shrink                                  "tritonhawk-plus-enchanted-image-magical-shrink"
+#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Shrink                               "Tritonhawk Plus Magically Shrink Image"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Shrink                       "Tritonhawk Plus Magically Shrink Image"
+#define THP_PLUG_IN_MENU_PATH_Image_Magic_Shrink                                "<Image>/Image/Tritonhawk Plus/"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Shrink                      "Tritonhawk Plus Magically Shrink Image"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Shrink               "Tritonhawk Plus Magically Shrink Image"
+
+#define THP_PLUG_IN_PROCESS_Image_Magic_Shrink_BG                               "tritonhawk-plus-enchanted-image-magical-shrink-bg"
+#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Shrink_BG                            "Tritonhawk Plus Magically Shrink Image (Background Process)"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Shrink_BG                    "Tritonhawk Plus Magically Shrink Image (Background Process)"
+#define THP_PLUG_IN_MENU_PATH_Image_Magic_Shrink_BG                             "<Image>/Image/Tritonhawk Plus/"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Shrink_BG                   "Tritonhawk Plus Magically Shrink Image (Background Process)"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Shrink_BG            "Tritonhawk Plus Magically Shrink Image (Background Process)"
 
 #define THP_PLUG_IN_PROCESS_Image_Magic_Deflate                                 "tritonhawk-plus-enchanted-image-magical-deflate"
 #define THP_PLUG_IN_MENU_LABEL_Image_Magic_Deflate                              "Tritonhawk Plus Image Magical Deflate"
@@ -161,6 +175,14 @@ static GimpValueArray*  thp_layer_magic_resize_run(
                             gpointer run_data
                         );
 static GimpValueArray*  thp_image_magic_resize_run(
+                            GimpProcedure* procedure,
+                            GimpRunMode run_mode,
+                            GimpImage* image,
+                            GimpDrawable** drawables,
+                            GimpProcedureConfig* config,
+                            gpointer run_data
+                        );
+static GimpValueArray*  thp_image_magic_shrink_run(
                             GimpProcedure* procedure,
                             GimpRunMode run_mode,
                             GimpImage* image,

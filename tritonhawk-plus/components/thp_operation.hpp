@@ -20,4 +20,5 @@ are also licensed under the GPL version 3 license.  */
 namespace TritonhawkPlus
 {
     TARGET_CLONES bool Thp_Operation__Resize();
+    TARGET_CLONES bool Thp_Operation__Complete_Image__Magic_Shrink();
 };

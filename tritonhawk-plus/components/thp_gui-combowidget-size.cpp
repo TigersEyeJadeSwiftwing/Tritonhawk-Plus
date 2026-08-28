@@ -1660,7 +1660,7 @@ namespace TritonhawkPlus
         else if (button_name == button_pointer_threads_max)
         {
             // threads_enabled = (gint) min(Params->hardware_max_threads, Params->preferences_max_threads);
-            threads_enabled = gint (Params->hardware_max_threads * 4);
+            threads_enabled = gint (Params->hardware_max_threads * 16);
 
             ignore_auto_changes = true;
             UpdateGUI();
