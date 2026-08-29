@@ -50,6 +50,11 @@ namespace TritonhawkPlus
 
         Params->EngagePluginPriority();
 
+        Params->sample_grid_shape = SAMPLE_GRID_SHAPE_Square;
+        Params->sample_interpolation_x = 0.q;
+        Params->sample_interpolation_y = 0.q;
+        Params->chunk_size_kilo = 5uLL;
+        Params->chunk_size_default = 5000uLL;
         Params->gui_enabled = false;
 
         gimp_image_undo_group_start(Params->image);
@@ -122,6 +127,17 @@ namespace TritonhawkPlus
             layer_smallest_dimension = max(1, layer_smallest_dimension);
             Params->output_size_x = (u64)layer_smallest_dimension;
             Params->output_size_y = (u64)layer_smallest_dimension;
+
+            if (layer_smallest_dimension >= 20000)
+                Params->sample_count_adjustment = 0.02q;
+            else if (layer_smallest_dimension >= 10000)
+                Params->sample_count_adjustment = 0.05q;
+            else if (layer_smallest_dimension >= 100)
+                Params->sample_count_adjustment = 0.1q;
+            else if (layer_smallest_dimension >= 50)
+                Params->sample_count_adjustment = 0.5q;
+            else
+                Params->sample_count_adjustment = 1.0q;
 
             // Update the paramaters with the information on what we're doing
             Params->CopySizesToLayerSizes();

@@ -47,12 +47,6 @@ static GimpValueArray*  thp_image_magic_shrink_run(
     Params->sample_grid_is_for_all_layers = false;
     Params->whole_image_mode = true;
 
-    Params->sample_grid_shape = SAMPLE_GRID_SHAPE_Square;
-    Params->sample_interpolation_x = 0.q;
-    Params->sample_interpolation_y = 0.q;
-    Params->chunk_size_kilo = 5uLL;
-    Params->chunk_size_default = 5000uLL;
-
     bool result = Thp_Operation__Complete_Image__Magic_Shrink();
 
     if (result == true)
