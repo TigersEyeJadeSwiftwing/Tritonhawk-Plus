@@ -717,8 +717,8 @@ namespace TritonhawkPlus
                     // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
                     // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
                     // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
-                    out_x = (s32)Params->image_output_size_x;
-                    out_y = (s32)Params->image_output_size_y;
+                    out_x = output_size_param_x;
+                    out_y = output_size_param_y;
                     layer_x = (s32)gimp_drawable_get_width(layer_drawable);
                     layer_y = (s32)gimp_drawable_get_height(layer_drawable);
                     layer_aspect = (f128)layer_x / (f128)layer_y;
@@ -873,8 +873,8 @@ namespace TritonhawkPlus
                     // the aspect ratio of all of the layers of the image, which means that the width, or the "x" dimension, can vary,
                     // and has to be recalculated for each layer independently.  The initial width or "x" dimension to resize layers to,
                     // which was chosen in the GUI by the end-user, is actually ignored and is a value that isn't used.
-                    out_x = (s32)Params->image_output_size_x;
-                    out_y = (s32)Params->image_output_size_y;
+                    out_x = output_size_param_x;
+                    out_y = output_size_param_y;
                     layer_x = (s32)gimp_drawable_get_width(layer_drawable);
                     layer_y = (s32)gimp_drawable_get_height(layer_drawable);
                     layer_aspect = (f128)layer_x / (f128)layer_y;
