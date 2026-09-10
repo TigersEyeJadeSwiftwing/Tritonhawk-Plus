@@ -27,16 +27,43 @@ are also licensed under the GPL version 3 license.  */
 #include <omp.h>
 
 #ifndef HOT_INLINE
-    #define HOT_INLINE __attribute__(( target_clones( "arch=x86-64-v3,arch=x86-64-v4, arch=corei7,arch=corei7-avx,arch=atom,arch=sandybridge,arch=ivybridge,arch=skylake, sse,sse2,sse3,ssse3,sse4a,sse4.1,sse4.2, avx,avx2,avx512f,avx10.1,avx10.2, aes, xop, mmx, default" ) )) inline
+    #define HOT_INLINE __attribute__(( target_clones( "\
+        arch=x86-64-v3,arch=x86-64-v4, \
+        arch=core2,arch=corei7,arch=corei7-avx, \
+        arch=alderlake,arch=amdfam10,arch=arrowlake, \
+        arch=barcelona,arch=bonnell,arch=broadwell, \
+        arch=cannonlake,arch=cascadelake,arch=clearwaterforest,arch=cooperlake,arch=diamondrapids,arch=emeraldrapids, \
+        arch=goldmont,arch=gracemont,arch=grandridge,arch=graniterapids,arch=haswell,arch=lunarlake,arch=meteorlake, \
+        arch=nehalem,arch=novalake,arch=pantherlake,arch=raptorlake,arch=rocketlake,arch=sapphirerapids,arch=sierraforest, \
+        arch=silvermont,arch=tigerlake,arch=wildcatlake,arch=atom,arch=sandybridge,arch=ivybridge,arch=skylake, \
+        sse,sse2,sse3,ssse3,sse4a,sse4.1,sse4.2, \
+        avx,avx2,avx512f,avx10.1,avx10.2, \
+        aes, xop, mmx, \
+        default \
+        " ) )) inline
     // #define HOT_INLINE inline __attribute__((always_inline, hot))
     // #define HOT_INLINE_SIMPLE inline
     #define HOT_INLINE_SIMPLE inline __attribute__((always_inline, hot))
 #endif // HOT_INLINE
 
 #ifndef TARGET_CLONES
-    #define TARGET_CLONES __attribute__(( target_clones( "arch=x86-64-v3,arch=x86-64-v4, arch=corei7,arch=corei7-avx,arch=atom,arch=sandybridge,arch=ivybridge,arch=skylake, sse,sse2,sse3,ssse3,sse4a,sse4.1,sse4.2, avx,avx2,avx512f,avx10.1,avx10.2, aes, xop, mmx, default" ) ))
+    #define TARGET_CLONES __attribute__(( target_clones( "\
+        arch=x86-64-v3,arch=x86-64-v4, \
+        arch=core2,arch=corei7,arch=corei7-avx, \
+        arch=alderlake,arch=amdfam10,arch=arrowlake, \
+        arch=barcelona,arch=bonnell,arch=broadwell, \
+        arch=cannonlake,arch=cascadelake,arch=clearwaterforest,arch=cooperlake,arch=diamondrapids,arch=emeraldrapids, \
+        arch=goldmont,arch=gracemont,arch=grandridge,arch=graniterapids,arch=haswell,arch=lunarlake,arch=meteorlake, \
+        arch=nehalem,arch=novalake,arch=pantherlake,arch=raptorlake,arch=rocketlake,arch=sapphirerapids,arch=sierraforest, \
+        arch=silvermont,arch=tigerlake,arch=wildcatlake,arch=atom,arch=sandybridge,arch=ivybridge,arch=skylake, \
+        sse,sse2,sse3,ssse3,sse4a,sse4.1,sse4.2, \
+        avx,avx2,avx512f,avx10.1,avx10.2, \
+        aes, xop, mmx, \
+        default \
+        " ) ))
 #endif // TARGET_CLONES
 
+//         arch=nehalem,arch=nocona,arch=novalake,arch=opteron,arch=opteron-sse3,arch=pantherlake,arch=penryn, \
 // static inline __attribute__(( target_clones( "default" ) )) void Test_Function() { return; };
 
 namespace TritonhawkPlus {};

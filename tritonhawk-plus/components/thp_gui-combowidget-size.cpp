@@ -376,7 +376,7 @@ namespace TritonhawkPlus
             ) );
 
             // Threads and thread priority, spinbutton
-            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, gdouble((s32)Params->hardware_max_threads * (s32)4), (gdouble) 1.0);
+            Gui_SpinButton_Threads = gimp_spin_button_new_with_range((gdouble) 1.0, gdouble((s32)Params->hardware_max_threads * (s32)16), (gdouble) 1.0);
             gtk_widget_set_size_request(Gui_SpinButton_Threads, cell_r2_width, cell_height);
             gtk_box_pack_start(GTK_BOX(Gui_Box_H_Row_1_B), (GtkWidget*)Gui_SpinButton_Threads, FALSE, FALSE, 0);
             gtk_spin_button_set_digits((GtkSpinButton*)Gui_SpinButton_Threads, (guint) 0u);

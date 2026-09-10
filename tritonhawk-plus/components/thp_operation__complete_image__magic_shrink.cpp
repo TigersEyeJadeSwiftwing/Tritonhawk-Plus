@@ -98,7 +98,7 @@ namespace TritonhawkPlus
             if (number_of_layers > 1)
             {
                 gimp_progress_set_text( g_strdup_printf(_("Shrinking, layer %i / %i..."), layer_index, number_of_layers ) );
-                gimp_progress_update( gdouble(layer_index / number_of_layers) );
+                gimp_progress_update( gdouble((layer_index+1) / number_of_layers) );
             }
 
             // Set pointers for the current image's "layer" and the layer's "drawable", as GIMP calls them.
