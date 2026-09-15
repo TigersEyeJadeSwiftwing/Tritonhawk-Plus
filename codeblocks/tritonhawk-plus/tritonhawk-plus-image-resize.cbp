@@ -427,6 +427,7 @@
 		<Unit filename="../../libs/libquadmath/math/rounddgq.inl" />
 		<Unit filename="../../libs/libquadmath/math/roundq.inl" />
 		<Unit filename="../../libs/libquadmath/math/scalbnq.inl" />
+		<Unit filename="../../libs/libquadmath/math/sin_cos_kernel.inl" />
 		<Unit filename="../../libs/libquadmath/math/sinq.inl" />
 		<Unit filename="../../libs/libquadmath/math/sqrtq.inl" />
 		<Unit filename="../../libs/libquadmath/math/tanq.inl" />
@@ -446,6 +447,7 @@
 		<Unit filename="../../tritonhawk-plus/components/thp_operation.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_operation__complete_image__magic_shrink.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_operation__dynamic_parameters__resize.cpp" />
+		<Unit filename="../../tritonhawk-plus/components/thp_operation__file__magic_shrink_and_add_layer.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_parameters.cpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_parameters.hpp" />
 		<Unit filename="../../tritonhawk-plus/components/thp_resize.cpp" />

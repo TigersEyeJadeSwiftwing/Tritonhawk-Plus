@@ -54,34 +54,36 @@ or
 -DTHP_FORCE_USE_FLOAT128
 
 // flags passed to clang++ at the command line
--std=gnu23
--std=gnu++23
--march=x86-64-v3
--mtune=generic
--ftree-vectorize
--funroll-loops
--m64
--O3
--mlong-double-80
--fopenmp=libomp
 -Wall
+-O3
+-m64
+-std=gnu26
+-std=gnu++26
+-march=x86-64-v3
+-ftree-vectorize
+-fvectorize
+-fslp-vectorize
+-funroll-loops
+-mlong-double-128
+-fopenmp-extensions
 -flto
 -fno-math-errno
 -fno-trapping-math
 -ffp-contract=off
 
 // flags passed to the linker at the command line
--std=gnu23
--std=gnu++23
--march=x86-64-v2
--mtune=generic
+-std=gnu26
+-std=gnu++26
+-march=x86-64-v3
 -ftree-vectorize
+-fvectorize
+-fslp-vectorize
 -funroll-loops
+-Wall
 -m64
 -O3
--mlong-double-80
--fopenmp=libomp
--Wall
+-mlong-double-128
+-fopenmp-extensions
 -flto
 -fno-math-errno
 -fno-trapping-math

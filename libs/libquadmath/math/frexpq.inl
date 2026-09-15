@@ -14,6 +14,8 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
+#include "ldexpq.inl"
+
 /** \brief Decomposes x into its normalized fraction and exponent.
  *
  * \param x f128 The input value to decompose.
@@ -36,31 +38,56 @@ static HOT_INLINE f128 frexpq(f128 x, s64* eptr) noexcept
     // Normalize x to the range [0.5, 1.0)
     s64 exponent = 0;
 
-    // Handle negative values
-    if (x < 0.0q)
-        x = -x; // Work with the absolute value
+    // Work with the absolute value
+    f128 abs_x = x < 0.q ? -x : x;
 
     // Find the exponent and normalize x
-    while (x > 2.0q) { // Change to 2.0q for larger steps
-        x *= 0.25q; // Divide by 4
-        exponent += 2; // Increment exponent by 2
+    if (abs_x > 1.q)
+    {
+        while (abs_x > 8.0q) { // Change to 8.0q for larger steps
+            abs_x *= 0.0625q; // Divide by 16
+            exponent += 4; // Increment exponent by 4
+        }
+        while (abs_x > 4.0q) { // Change to 4.0q for larger steps
+            abs_x *= 0.125q; // Divide by 8
+            exponent += 3; // Increment exponent by 3
+        }
+        while (abs_x > 2.0q) { // Change to 2.0q for larger steps
+            abs_x *= 0.25q; // Divide by 4
+            exponent += 2; // Increment exponent by 2
+        }
+        while (abs_x >= 1.0q) {
+            abs_x *= 0.5q; // Divide by 2
+            exponent += 1; // Increment exponent by 1
+        }
     }
-    while (x >= 1.0q) {
-        x *= 0.5q; // Divide by 2
-        exponent += 1; // Increment exponent by 1
-    }
-    while (x < 0.25q) { // Change to 0.25q for larger steps
-        x *= 4.0q; // Multiply by 4
-        exponent -= 2; // Decrement exponent by 2
-    }
-    while (x < 0.5q) {
-        x *= 2.0q; // Multiply by 2
-        exponent -= 1; // Decrement exponent by 1
+    else if (abs_x < 0.5q)
+    {
+        while (abs_x < 0.0625q) { // Change to 0.0625q for larger steps
+            abs_x *= 16.0q; // Multiply by 16
+            exponent -= 4; // Decrement exponent by 4
+        }
+        while (abs_x < 0.125q) { // Change to 0.125q for larger steps
+            abs_x *= 8.0q; // Multiply by 8
+            exponent -= 3; // Decrement exponent by 3
+        }
+        while (abs_x < 0.25q) { // Change to 0.25q for larger steps
+            abs_x *= 4.0q; // Multiply by 4
+            exponent -= 2; // Decrement exponent by 2
+        }
+        while (abs_x < 0.5q) {
+            abs_x *= 2.0q; // Multiply by 2
+            exponent -= 1; // Decrement exponent by 1
+        }
     }
 
     // Store the exponent
-    if (eptr)
-        *eptr = exponent;
+    if (eptr) *eptr = exponent;
 
-    return x; // Return the normalized fraction
+    // Reconstruct the final value
+    // ldexpq(fraction, exponent) returns fraction * 2^exponent
+    f128 result = ldexpq(abs_x, exponent);
+
+    // Restore the original sign
+    return x < 0.q ? -result : result;
 }

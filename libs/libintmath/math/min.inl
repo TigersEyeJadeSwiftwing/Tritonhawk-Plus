@@ -14,26 +14,22 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-static inline __attribute__((always_inline, hot))
-s16 min(const s16 a, const s16 b)
+static HOT_INLINE s16 min(const s16 a, const s16 b) noexcept
 {
     return (a < b) ? a : b;
 }
 
-static inline __attribute__((always_inline, hot))
-u16 min(const u16 a, const u16 b)
+static HOT_INLINE u16 min(const u16 a, const u16 b) noexcept
 {
     return (a < b) ? a : b;
 }
 
-static inline __attribute__((always_inline, hot))
-s64 min(const s64 a, const s64 b)
+static HOT_INLINE s64 min(const s64 a, const s64 b) noexcept
 {
     return (a < b) ? a : b;
 }
 
-static inline __attribute__((always_inline, hot))
-u64 min(const u64 a, const u64 b)
+static HOT_INLINE u64 min(const u64 a, const u64 b) noexcept
 {
     return (a < b) ? a : b;
 }

@@ -1160,7 +1160,7 @@ namespace TritonhawkPlus
     TARGET_CLONES void ComboSizeWidget::SetSampleGridWeighting(gdouble val)
     {
         sample_grid_weighting = clamp01q((f128)val);
-        // sample_grid_weighting = rounddgq(sample_grid_weighting, -5);
+        sample_grid_weighting = rounddgq(sample_grid_weighting, -4);
 
         ignore_auto_changes = true;
         UpdateGUI();
@@ -1183,19 +1183,20 @@ namespace TritonhawkPlus
         // value = rounddgq(value, -3);
         sample_interpolation_x = gdouble(value);
 
-        if (value < 0.000005)
+        if (value < 0.0005)
         {
-            sample_interpolation_x = gdouble(0.000001);
+            sample_interpolation_x = gdouble(0.0);
 
             if (chain_button_sample_interpolation_on == TRUE)
             {
-                sample_interpolation_y = gdouble(0.000001);
+                sample_interpolation_y = gdouble(0.0);
                 sample_interpolation_locked_ratio_xy = 1.q;
             }
         }
         else if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / f128(sample_interpolation_locked_ratio_xy), 0.q, 5000.q);
+            f128 xy_ratio = clampq(sample_interpolation_locked_ratio_xy, 0.000001q, 1000000.q);
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_x) / xy_ratio, 0.q, 5000.q);
             // sample_interpolation_y = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_y = (gdouble)sample_interpolation_f;
         }
@@ -1216,19 +1217,20 @@ namespace TritonhawkPlus
         // value = rounddgq(value, -3);
         sample_interpolation_y = gdouble(value);
 
-        if (value < 0.000005)
+        if (value < 0.0005)
         {
-            sample_interpolation_y = gdouble(0.000001);
+            sample_interpolation_y = gdouble(0.0);
 
             if (chain_button_sample_interpolation_on == TRUE)
             {
-                sample_interpolation_x = gdouble(0.000001);
+                sample_interpolation_x = gdouble(0.0);
                 sample_interpolation_locked_ratio_xy = 1.q;
             }
         }
         if (chain_button_sample_interpolation_on == TRUE)
         {
-            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * f128(sample_interpolation_locked_ratio_xy), 0.q, 5000.q);
+            f128 xy_ratio = clampq(sample_interpolation_locked_ratio_xy, 0.000001q, 1000000.q);
+            f128 sample_interpolation_f = clampq(f128(sample_interpolation_y) * xy_ratio, 0.q, 5000.q);
             // sample_interpolation_x = (gdouble)rounddgq(sample_interpolation_f, -3);
             sample_interpolation_x = (gdouble)sample_interpolation_f;
         }
@@ -1265,7 +1267,7 @@ namespace TritonhawkPlus
     TARGET_CLONES void ComboSizeWidget::SetThreads(gint val)
     {
         threads_enabled = gint(val);
-        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads * (gint)4 );
+        threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->hardware_max_threads * (gint)16 );
         // threads_enabled = (gint)min( (gint)threads_enabled, (gint)Params->preferences_max_threads );
 
         Params->number_threads = (s16)threads_enabled;
@@ -1370,9 +1372,9 @@ namespace TritonhawkPlus
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Threads, (gdouble)threads_enabled);
 
         if (Gui_SpinButton_Sample_Grid_Scale_X)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100.q, -4));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_X, (gdouble)rounddgq((f128)sample_grid_scale_x * 100.q, -5));
         if (Gui_SpinButton_Sample_Grid_Scale_Y)
-            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)rounddgq((f128)sample_grid_scale_y * 100.q, -4));
+            gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Grid_Scale_Y, (gdouble)rounddgq((f128)sample_grid_scale_y * 100.q, -5));
         if (Gui_ChainButton_Sample_Grid_Scale)
             gimp_chain_button_set_active((GimpChainButton*)Gui_ChainButton_Sample_Grid_Scale, chain_button_sample_grid_scale_on);
 
@@ -1407,7 +1409,7 @@ namespace TritonhawkPlus
 
         if (Gui_Sample_Weighting_Label)
         {
-            f128 rounded_weighting = rounddgq(sample_grid_weighting, -3);
+            f128 rounded_weighting = rounddgq(sample_grid_weighting, -5);
             if (rounded_weighting < 0.0005q)
                 gtk_label_set_text((GtkLabel*)Gui_Sample_Weighting_Label,
                     g_strdup_printf(_("Sample Weighting\n" "%s"), " Off") );
@@ -1421,13 +1423,13 @@ namespace TritonhawkPlus
         if (Gui_SpinButton_Sample_Weighting)
         {
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Weighting,
-                (gdouble) rounddgq(sample_grid_weighting, -3));
+                (gdouble) rounddgq(sample_grid_weighting, -5));
         }
 
         if (Gui_SpinButton_Sample_Count)
         {
             gtk_spin_button_set_value((GtkSpinButton*)Gui_SpinButton_Sample_Count,
-                (gdouble) rounddgq(sample_count_adjustment * 100.q, -2));
+                (gdouble) rounddgq(sample_count_adjustment * 100.q, -3));
         }
 
         if (Gui_Button_Seamless_X)
@@ -1972,18 +1974,18 @@ namespace TritonhawkPlus
     }
     string ComboSizeWidget::SetInterpolationString(f64 v)
     {
-        f64 rv = rounddg(v, -7);
+        f128 rv = rounddgq(v, -5);
 
-        if (rv < 0.000005) return "Nearest";
-        if (rv < 1.000005) return "Linear";
-        if (rv < 2.00000) return "Linear to Quadratic";
-        if (rv < 2.000005) return "Quadratic";
-        if (rv < 3.00000) return "Quadratic to Cubic";
-        if (rv < 3.000005) return "Cubic";
-        if (rv < 4.00000) return "Cubic to Quartic";
-        if (rv < 4.000005) return "Quartic";
-        if (rv < 5.00000) return "Quartic to Quintic";
-        if (rv < 5.000005) return "Quintic";
+        if (rv < 0.0005q) return "Nearest";
+        if (rv < 1.0005q) return "Linear";
+        if (rv < 2.0000q) return "Linear to Quadratic";
+        if (rv < 2.0005q) return "Quadratic";
+        if (rv < 3.0000q) return "Quadratic to Cubic";
+        if (rv < 3.0005q) return "Cubic";
+        if (rv < 4.0000q) return "Cubic to Quartic";
+        if (rv < 4.0005q) return "Quartic";
+        if (rv < 5.0000q) return "Quartic to Quintic";
+        if (rv < 5.0005q) return "Quintic";
         return "Beyond Quintic";
     }
 

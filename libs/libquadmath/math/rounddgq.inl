@@ -14,9 +14,9 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-// #include "roundq.inl"
-// #include "fmodq.inl"
-// #include "powq.inl"
+#include "fabsq.inl"
+#include "roundq.inl"
+#include "powq.inl"
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
  *
@@ -46,10 +46,10 @@ are also licensed under the GPL version 3 license.  */
  * by a small amount that is later shaved off when the value is truncated by the GUI text that
  * displays the resulting value.
  */
-static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
+static HOT_INLINE f128 rounddgq(const f128 value, const s8 digits) noexcept
 {
-    if (invalidq(x)) return NANq;
-    if (digits == 0) return roundq(x);
+    if (invalidq(value)) return NANq;
+    if (digits == 0) return value;
 
     constexpr f128 POW10_POS[] =
     {
@@ -67,31 +67,24 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
     };
     constexpr s8 POW10_MAX = 38;
     constexpr s8 POW10_MIN = -38;
-
-    f128 pow10 = f128(1.q), pow10_x00tiny = f128(0.001q);
+    f128 multiple = 1.q;
 
     if ((digits > POW10_MAX) || (digits < POW10_MIN))
-    {
-        pow10 = powq( f128(10.q), f128(digits) );
-    }
+        multiple = powq( f128(10.q), f128(digits) );
     else if (digits > 0)
-    {
-        pow10 = POW10_POS[digits];
-    }
+        multiple = POW10_POS[digits];
     else if (digits < 0)
-    {
-        pow10 = POW10_NEG[-digits];
+        multiple = POW10_NEG[-digits];
+
+    f128 result = roundq(value / multiple) * multiple;
+
+    // Clean up near-integer values
+    f128 nearest_int = roundq(result);
+    f128 tolerance = multiple * std::numeric_limits<f128>::epsilon() * 10;
+
+    if (fabsq(result - nearest_int) < tolerance) {
+        return nearest_int;
     }
-
-    if (invalidq(pow10)) return 0.q;
-
-    pow10_x00tiny *= pow10;
-
-    if (invalidq(pow10_x00tiny)) return 0.q;
-
-    f128 result = f128(pow10_x00tiny) + f128(x) - (f128)fmodq( f128(x), (f128)pow10 );
-
-    if (invalidq(result)) return NANq;
 
     return result;
 }
@@ -102,12 +95,49 @@ static HOT_INLINE f128 rounddgq(const f128 x, const s8 digits) noexcept
  * \param digits (const s8) Controls the power of ten to round to.
  * \return (f64) The output value, rounded.
  *
- * 64-bit version.  Promotes input values to 128-bits for precision, before converting back to 64-bits.
+ * 64-bit version.
  */
-static HOT_INLINE f64 rounddg(const f64 x, const s8 digits) noexcept
+static HOT_INLINE f64 rounddg(const f64 value, const s8 digits) noexcept
 {
-    if (invalid(x)) return NAN;
-    return f64 (rounddgq(f128 (x), digits));
+    if (invalid(value)) return NAN;
+    if (digits == 0) return value;
+
+    constexpr f64 POW10_POS[] =
+    {
+        1e0q,  1e1q,  1e2q,  1e3q,  1e4q,  1e5q,  1e6q,  1e7q,  1e8q,  1e9q,
+        1e10q, 1e11q, 1e12q, 1e13q, 1e14q, 1e15q, 1e16q, 1e17q, 1e18q, 1e19q,
+        1e20q, 1e21q, 1e22q, 1e23q, 1e24q, 1e25q, 1e26q, 1e27q, 1e28q, 1e29q,
+        1e30q, 1e31q, 1e32q, 1e33q, 1e34q, 1e35q, 1e36q, 1e37q
+    };
+    constexpr f64 POW10_NEG[] =
+    {
+        1e0q,   1e-1q,  1e-2q,  1e-3q,  1e-4q,  1e-5q,  1e-6q,  1e-7q,  1e-8q,  1e-9q,
+        1e-10q, 1e-11q, 1e-12q, 1e-13q, 1e-14q, 1e-15q, 1e-16q, 1e-17q, 1e-18q, 1e-19q,
+        1e-20q, 1e-21q, 1e-22q, 1e-23q, 1e-24q, 1e-25q, 1e-26q, 1e-27q, 1e-28q, 1e-29q,
+        1e-30q, 1e-31q, 1e-32q, 1e-33q, 1e-34q, 1e-35q, 1e-36q, 1e-37q
+    };
+    constexpr s8 POW10_MAX = 38;
+    constexpr s8 POW10_MIN = -38;
+    f64 multiple = 1.0;
+
+    if ((digits > POW10_MAX) || (digits < POW10_MIN))
+        multiple = pow( f64(10.0), f64(digits) );
+    else if (digits > 0)
+        multiple = POW10_POS[digits];
+    else if (digits < 0)
+        multiple = POW10_NEG[-digits];
+
+    f64 result = round(value / multiple) * multiple;
+
+    // Clean up near-integer values
+    f64 nearest_int = round(result);
+    f64 tolerance = multiple * std::numeric_limits<f64>::epsilon() * 10;
+
+    if (fabs(result - nearest_int) < tolerance) {
+        return nearest_int;
+    }
+
+    return result;
 }
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
@@ -116,12 +146,49 @@ static HOT_INLINE f64 rounddg(const f64 x, const s8 digits) noexcept
  * \param digits (const s8) Controls the power of ten to round to.
  * \return (f32) The output value, rounded.
  *
- * 32-bit version.  Promotes input values to 128-bits for precision, before converting back to 32-bits.
+ * 32-bit version.
  */
-static HOT_INLINE f32 rounddgf(const f32 x, const s8 digits) noexcept
+static HOT_INLINE f32 rounddgf(const f32 value, const s8 digits) noexcept
 {
-    if (invalidf(x)) return NAN;
-    return f32 (rounddgq(f128 (x), digits));
+    if (invalidf(value)) return NAN;
+    if (digits == 0) return value;
+
+    constexpr f32 POW10_POS[] =
+    {
+        1e0q,  1e1q,  1e2q,  1e3q,  1e4q,  1e5q,  1e6q,  1e7q,  1e8q,  1e9q,
+        1e10q, 1e11q, 1e12q, 1e13q, 1e14q, 1e15q, 1e16q, 1e17q, 1e18q, 1e19q,
+        1e20q, 1e21q, 1e22q, 1e23q, 1e24q, 1e25q, 1e26q, 1e27q, 1e28q, 1e29q,
+        1e30q, 1e31q, 1e32q, 1e33q, 1e34q, 1e35q, 1e36q, 1e37q
+    };
+    constexpr f32 POW10_NEG[] =
+    {
+        1e0q,   1e-1q,  1e-2q,  1e-3q,  1e-4q,  1e-5q,  1e-6q,  1e-7q,  1e-8q,  1e-9q,
+        1e-10q, 1e-11q, 1e-12q, 1e-13q, 1e-14q, 1e-15q, 1e-16q, 1e-17q, 1e-18q, 1e-19q,
+        1e-20q, 1e-21q, 1e-22q, 1e-23q, 1e-24q, 1e-25q, 1e-26q, 1e-27q, 1e-28q, 1e-29q,
+        1e-30q, 1e-31q, 1e-32q, 1e-33q, 1e-34q, 1e-35q, 1e-36q, 1e-37q
+    };
+    constexpr s8 POW10_MAX = 38;
+    constexpr s8 POW10_MIN = -38;
+    f32 multiple = 1.0f;
+
+    if ((digits > POW10_MAX) || (digits < POW10_MIN))
+        multiple = powf( f32(10.0f), f32(digits) );
+    else if (digits > 0)
+        multiple = POW10_POS[digits];
+    else if (digits < 0)
+        multiple = POW10_NEG[-digits];
+
+    f32 result = roundf(value / multiple) * multiple;
+
+    // Clean up near-integer values
+    f32 nearest_int = roundf(result);
+    f32 tolerance = multiple * std::numeric_limits<f32>::epsilon() * 10;
+
+    if (fabsf(result - nearest_int) < tolerance) {
+        return nearest_int;
+    }
+
+    return result;
 }
 
 /** \brief Rounds a floating point number to a nearest specified power of ten.
@@ -130,10 +197,10 @@ static HOT_INLINE f32 rounddgf(const f32 x, const s8 digits) noexcept
  * \param digits (const s8) Controls the power of ten to round to.
  * \return (f16) The output value, rounded.
  *
- * 16-bit version.  Promotes input values to 128-bits for precision, before converting back to 16-bits.
+ * 16-bit version.  Promotes input values to 32-bits for precision, before converting back to 16-bits.
  */
-static HOT_INLINE f16 rounddgfs(const f16 x, const s8 digits) noexcept
+static HOT_INLINE f16 rounddgfs(const f16 value, const s8 digits) noexcept
 {
-    if (invalidfs(x)) return NAN;
-    return f16 (rounddgq(f128 (x), digits));
+    if (invalidfs(value)) return NAN;
+    return f16 (rounddgf(f32 (value), digits));
 }

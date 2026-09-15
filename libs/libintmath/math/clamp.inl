@@ -14,50 +14,42 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-static inline __attribute__((always_inline, hot))
-s8 clamp(const s8 v, const s8 lo, const s8 hi)
+static HOT_INLINE s8 clamp(const s8 v, const s8 lo, const s8 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-s16 clamp(const s16 v, const s16 lo, const s16 hi)
+static HOT_INLINE s16 clamp(const s16 v, const s16 lo, const s16 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-s32 clamp(const s32 v, const s32 lo, const s32 hi)
+static HOT_INLINE s32 clamp(const s32 v, const s32 lo, const s32 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-s64 clamp(const s64 v, const s64 lo, const s64 hi)
+static HOT_INLINE s64 clamp(const s64 v, const s64 lo, const s64 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-u8 clamp(const u8 v, const u8 lo, const u8 hi)
+static HOT_INLINE u8 clamp(const u8 v, const u8 lo, const u8 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-u16 clamp(const u16 v, const u16 lo, const u16 hi)
+static HOT_INLINE u16 clamp(const u16 v, const u16 lo, const u16 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-u32 clamp(const u32 v, const u32 lo, const u32 hi)
+static HOT_INLINE u32 clamp(const u32 v, const u32 lo, const u32 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }
 
-static inline __attribute__((always_inline, hot))
-u64 clamp(const u64 v, const u64 lo, const u64 hi)
+static HOT_INLINE u64 clamp(const u64 v, const u64 lo, const u64 hi) noexcept
 {
     return (v >= lo) ? ((v <= hi) ? v : hi) : lo;
 }

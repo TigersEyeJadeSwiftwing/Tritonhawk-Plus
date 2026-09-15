@@ -1268,15 +1268,8 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        // u64 samples_x = Params->sample_count_x;
-        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        // f128 sample_grid_width = Params->sample_grid_scale_x;
-        // f128 sample_grid_height = Params->sample_grid_scale_y;
-        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -1415,7 +1408,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000005q)
+                    else if (sample_interpolation_x < 0.005q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -1486,7 +1479,7 @@ namespace TritonhawkPlus
                         lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.000005q)
+                    else if (sample_interpolation_y < 0.005q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
@@ -1551,9 +1544,9 @@ namespace TritonhawkPlus
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                    if ((sample_interpolation_x > 1.005q) && (pos_x0 != pos_x1))
                         lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                    if ((sample_interpolation_y > 1.005q) && (pos_y0 != pos_y1))
                         lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to
@@ -1811,15 +1804,8 @@ namespace TritonhawkPlus
         bool seamless_y = Params->seamless_y;
         u64 chunk_size = Params->chunk_size_pixels;
         f64 progress_start = Params->progress_start;
-        // f64 progress_end = Params->progress_end;
         f64 progress_increment = Params->progress_increment;
-        // u64 samples_x = Params->sample_count_x;
-        // u64 samples_y = Params->sample_count_y;
         u64 samples_total = Params->sample_count_xy;
-        // f128 sample_grid_width = Params->sample_grid_scale_x;
-        // f128 sample_grid_height = Params->sample_grid_scale_y;
-        // f128 sample_grid_offset_x = Params->sample_grid_offset_x;
-        // f128 sample_grid_offset_y = Params->sample_grid_offset_y;
         f128 sample_interpolation_x = Params->sample_interpolation_x;
         f128 sample_interpolation_y = Params->sample_interpolation_y;
 
@@ -1958,7 +1944,7 @@ namespace TritonhawkPlus
                         lerp_x = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_x < 0.000005q)
+                    else if (sample_interpolation_x < 0.005q)
                     {
                         sample_position_x = fmodq(sample_position_x + oxf, oxf);
                         pos_x0 = to_intq(sample_position_x);
@@ -2029,7 +2015,7 @@ namespace TritonhawkPlus
                         lerp_y = 0.0q;
                     }
                     // If we're not doing interpolation, and instead doing "nearest neighbor", this should be simple, fast, and fairly straightforward.
-                    else if (sample_interpolation_y < 0.000005q)
+                    else if (sample_interpolation_y < 0.005q)
                     {
                         sample_position_y = fmodq(sample_position_y + oyf, oyf);
                         pos_y0 = to_intq(sample_position_y);
@@ -2094,9 +2080,9 @@ namespace TritonhawkPlus
 
                     // If we're interpolating, and the paramaters for such are above 1.0q, then we are interpolating in a way that
                     //   isn't linear, such as quadratic, cubic, or somewhere in-between types, etc.
-                    if ((sample_interpolation_x > 1.00005q) && (pos_x0 != pos_x1))
+                    if ((sample_interpolation_x > 1.005q) && (pos_x0 != pos_x1))
                         lerp_x = lerp_exp_inq(0.0q, 1.0q, lerp_x, sample_interpolation_x);
-                    if ((sample_interpolation_y > 1.00005q) && (pos_y0 != pos_y1))
+                    if ((sample_interpolation_y > 1.005q) && (pos_y0 != pos_y1))
                         lerp_y = lerp_exp_inq(0.0q, 1.0q, lerp_y, sample_interpolation_y);
 
                     // If we don't have interpolation of any kind with x or y dimensions, adding the sample times it's weight to

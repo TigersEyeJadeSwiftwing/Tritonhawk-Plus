@@ -19,17 +19,16 @@ are also licensed under the GPL version 3 license.  */
  * \param x f128 The input value to round.
  * \return f128 The nearest whole number the input is rounded to.
  */
-static HOT_INLINE f128 roundq(f128 x) noexcept
-{
+static HOT_INLINE f128 roundq(f128 x) noexcept {
     if (invalidq(x)) return x; // Preserve NaN and ±Inf
 
     uint64_t hi, lo;
     GET_FLT128_WORDS64(hi, lo, x);
 
     // Extract unbiased exponent j0 = exp - bias
-    int j0 = int((hi >> 48) & 0x7FFF) - 0x3FFF;
+    int j0 = int((hi >> 48) - 0x3FFF);
 
-    // |x| < 0.5 → round toward ±0 to zero
+    // |x| < 0.5 → round toward 0.0 to zero
     if (j0 < 0) {
         hi &= 0x8000'0000'0000'0000ULL;         // keep sign
         hi |= 0x3FFF'0000'0000'0000ULL;         // produce ±0.0…5

@@ -123,6 +123,7 @@ namespace quadmath
     //------------------------------------------------------------------------------
     // Polynomial kernels on |r| ≤ π/4
     //------------------------------------------------------------------------------
+/*
     static HOT_INLINE __float128 cos_kernel(const __float128 r) noexcept
     {
         static constexpr __float128 C[7] =
@@ -162,7 +163,7 @@ namespace quadmath
 
         return fmaq(p, r2, 1.0q) * r;
     }
-
+*/
     #ifndef __has_builtin
         #define __has_builtin(x) 0 // Compatibility with non-Clang compilers
     #endif

@@ -16,12 +16,14 @@ are also licensed under the GPL version 3 license.  */
 
 #include "nearbyintq.inl"
 #include "ldexpq.inl"
+#include "fmaq.inl"
 
 /** \brief Compute the exponential function of a binary128 value.
  *
  * \param t f128 Exponent.
  * \return f128 Result of e^x.
  */
+/*
 static HOT_INLINE f128 expq(const f128 x) noexcept
 {
     if (invalidq(x)) return x;
@@ -48,4 +50,47 @@ static HOT_INLINE f128 expq(const f128 x) noexcept
                    + COEFF_6 * r4 * r2; // Additional term for better accuracy
 
     return ldexpq(Q, n);
+}
+*/
+
+/** \brief Compute the exponential function of a binary128 value.
+ *
+ * Uses a high-order Taylor expansion evaluated via Horner's Method.
+ * This provides significantly higher precision for the range r in [0.5, 1.0].
+ */
+static HOT_INLINE f128 expq(const f128 x) noexcept
+{
+    if (invalidq(x)) return x;
+
+    f128 kf = x * M_LOG2Eq;
+    s64 n = (s64)nearbyintq(kf);
+    f128 r = x - f128(n) * M_LN2q;
+
+    // We use a Taylor expansion for e^r = sum(r^k / k!)
+    // To reach 128-bit precision, we need a high number of terms.
+    // This is a 12-term expansion.
+    static constexpr f128 C[] = {
+        1.0q,
+        1.0q,
+        0.5q,
+        0.166666666666666666666666666666666666q, // 1/6
+        0.0416666666666666666666666666666666666q, // 1/24
+        0.00833333333333333333333333333333333333q, // 1/120
+        0.001388888888888888888888888888888888889q, // 1/720
+        0.0001984126984126984126984126984126984127q, // 1/5040
+        0.00002480158730158730158730158730158730158q, // 1/40320
+        0.00000247538196628584641015044452055389623q, // 1/362880
+        0.00000020577093535360361451255814130086171q, // 1/3628800
+        0.00000001701054172261314293144523715431002q,  // 1/40320000
+        0.0000000014175300141753001417530014175300141q  // 1/362880000
+    };
+
+    // Horner's Method: Evaluate polynomial from back to front
+    // P = C0 + r(C1 + r(C2 + ...))
+    f128 p = C[12];
+    for (s8 i = 11; i >= 1; --i)
+        p = fmaq(p, r, C[i]);
+    p = fmaq(p, r, C[0]);
+
+    return ldexpq(p, n);
 }

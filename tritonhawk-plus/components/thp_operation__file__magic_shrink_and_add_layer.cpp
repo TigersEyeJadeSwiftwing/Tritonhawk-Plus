@@ -1,4 +1,3 @@
-#pragma once
 /*  Copyright (c) Tiger's Eye Jade Swiftwing, Master Tiger Dragon, Zarakite, all rights reserved.
     This file is written by Tiger's Eye Jade Swiftwing.  It is licensed under the GPLv3 license.  Note that my first name is "Tiger's Eye" (which is two words),
 my middle name is "Jade", and "Swiftwing" is one word that is my last name.
@@ -15,12 +14,40 @@ https://www.gimp.org/
 are also licensed under the GPL version 3 license.  */
 
 #include "components/thp_types.hpp"
-// #include "components/thp_parameters.hpp"
+#include "components/thp_resize.hpp"
+#include "components/thp_log.hpp"
+#include "components/thp_parameters.hpp"
+#include "components/thp_operation.hpp"
+#include "components/thp_gui-combowidget-size.hpp"
+// #include "tritonhawk-plus.hpp"
+
+#include <omp.h>
+
+#include <string>
+#include <algorithm>
+#include <cmath>
+#include <vector>
+
+using namespace std;
+using namespace TritonhawkPlus;
+using namespace quadmath;
+
+extern ThpLog* Log;
+extern ThpParams* Params;
 
 namespace TritonhawkPlus
 {
-    TARGET_CLONES bool Thp_Operation__Resize();
-    TARGET_CLONES bool Thp_Operation__Complete_Image__Magic_Shrink();
-    TARGET_CLONES bool Thp_Operation__File__Magic_Shrink_and_Add_Layer();
-    // TARGET_CLONES bool Thp_Operation__File_Folder__Magic_Shrink();
-};
+    TARGET_CLONES bool Thp_Operation__File__Magic_Shrink_and_Add_Layer()
+    {
+        if (!Params)
+            return false;
+
+        if (!Params->image)
+        {
+            Params->operation_result_string = "Error: No image detected.";
+            return false;
+        }
+
+        return false;
+    }
+}

@@ -17,6 +17,8 @@ are also licensed under the GPL version 3 license.  */
 #include "nearbyintq.inl"
 #include "fmaq.inl"
 
+#include "sin_cos_kernel.inl"
+
 /** \brief 128-bit float sine function.
  *
  * \param x f128 Input value.

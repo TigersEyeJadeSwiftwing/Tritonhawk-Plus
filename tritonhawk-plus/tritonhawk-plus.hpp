@@ -49,21 +49,21 @@ PLUG_IN_GUI_DIALOG_CAPTION_Image_Resize="(gchar*)(\"Tritonhawk Plus Multi-Thread
 #define THP_PLUG_IN_ROLE "tritonhawk-plus-enchanted"
 
 #define THP_PLUG_IN_PROCESS_Image_Magic_Resize                                  "tritonhawk-plus-enchanted-image-magical-resize"
-#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Resize                               "Tritonhawk Plus Magically Resize Image"
+#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Resize                               "Resize Image"
 #define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Resize                       "Tritonhawk Plus Magically Resize Image"
 #define THP_PLUG_IN_MENU_PATH_Image_Magic_Resize                                "<Image>/Image/Tritonhawk Plus/"
 #define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Resize                      "Tritonhawk Plus Magically Resize Image"
 #define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Image_Magic_Resize               "Tritonhawk Plus Magically Resize Image"
 
 #define THP_PLUG_IN_PROCESS_Layer_Magic_Resize                                  "tritonhawk-plus-enchanted-layer-magical-resize"
-#define THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize                               "Tritonhawk Plus Magically Resize Layer"
+#define THP_PLUG_IN_MENU_LABEL_Layer_Magic_Resize                               "Resize Layer"
 #define THP_PLUG_IN_GUI_DIALOG_CAPTION_Layer_Magic_Resize                       "Tritonhawk Plus Magically Resize Layer"
 #define THP_PLUG_IN_MENU_PATH_Layer_Magic_Resize                                "<Image>/Layer/Tritonhawk Plus/"
 #define THP_PLUG_IN_DOCUMENTATION_BLURB_Layer_Magic_Resize                      "Tritonhawk Plus Magically Resize Layer"
 #define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Layer_Magic_Resize               "Tritonhawk Plus Magically Resize Layer"
 
 #define THP_PLUG_IN_PROCESS_Image_Magic_Shrink                                  "tritonhawk-plus-enchanted-image-magical-shrink"
-#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Shrink                               "Tritonhawk Plus Magically Shrink Image"
+#define THP_PLUG_IN_MENU_LABEL_Image_Magic_Shrink                               "Shrink Image"
 #define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Shrink                       "Tritonhawk Plus Magically Shrink Image"
 #define THP_PLUG_IN_MENU_PATH_Image_Magic_Shrink                                "<Image>/Image/Tritonhawk Plus/"
 #define THP_PLUG_IN_DOCUMENTATION_BLURB_Image_Magic_Shrink                      "Tritonhawk Plus Magically Shrink Image"
@@ -100,7 +100,7 @@ PLUG_IN_GUI_DIALOG_CAPTION_Image_Resize="(gchar*)(\"Tritonhawk Plus Multi-Thread
 
 #define THP_PLUG_IN_AUTHOR "Tiger J. Swiftwing, as David A. Reeves, SS# 287-74-8719"
 #define THP_PLUG_IN_COPYRIGHT "(c) 2025-2026 Tiger J. Swiftwing, All Rights Reserved."
-#define THP_PLUG_IN_DATE "July 2025 CE - July 2026 CE"
+#define THP_PLUG_IN_DATE "July 2025 CE - September 2026 CE"
 
 /*
 #include "config_h/clang64/config.h"

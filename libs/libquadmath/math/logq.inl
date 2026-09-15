@@ -21,6 +21,7 @@ are also licensed under the GPL version 3 license.  */
  * \param x f128 Input value (must be > 0).
  * \return f128 Result of ln(x).
  */
+/*
 static HOT_INLINE f128 logq(const f128 x) noexcept
 {
     // 1) Extract exponent e and mantissa m in [0.5,1)
@@ -55,4 +56,56 @@ static HOT_INLINE f128 logq(const f128 x) noexcept
                    + (z * z6 * z2) / 9.q; // Additional term for improved accuracy
 
     return 2.q * P + f128(e) * M_LN2q; // M_LN2q = ln(2) as f128
+}
+*/
+
+/** \brief Compute the natural logarithm of a binary128 value.
+ *
+ * Uses the identity ln(m) = 2 * artanh((m-1)/(m+1))
+ * with a higher-order Taylor expansion.
+ */
+static HOT_INLINE f128 logq(const f128 x) noexcept
+{
+    if (x == 0) return -INFINITYq;
+    if (x < 0) return NANq;
+    if (isinfq(x)) return INFINITYq;
+    if (isnanq(x)) return NANq;
+
+    s64 e = 0;
+    f128 m = frexpq(x, &e);
+
+    // Shift m into [sqrt(1/2), sqrt(2)]
+    if (m < M_SQRT1_2q) {
+        m *= 2.q;
+        e -= 1;
+    }
+
+    // z = (m - 1) / (m + 1)
+    f128 z = (m - 1.q) / (m + 1.q);
+    f128 z2 = z * z;
+    f128 z4 = z2 * z2;
+    f128 z8 = z4 * z4;
+    f128 z16 = z8 * z8;
+
+    // Taylor series for artanh(z) = z + z^3/3 + z^5/5 + z^7/7 + z^9/9...
+    // This is much more accurate than the 5-term version.
+    // For 128-bit precision, you'd ideally want ~15-20 terms here.
+    f128 P = z
+            + (z * z2) / 3.q
+            + (z * z4) / 5.q
+            + (z * z2 * z4) / 7.q
+            + (z * z8) / 9.q
+            + (z * z2 * z8) / 11.q
+            + (z * z4 * z8) / 13.q
+            + (z * z2 * z4 * z8) / 15.q
+            + (z * z16) / 17.q
+            + (z * z2 * z16) / 19.q
+            + (z * z4 * z16) / 21.q
+            + (z * z2 * z4 * z16) / 23.q
+            + (z * z8 * z16) / 25.q
+            + (z * z2 * z8 * z16) / 27.q
+            + (z * z4 * z8 * z16) / 29.q
+            + (z * z2 * z4 * z8 * z16) / 31.q;
+
+    return 2.q * P + f128(e) * M_LN2q;
 }
