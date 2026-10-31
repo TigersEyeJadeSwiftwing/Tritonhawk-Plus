@@ -44,6 +44,10 @@ static HOT_INLINE f128 frexpq(f128 x, s64* eptr) noexcept
     // Find the exponent and normalize x
     if (abs_x > 1.q)
     {
+        while (abs_x > 16.0q) { // Change to 16.0q for larger steps
+            abs_x *= 0.03125q; // Divide by 32
+            exponent += 5; // Increment exponent by 5
+        }
         while (abs_x > 8.0q) { // Change to 8.0q for larger steps
             abs_x *= 0.0625q; // Divide by 16
             exponent += 4; // Increment exponent by 4
@@ -63,6 +67,10 @@ static HOT_INLINE f128 frexpq(f128 x, s64* eptr) noexcept
     }
     else if (abs_x < 0.5q)
     {
+        while (abs_x < 0.03125q) { // Change to 0.03125q for larger steps
+            abs_x *= 32.0q; // Multiply by 32
+            exponent -= 5; // Decrement exponent by 5
+        }
         while (abs_x < 0.0625q) { // Change to 0.0625q for larger steps
             abs_x *= 16.0q; // Multiply by 16
             exponent -= 4; // Decrement exponent by 4

@@ -415,6 +415,18 @@ namespace TritonhawkPlus
         grid->clear();
         grid->resize(sample_count_xy, SampleGridElement());
 
+        if ((sample_grid_size_x != 0uL) && (sample_grid_size_y != 0uL))
+        {
+            if ((sample_count_x == sample_grid_size_x) &&
+                (sample_count_y == sample_grid_size_y) &&
+                (sample_grid_cached_shape_x == sample_grid_shape_x) &&
+                (sample_grid_cached_shape_y == sample_grid_shape_y))
+            {
+                grid->assign(sample_grid.begin(), sample_grid.end());
+                return;
+            }
+        }
+
         #pragma omp parallel for shared(grid) default(firstprivate)
         for (u64 index = 0uLL; index < sample_count_xy; index++)
         {
@@ -500,6 +512,12 @@ namespace TritonhawkPlus
             #pragma omp atomic update
             grid->at(index).y += sample_grid_offset_y;
         }
+
+        sample_grid_size_x = sample_count_x;
+        sample_grid_size_y = sample_count_y;
+        sample_grid_cached_shape_x = sample_grid_shape_x;
+        sample_grid_cached_shape_y = sample_grid_shape_y;
+        sample_grid.assign(grid->begin(), grid->end());
     }
 
     TARGET_CLONES void ThpParams::CalcNumberOfChunks()

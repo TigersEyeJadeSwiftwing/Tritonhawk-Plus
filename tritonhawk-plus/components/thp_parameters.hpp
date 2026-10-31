@@ -188,6 +188,12 @@ namespace TritonhawkPlus
         f64 progress_increment = 0.0;
         f64 progress_increments = 1.0;
 
+        vector<SampleGridElement> sample_grid;
+        u64 sample_grid_size_x = 0uLL;
+        u64 sample_grid_size_y = 0uLL;
+        SAMPLE_GRID_SHAPE sample_grid_cached_shape_x = SAMPLE_GRID_SHAPE_Square;
+        SAMPLE_GRID_SHAPE sample_grid_cached_shape_y = SAMPLE_GRID_SHAPE_Square;
+
         bool layer_is_full_frame = true;
         u64 in_frame_min_x = 0uL;
         u64 in_frame_min_y = 0uL;
