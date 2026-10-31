@@ -16,32 +16,35 @@ are also licensed under the GPL version 3 license.  */
 
 #include "fabsq.inl"
 
-/** \brief Gets the nearest whole number that is equal to or less than the input value.
+/** \brief Returns the greatest integer (as a float128) that is
+ *         less than or equal to the argument.
  *
- * \param x f128 The input number to round down.
- * \return f128 The nearest whole number that is always equal to or less than the input.
+ *  \param x  The value to round down (float128).
+ *  \return   The floor of x.
  */
 static HOT_INLINE f128 floorq(const f128 x) noexcept
 {
-    if (invalidq(x)) return x; // Preserve NaN and ±Inf
+    if (invalidq(x)) return x;               // Preserve NaN and ±Inf
 
-    static constexpr f128 TWO_POW_113_base = 9007199254740992.0q;
-    static constexpr f128 TWO_POW_113 = TWO_POW_113_base * TWO_POW_113_base;
+    // 2^113 – the smallest power of two whose ulp is > 1 for binary128
+    static constexpr f128 C = 0x1p113Q;       // exact 2^113 literal
 
-    // For very large |x|, x is already integral
-    if (fabsq(x) >= TWO_POW_113)
-        return x;
+    // Numbers whose magnitude is already ≥ C are integral already
+    if (fabsq(x) >= C) return x;
 
     f128 y;
-    if (x >= 0.q) {
-        y = x + TWO_POW_113; // shift fractional bits out
-        y = y - TWO_POW_113;
-        // y is truncated toward zero → same as floor for x ≥ 0
-        return y;
+    if (x >= 0.0Q) {
+        // Positive: truncate toward zero (same as floor)
+        y = x + C;            // shift fractional bits far enough out
+        y = y - C;            // drop the constant, leaving integer part
+        // If the rounding pushed us *up* (y > x), we overshot by 1 ulp → subtract 1
+        return (y > x) ? (y - 1.0Q) : y;
     } else {
-        // For negatives, truncation gives ceil. To get floor, subtract 1.
-        y = x - TWO_POW_113; // shift fractional bits out
-        y = y + TWO_POW_113;
-        return (y == x) ? y : (y - 1.q);
+        // Negative: truncation toward zero yields ceil, so we must go one step lower
+        y = x - C;            // shift fractional bits out (negative direction)
+        y = y + C;
+        // If rounding gave us a value that is *greater* (less negative) than x,
+        // we lost the fractional part and must subtract 1 to get the true floor.
+        return (y > x) ? (y - 1.0Q) : y;
     }
 }

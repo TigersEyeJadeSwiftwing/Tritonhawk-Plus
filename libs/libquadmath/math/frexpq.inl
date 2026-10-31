@@ -84,10 +84,6 @@ static HOT_INLINE f128 frexpq(f128 x, s64* eptr) noexcept
     // Store the exponent
     if (eptr) *eptr = exponent;
 
-    // Reconstruct the final value
-    // ldexpq(fraction, exponent) returns fraction * 2^exponent
-    f128 result = ldexpq(abs_x, exponent);
-
-    // Restore the original sign
-    return x < 0.q ? -result : result;
+    // Return the normalized fraction directly (with original sign restored)
+    return x < 0.q ? -abs_x : abs_x;
 }

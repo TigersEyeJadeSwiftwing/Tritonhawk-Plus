@@ -48,6 +48,13 @@ PLUG_IN_GUI_DIALOG_CAPTION_Image_Resize="(gchar*)(\"Tritonhawk Plus Multi-Thread
 #define THP_PLUG_IN_BINARY "tritonhawk-plus"
 #define THP_PLUG_IN_ROLE "tritonhawk-plus-enchanted"
 
+#define THP_PLUG_IN_PROCESS_Test_Internal_Functions                             "tritonhawk-plus-test"
+#define THP_PLUG_IN_MENU_LABEL_Test_Internal_Functions                          "(Debug) Test Internal Functions"
+#define THP_PLUG_IN_GUI_DIALOG_CAPTION_Test_Internal_Functions                  "Tritonhawk Plus Test Internal Functions"
+#define THP_PLUG_IN_MENU_PATH_Test_Internal_Functions                           "<Image>/Image/Tritonhawk Plus/"
+#define THP_PLUG_IN_DOCUMENTATION_BLURB_Test_Internal_Functions                 "Tritonhawk Plus Test Internal Functions"
+#define THP_PLUG_IN_DOCUMENTATION_HELP_CAPTION_Test_Internal_Functions          "Tritonhawk Plus Test Internal Functions"
+
 #define THP_PLUG_IN_PROCESS_Image_Magic_Resize                                  "tritonhawk-plus-enchanted-image-magical-resize"
 #define THP_PLUG_IN_MENU_LABEL_Image_Magic_Resize                               "Resize Image"
 #define THP_PLUG_IN_GUI_DIALOG_CAPTION_Image_Magic_Resize                       "Tritonhawk Plus Magically Resize Image"
@@ -155,6 +162,15 @@ static gboolean         thpimageresize_set_i18n(
                             const gchar* procedure_name,
                             gchar** gettext_domain,
                             gchar** catalog_dir
+                        );
+
+static GimpValueArray*  thp_test_internal_functions(
+                            GimpProcedure* procedure,
+                            GimpRunMode run_mode,
+                            GimpImage* image,
+                            GimpDrawable** drawables,
+                            GimpProcedureConfig* config,
+                            gpointer run_data
                         );
 /*
 static GimpValueArray*  thpimageresize_run(

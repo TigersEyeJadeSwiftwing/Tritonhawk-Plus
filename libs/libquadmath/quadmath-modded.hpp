@@ -170,11 +170,13 @@ namespace quadmath
 
     #include "quadmath-imp.hpp"
 
+    /*
     #include "cosq.inl"
     #include "fminq.inl"
     #include "fmaxq.inl"
     #include "sqrtq.inl"
     #include "sinq.inl"
+    */
     // static HOT_INLINE f128 cosq(const f128 x) noexcept { return (f128) sinq(f128(x) + M_PI_2q); }
 
     /*
@@ -190,7 +192,6 @@ namespace quadmath
     static HOT_INLINE f128 fabsq(const f128 x) noexcept { return (f128) fabsl(f128(x)); }
     */
 
-    /*
     #include "ceilq.inl"
     #include "copysignq.inl"
     #include "cosq.inl"
@@ -217,7 +218,6 @@ namespace quadmath
 
     #include "tanq.inl"
     #include "truncq.inl"
-    */
 
     static HOT_INLINE f16 ceilfs(const f16 x) noexcept { return (f16) ceil(f64(x)); }
     static HOT_INLINE f16 copysignfs(const f16 x, const f16 y) noexcept { return (f16) copysignf(f32(x), f32(y)); }

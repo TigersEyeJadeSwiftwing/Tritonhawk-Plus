@@ -16,33 +16,32 @@ are also licensed under the GPL version 3 license.  */
 
 #include "fabsq.inl"
 
-/** \brief Gets the nearest whole number that is equal to or greater than the input value.
+/** \brief Returns the smallest integer (as a float128) that is
+ *         greater than or equal to the argument.
  *
- * \param x f128 The input number to round up.
- * \return f128 The nearest whole number that is always equal to or greater than the input.
+ *  \param x  The value to round up (float128).
+ *  \return   The ceiling of x.
  */
 static HOT_INLINE f128 ceilq(const f128 x) noexcept
 {
-    if (invalidq(x)) return x; // Preserve NaN and �Inf
+    if (invalidq(x)) return x;               // Preserve NaN and ±Inf
 
-    static constexpr f128 TWO_POW_113_base = 9007199254740992.0q;
-    static constexpr f128 TWO_POW_113 = TWO_POW_113_base * TWO_POW_113_base;
+    // 2^113 – the smallest power of two whose ulp is > 1 for binary128
+    static constexpr f128 C = 0x1p113Q;       // exact 2^113 literal
 
-    // For very large |x|, x is already integral
-    if (fabsq(x) >= TWO_POW_113)
-        return x;
+    // Any |x| ≥ C is already integral (spacing is 2, so no fraction can exist)
+    if (fabsq(x) >= C) return x;
 
     f128 y;
-    if (x >= 0.q) {
-        // Truncate toward zero yields floor for positive x
-        y = x + TWO_POW_113; // shift fractional bits out
-        y = y - TWO_POW_113;
-        // If there was any fractional part, bump up
-        return (y == x) ? y : (y + 1.q);
+    if (x >= 0.0Q) {
+        // Positive: round‑trip with +C, then add 1 if we lost any fraction
+        y = x + C;
+        y = y - C;
+        return (y < x) ? (y + 1.0Q) : y;      // y < x ⇔ fractional part existed
     } else {
-        // For negative x, truncation toward zero = ceil
-        y = x - TWO_POW_113; // shift fractional bits out
-        y = y + TWO_POW_113;
-        return y;
+        // Negative: round‑trip with –C, then add 1 if we overshot downward
+        y = x - C;
+        y = y + C;
+        return (y < x) ? (y + 1.0Q) : y;      // e.g. -1.9 → y=-2 → add 1 → -1
     }
 }

@@ -20,41 +20,6 @@ are also licensed under the GPL version 3 license.  */
 
 /** \brief Compute the exponential function of a binary128 value.
  *
- * \param t f128 Exponent.
- * \return f128 Result of e^x.
- */
-/*
-static HOT_INLINE f128 expq(const f128 x) noexcept
-{
-    if (invalidq(x)) return x;
-
-    static constexpr f128 COEFF_0 = 1.q;
-    // static constexpr f128 COEFF_1 = 1.q; // r^1 / 1!
-    static constexpr f128 COEFF_2 = 0.5q; // r^2 / 2!
-    static constexpr f128 COEFF_3 = 1.0q / 6.0q; // r^3 / 3!
-    static constexpr f128 COEFF_4 = 1.0q / 24.0q; // r^4 / 4!
-    static constexpr f128 COEFF_5 = 1.0q / 120.0q; // r^5 / 5!
-    static constexpr f128 COEFF_6 = 1.0q / 720.0q; // r^6 / 6!
-
-    f128 kf = x * M_LOG2Eq; // M_LOG2Eq = log_2 e
-    s64 n = (s64) nearbyintq(kf);
-    f128 r = x - f128(n) * M_LN2q; // M_LN2q = log_e 2
-    f128 r2 = r * r,
-               r4 = r2 * r2;
-    f128 Q = COEFF_0
-                   + r
-                   + COEFF_2 * r2
-                   + COEFF_3 * r2 * r
-                   + COEFF_4 * r4
-                   + COEFF_5 * r4 * r
-                   + COEFF_6 * r4 * r2; // Additional term for better accuracy
-
-    return ldexpq(Q, n);
-}
-*/
-
-/** \brief Compute the exponential function of a binary128 value.
- *
  * Uses a high-order Taylor expansion evaluated via Horner's Method.
  * This provides significantly higher precision for the range r in [0.5, 1.0].
  */

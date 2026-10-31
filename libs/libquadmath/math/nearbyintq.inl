@@ -14,12 +14,6 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
-#include "fabsq.inl"
-#include "floorq.inl"
-#include "fmodq.inl"
-#include "roundq.inl"
-#include "copysignq.inl"
-
 /** \brief Rounds a f128 value to the nearest integer, using the current rounding mode.
  *
  * \param x f128 The input value to round.

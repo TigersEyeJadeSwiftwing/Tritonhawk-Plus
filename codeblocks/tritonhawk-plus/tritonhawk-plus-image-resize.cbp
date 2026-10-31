@@ -461,6 +461,7 @@
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-resize.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-image-magical-shrink.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-layer-magical-resize.hpp" />
+		<Unit filename="../../tritonhawk-plus/tritonhawk-plus-test-internal-functions.hpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus.cpp" />
 		<Unit filename="../../tritonhawk-plus/tritonhawk-plus.hpp" />
 		<Extensions>
