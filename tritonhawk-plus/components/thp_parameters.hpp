@@ -213,7 +213,7 @@ namespace TritonhawkPlus
         u64 max_image_dimension = 65536uLL;
         f64 max_sample_grid_dimension_percent = 10000.0;
         f64 max_sample_count_modifier = 5000.0;
-        f64 max_sample_interpolation = 10000.0;
+        f64 max_sample_interpolation = 50.0;
         u64 min_chunk_size = 1uLL;
         u64 max_chunk_size = 5000uLL;
         u64 increment_chunk_size = 1uLL;
@@ -230,5 +230,6 @@ namespace TritonhawkPlus
         TARGET_CLONES void CalcSampleGrid();
         TARGET_CLONES void CalcNumberOfChunks();
         TARGET_CLONES void GetSampleGridVectors(vector<SampleGridElement> *grid);
+        TARGET_CLONES void SetResizeParameters_NonInteractive(GimpProcedureConfig* Config);
     };
 };

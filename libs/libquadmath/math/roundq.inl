@@ -19,53 +19,14 @@ are also licensed under the GPL version 3 license.  */
  * \param x f128 The input value to round.
  * \return f128 The nearest whole number the input is rounded to.
  */
-static HOT_INLINE f128 roundq(f128 x) noexcept {
-    if (invalidq(x)) return x; // Preserve NaN and ±Inf
+static HOT_INLINE f128 roundq(const f128 x) noexcept
+{
+    if (invalidq(x)) return x;
 
-    uint64_t hi, lo;
-    GET_FLT128_WORDS64(hi, lo, x);
+    static constexpr f128 SHIFT = 0x1.0p112Q;  // 2^112
 
-    // Extract unbiased exponent j0 = exp - bias
-    int j0 = int((hi >> 48) - 0x3FFF);
+    f128 ax = x < 0 ? -x : x;
+    f128 y  = (ax + SHIFT) - SHIFT;  // rounds to nearest‐even
 
-    // |x| < 0.5 → round toward 0.0 to zero
-    if (j0 < 0) {
-        hi &= 0x8000'0000'0000'0000ULL;         // keep sign
-        hi |= 0x3FFF'0000'0000'0000ULL;         // produce ±0.0…5
-        lo  = 0;
-    }
-    // |x| >= 2^112 or NaN/Inf → return x + x to preserve NaN
-    else if (j0 > 111) {
-        return ((uint16_t)(hi >> 48) == 0x7FFF)
-               ? x + x
-               : x;
-    }
-    else {
-        // Mask for fractional bits in high and low words
-        uint64_t frac_hi = (0x0000'FFFF'FFFF'FFFFULL >> j0);
-        uint64_t frac_lo = (j0 < 64)
-            ? ~0ULL >> (j0 + 16)
-            : 0xFFFF'FFFF'FFFF'FFFFULL;
-
-        // If already integral, exit early
-        if (((hi & frac_hi) | (lo & frac_lo)) == 0)
-            return x;
-
-        // Add 0.5 ulp at the rounding position
-        if (j0 < 64) {
-            lo += (1ULL << (63 - j0));
-            if (lo < (1ULL << (63 - j0))) {
-                hi += 1;  // carry
-            }
-        } else {
-            hi += (1ULL << (112 - j0));
-        }
-
-        // Clear fractional bits
-        hi &= ~frac_hi;
-        lo &= ~frac_lo;
-    }
-
-    SET_FLT128_WORDS64(x, hi, lo);
-    return x;
+    return x < 0 ? -y : y;
 }

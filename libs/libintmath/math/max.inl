@@ -14,12 +14,32 @@ https://www.gimp.org/
     If you want to borrow any of the source code from the custom math library .inl files that are part of this project, the ones with this copyright notice and such
 are also licensed under the GPL version 3 license.  */
 
+static HOT_INLINE s8 max(const s8 a, const s8 b) noexcept
+{
+    return (a > b) ? a : b;
+}
+
+static HOT_INLINE u8 max(const u8 a, const u8 b) noexcept
+{
+    return (a > b) ? a : b;
+}
+
 static HOT_INLINE s16 max(const s16 a, const s16 b) noexcept
 {
     return (a > b) ? a : b;
 }
 
 static HOT_INLINE u16 max(const u16 a, const u16 b) noexcept
+{
+    return (a > b) ? a : b;
+}
+
+static HOT_INLINE s32 max(const s32 a, const s32 b) noexcept
+{
+    return (a > b) ? a : b;
+}
+
+static HOT_INLINE u32 max(const u32 a, const u32 b) noexcept
 {
     return (a > b) ? a : b;
 }

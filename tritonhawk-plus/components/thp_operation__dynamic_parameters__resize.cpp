@@ -48,11 +48,13 @@ namespace TritonhawkPlus
             return false;
         }
 
+        /*
         if (Params->run_mode_interactive == false)
         {
             Params->operation_result_string = "Error: This plugin doesn't (yet) run without the GUI.";
             return false;
         }
+        */
 
         GimpLayer** image_layers = 0;
         s32 number_of_layers = 0;
@@ -229,98 +231,112 @@ namespace TritonhawkPlus
         Params->layer_output_size_xy = Params->layer_input_size_xy;
 
         Params->SetOutputSizeDefaults();
-        Params->CalcAll();
 
-        Log = new ThpLog();
+        GtkWidget* Program_Dialog = 0;
+        ComboSizeWidget* Combo_Size_Widget = 0;
 
-        GtkWidget*              Program_Dialog;
-        GtkWidget*              Gui_Log_Box_0;
-        GtkWidget*              Gui_Log_Text_0;
-        GtkWidget*              Gui_Log_Text_1;
-        ComboSizeWidget*        Combo_Size_Widget;
-        GdkGeometry             geometry;
-
-        gimp_ui_init (PLUG_IN_BINARY);
-        Program_Dialog = gimp_dialog_new (
-            Params->process_name.c_str(),
-            PLUG_IN_ROLE,
-            NULL,
-            GTK_DIALOG_DESTROY_WITH_PARENT,
-            NULL,
-            NULL,
-            NULL_TERMINATE
-        );
-
-        geometry.min_aspect = 0.125;
-        geometry.max_aspect = 8.0;
-        geometry.base_width = (gint)660;
-        geometry.width_inc = (gint)660;
-        geometry.min_width = (gint)660;
-        geometry.max_width = (gint)4096;
-        geometry.base_height = (gint)750;
-        geometry.height_inc = (gint)750;
-        geometry.min_height = (gint)500;
-        geometry.max_height = (gint)4096;
-        gtk_window_set_geometry_hints (GTK_WINDOW (Program_Dialog), NULL, &geometry, GDK_HINT_ASPECT);
-
-        Log->SetGuiDialog(Program_Dialog);
-
-        Gui_Log_Box_0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
-        gtk_container_set_border_width(GTK_CONTAINER (Gui_Log_Box_0), 5);
-        gtk_widget_set_halign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
-        gtk_widget_set_valign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
-        gtk_widget_set_size_request(Gui_Log_Box_0, 800, 240);
-        gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Log_Box_0);
-        gtk_widget_show(Gui_Log_Box_0);
-
-        Gui_Log_Text_0 = gtk_label_new (NULL);
-        gtk_widget_set_size_request (Gui_Log_Text_0, 400, 240);
-        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
-        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
-        gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_0, FALSE, FALSE, 0);
-        gtk_widget_show (Gui_Log_Text_0);
-        Log->SetTextLabel(Gui_Log_Text_0);
-
-        Gui_Log_Text_1 = gtk_label_new (NULL);
-        gtk_widget_set_size_request (Gui_Log_Text_1, 400, 240);
-        gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
-        gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
-        gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_1, FALSE, FALSE, 0);
-        gtk_widget_show (Gui_Log_Text_1);
-        Log->SetTextLabel(Gui_Log_Text_1, 1);
-
-        gtk_widget_show (Program_Dialog);
-
-        Params->gui_enabled = true;
-
-        Combo_Size_Widget = new ComboSizeWidget(Program_Dialog, Params, Log);
-        Combo_Size_Widget->SetOriginalSize((gint)Params->input_size_x, (gint)Params->input_size_y);
-
-        gtk_window_set_default_size(GTK_WINDOW (Program_Dialog), -1, -1);
-
-        Log->Log(false, Params->info_string);
-
-        while (Combo_Size_Widget->GetChoicesDoneResult() == 0)
+        if (Params->run_mode_interactive == true)
         {
-            while (gtk_events_pending())
-                gtk_main_iteration();
-        };
+            Params->CalcAll();
 
-        if (Combo_Size_Widget->GetChoicesDoneResult() == -1)
+            Log = new ThpLog();
+
+            GtkWidget*              Program_Dialog;
+            GtkWidget*              Gui_Log_Box_0;
+            GtkWidget*              Gui_Log_Text_0;
+            GtkWidget*              Gui_Log_Text_1;
+            ComboSizeWidget*        Combo_Size_Widget;
+            GdkGeometry             geometry;
+
+            gimp_ui_init (PLUG_IN_BINARY);
+            Program_Dialog = gimp_dialog_new (
+                Params->process_name.c_str(),
+                PLUG_IN_ROLE,
+                NULL,
+                GTK_DIALOG_DESTROY_WITH_PARENT,
+                NULL,
+                NULL,
+                NULL_TERMINATE
+            );
+
+            geometry.min_aspect = 0.125;
+            geometry.max_aspect = 8.0;
+            geometry.base_width = (gint)660;
+            geometry.width_inc = (gint)660;
+            geometry.min_width = (gint)660;
+            geometry.max_width = (gint)4096;
+            geometry.base_height = (gint)750;
+            geometry.height_inc = (gint)750;
+            geometry.min_height = (gint)500;
+            geometry.max_height = (gint)4096;
+            gtk_window_set_geometry_hints (GTK_WINDOW (Program_Dialog), NULL, &geometry, GDK_HINT_ASPECT);
+
+            Log->SetGuiDialog(Program_Dialog);
+
+            Gui_Log_Box_0 = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, (gint)0);
+            gtk_container_set_border_width(GTK_CONTAINER (Gui_Log_Box_0), 5);
+            gtk_widget_set_halign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
+            gtk_widget_set_valign(GTK_WIDGET(Gui_Log_Box_0), GTK_ALIGN_START);
+            gtk_widget_set_size_request(Gui_Log_Box_0, 800, 240);
+            gtk_container_add(GTK_CONTAINER(gtk_dialog_get_content_area(GTK_DIALOG (Program_Dialog))), Gui_Log_Box_0);
+            gtk_widget_show(Gui_Log_Box_0);
+
+            Gui_Log_Text_0 = gtk_label_new (NULL);
+            gtk_widget_set_size_request (Gui_Log_Text_0, 400, 240);
+            gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
+            gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_0), GTK_ALIGN_START );
+            gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_0, FALSE, FALSE, 0);
+            gtk_widget_show (Gui_Log_Text_0);
+            Log->SetTextLabel(Gui_Log_Text_0);
+
+            Gui_Log_Text_1 = gtk_label_new (NULL);
+            gtk_widget_set_size_request (Gui_Log_Text_1, 400, 240);
+            gtk_widget_set_halign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
+            gtk_widget_set_valign ( GTK_WIDGET(Gui_Log_Text_1), GTK_ALIGN_START );
+            gtk_box_pack_start(GTK_BOX(Gui_Log_Box_0), (GtkWidget*)Gui_Log_Text_1, FALSE, FALSE, 0);
+            gtk_widget_show (Gui_Log_Text_1);
+            Log->SetTextLabel(Gui_Log_Text_1, 1);
+
+            gtk_widget_show (Program_Dialog);
+
+            Params->gui_enabled = true;
+
+            Combo_Size_Widget = new ComboSizeWidget(Program_Dialog, Params, Log);
+            Combo_Size_Widget->SetOriginalSize((gint)Params->input_size_x, (gint)Params->input_size_y);
+
+            gtk_window_set_default_size(GTK_WINDOW (Program_Dialog), -1, -1);
+
+            Log->Log(false, Params->info_string);
+
+            while (Combo_Size_Widget->GetChoicesDoneResult() == 0)
+            {
+                while (gtk_events_pending())
+                    gtk_main_iteration();
+            };
+
+            if (Combo_Size_Widget->GetChoicesDoneResult() == -1)
+            {
+                // delete Log;
+                // delete Params;
+                if (Combo_Size_Widget) delete Combo_Size_Widget;
+
+                return true;
+
+                // return gimp_procedure_new_return_values (Params->procedure, GIMP_PDB_CANCEL, NULL);
+            }
+        } // END if (Params->run_mode_interactive == true)
+        else
         {
-            // delete Log;
-            // delete Params;
-            if (Combo_Size_Widget) delete Combo_Size_Widget;
-
-            return true;
-
-            // return gimp_procedure_new_return_values (Params->procedure, GIMP_PDB_CANCEL, NULL);
+            Params->CalcAll();
+            Params->SetResizeParameters_NonInteractive(Params->config);
+            Params->gui_enabled = false;
+            Params->CalcAll();
         }
 
         gimp_context_push ();
 
         Params->EngagePluginPriority();
-        gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)FALSE);
+        if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)FALSE);
 
         gimp_context_set_interpolation (GIMP_INTERPOLATION_NONE);
 
@@ -335,9 +351,7 @@ namespace TritonhawkPlus
 
             // If the current layer is a text layer, convert it into a regular layer of pixels before going any further.
             if ( gimp_item_is_text_layer((GimpItem*)layer) == TRUE )
-            {
                 gimp_rasterizable_rasterize((GimpRasterizable*)layer);
-            }
 
             // Check if the current layer has any x or y dimension offset.  If it has any offset of either or both
             // dimensions, set both to zero, for now.
@@ -357,9 +371,9 @@ namespace TritonhawkPlus
             Params->CopySizesToLayerSizes();
             Params->CalcAll();
 
-            Combo_Size_Widget->SyncDataFromParameters();
+            if (Params->gui_enabled == true) Combo_Size_Widget->SyncDataFromParameters();
 
-            Log->SetTimerStart();
+            if (Log) Log->SetTimerStart();
 
             // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
             if (gimp_drawable_has_alpha(drawable) == TRUE)
@@ -391,10 +405,13 @@ namespace TritonhawkPlus
 
             gimp_context_pop();
             gimp_displays_flush();
-            gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
+            if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
-            if (Combo_Size_Widget)
-                delete Combo_Size_Widget;
+            if (Params->gui_enabled == true)
+            {
+                if (Combo_Size_Widget)
+                    delete Combo_Size_Widget;
+            }
 
             Params->DisengagePluginPriority();
 
@@ -506,7 +523,9 @@ namespace TritonhawkPlus
                 }
 
                 if (layer_index == 0)
-                    Log->SetTimerStart();
+                {
+                    if (Log) Log->SetTimerStart();
+                }
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -548,10 +567,13 @@ namespace TritonhawkPlus
 
             gimp_context_pop();
             gimp_displays_flush();
-            gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
+            if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
-            if (Combo_Size_Widget)
-                delete Combo_Size_Widget;
+            if (Params->gui_enabled == true)
+            {
+                if (Combo_Size_Widget)
+                    delete Combo_Size_Widget;
+            }
 
             Params->DisengagePluginPriority();
 
@@ -623,7 +645,9 @@ namespace TritonhawkPlus
                     Combo_Size_Widget->SyncDataFromParameters();
 
                 if (layer_index == 0)
-                    Log->SetTimerStart();
+                {
+                    if (Log) Log->SetTimerStart();
+                }
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -654,10 +678,13 @@ namespace TritonhawkPlus
 
             gimp_context_pop();
             gimp_displays_flush();
-            gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
+            if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
-            if (Combo_Size_Widget)
-                delete Combo_Size_Widget;
+            if (Params->gui_enabled == true)
+            {
+                if (Combo_Size_Widget)
+                    delete Combo_Size_Widget;
+            }
 
             Params->DisengagePluginPriority();
 
@@ -770,7 +797,9 @@ namespace TritonhawkPlus
                 s32 offset = -total_offset / 2;
 
                 if (layer_index == 0)
-                    Log->SetTimerStart();
+                {
+                    if (Log) Log->SetTimerStart();
+                }
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -810,10 +839,13 @@ namespace TritonhawkPlus
 
             gimp_context_pop();
             gimp_displays_flush();
-            gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
+            if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
-            if (Combo_Size_Widget)
-                delete Combo_Size_Widget;
+            if (Params->gui_enabled == true)
+            {
+                if (Combo_Size_Widget)
+                    delete Combo_Size_Widget;
+            }
 
             Params->DisengagePluginPriority();
 
@@ -928,7 +960,9 @@ namespace TritonhawkPlus
                 s32 offset = -total_offset / 2;
 
                 if (layer_index == 0)
-                    Log->SetTimerStart();
+                {
+                    if (Log) Log->SetTimerStart();
+                }
 
                 // Actually resize the layer, accounting for whether the layer has an alpha channel or not.
                 if (gimp_drawable_has_alpha(layer_drawable) == TRUE)
@@ -968,10 +1002,13 @@ namespace TritonhawkPlus
 
             gimp_context_pop();
             gimp_displays_flush();
-            gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
+            if (Params->gui_enabled == true) gtk_widget_set_sensitive((GtkWidget*)Program_Dialog, (gboolean)TRUE);
 
-            if (Combo_Size_Widget)
-                delete Combo_Size_Widget;
+            if (Params->gui_enabled == true)
+            {
+                if (Combo_Size_Widget)
+                    delete Combo_Size_Widget;
+            }
 
             Params->DisengagePluginPriority();
 

@@ -143,6 +143,8 @@ struct _ThpImageResizeClass
 #define THPIMAGERESIZE_TYPE (thpimageresize_get_type())
 #define THPIMAGERESIZE(obj) (G_TYPE_CHECK_INSTANCE_CAST((obj), THPIMAGERESIZE_TYPE, ThpImageResize))
 
+// static void             SetResizeParameters_NonInteractive(GimpProcedure* Procedure, ThpParams* Parameters);
+
 GType                   thpimageresize_get_type(void) G_GNUC_CONST;
 static void             thpimageresize_class_init(
                             ThpImageResizeClass* klass

@@ -23,7 +23,7 @@ static HOT_INLINE f128 nearbyintq(const f128 x) noexcept
 {
     if (invalidq(x)) return x;
 
-    static constexpr f128 SHIFT = 0x1.0p112q;  // 2^112
+    static constexpr f128 SHIFT = 0x1.0p112Q;  // 2^112
 
     f128 ax = x < 0 ? -x : x;
     f128 y  = (ax + SHIFT) - SHIFT;  // rounds to nearest‐even
