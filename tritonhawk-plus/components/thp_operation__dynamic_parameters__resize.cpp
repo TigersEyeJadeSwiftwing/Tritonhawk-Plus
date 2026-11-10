@@ -245,7 +245,7 @@ namespace TritonhawkPlus
             GtkWidget*              Gui_Log_Box_0;
             GtkWidget*              Gui_Log_Text_0;
             GtkWidget*              Gui_Log_Text_1;
-            ComboSizeWidget*        Combo_Size_Widget;
+            // ComboSizeWidget*        Combo_Size_Widget;
             GdkGeometry             geometry;
 
             gimp_ui_init (PLUG_IN_BINARY);
@@ -324,6 +324,8 @@ namespace TritonhawkPlus
 
                 // return gimp_procedure_new_return_values (Params->procedure, GIMP_PDB_CANCEL, NULL);
             }
+
+            Params->CalcAll();
         } // END if (Params->run_mode_interactive == true)
         else
         {
