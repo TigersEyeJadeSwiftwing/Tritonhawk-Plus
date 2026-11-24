@@ -241,7 +241,7 @@ namespace TritonhawkPlus
 
             Log = new ThpLog();
 
-            GtkWidget*              Program_Dialog;
+            // GtkWidget*              Program_Dialog;
             GtkWidget*              Gui_Log_Box_0;
             GtkWidget*              Gui_Log_Text_0;
             GtkWidget*              Gui_Log_Text_1;
